@@ -1,0 +1,141 @@
+<?php
+
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Admin\DataAdministrasiController;
+use App\Http\Controllers\Admin\OpenTripController;
+use App\Http\Controllers\Admin\PrivateTripController;
+use App\Http\Controllers\Admin\PembayaranController;
+use App\Http\Controllers\Admin\PemesananController;
+use App\Http\Controllers\AdminBesar\AdminBesarController;
+use App\Http\Controllers\AdminBesar\ArtikelController;
+use App\Http\Controllers\AdminBesar\LaporanController;
+use App\Http\Controllers\AdminBesar\RiwayatController;
+use App\Http\Controllers\User\UserController;
+
+
+// Route untuk tamu (guest) -> login dan register
+Route::group(['middleware' => 'guest'], function () {
+    // Halaman Home
+    Route::get('/', function () {
+        return view('home');  // pastikan Anda memiliki file resources/views/home.blade.php
+    })->name('home');
+    
+    // Halaman Open Trip
+    Route::get('/opentrip', function () {
+        return view('opentrip');  // pastikan Anda memiliki file resources/views/opentrip.blade.php
+    })->name('opentrip');
+    
+    // Halaman Private Trip
+    Route::get('/privatetrip', function () {
+        return view('privatetrip');  // pastikan Anda memiliki file resources/views/privatetrip.blade.php
+    })->name('privatetrip');
+    
+    // Halaman Artikel
+    Route::get('/dokumen', function () {
+        return view('dokumen');  // pastikan Anda memiliki file resources/views/artikel.blade.php
+    })->name('dokumen');
+    
+    // Halaman Profil Kami
+    Route::get('/profil-kami', function () {
+        return view('profil-kami');  // pastikan Anda memiliki file resources/views/profil-kami.blade.php
+    })->name('profil.kami');
+    
+    // Halaman Tentang Kami
+    Route::get('/tentang-kami', function () {
+        return view('tentang-kami');  // pastikan Anda memiliki file resources/views/tentang-kami.blade.php
+    })->name('tentang.kami');
+
+    // Halaman Detail
+    Route::get('/detail', function () {
+        return view('detail');  // pastikan Anda memiliki file resources/views/tentang-kami.blade.php
+    })->name('detail');
+
+    // Halaman Detail Open trip
+    Route::get('/detailopen', function () {
+        return view('detailopen');  
+    })->name('detailopen');
+    
+
+    
+    
+    // Halama Login Admin
+    Route::get('/login-admin', function () {
+        return view('welcome'); // Halaman utama
+    })->name('welcome');
+    // Login Route
+    Route::get('/login', function () {
+        return view('login');  // pastikan Anda memiliki file resources/views/login.blade.php
+    })->name('login');
+    
+
+    // Route::get('/login', function () {
+    //     return view('welcome'); // Halaman utama
+    // })->name('welcome');
+
+
+    // register user
+    Route::get('/register', [AuthController::class, 'register'])->name('register');
+    Route::post('/post-register', [AuthController::class, 'post_register'])->name('post.register');
+
+    // Route::get('/login', function () {
+    //     return view('auth.login'); // Halaman login
+    // })->name('login');
+    Route::post('/post-login', [AuthController::class, 'login'])->name('post.login');
+});
+
+// Route untuk admin -> dashboard admin
+Route::group(['middleware' => 'admin'], function () {
+    Route::get('/admin', [AdminController::class, 'dashboard'])->name('admin.dashboard'); // Halaman dashboard admin
+
+    // Open Trip
+    Route::get('/open_trip', [OpenTripController::class, 'index'])->name('admin.open_trip');
+
+     // Private Trip
+    Route::get('/private_trip', [PrivateTripController::class, 'index'])->name('admin.private_trip');
+
+    // Pemwsanan
+    Route::get('/pemesanan', [PemesananController::class, 'index'])->name('admin.pemesanan');
+
+    // Pembayaran
+    Route::get('/pembayaran', [PembayaranController::class, 'index'])->name('admin.pembayaran');
+
+    // Route Data Administrsi
+    Route::get('/data_administrasi', [DataAdministrasiController::class, 'index'])->name('admin.data_administrasi');
+
+
+    Route::post('/admin/logout', [AuthController::class, 'admin_logout'])->name('admin.logout'); // Logout admin
+});
+
+
+// Route untuk admin besar -> dashboard admin besar
+Route::group(['middleware' => 'adminbesar'], function () {
+    Route::get('/adminbesar', [AdminBesarController::class, 'dashboard'])->name('adminbesar.dashboard'); // Halaman dashboard admin
+
+    Route::get('/artikel', [ArtikelController::class,'index'])->name('adminbesar.artikel');
+
+    Route::get('/laporan', [LaporanController::class,'index'])->name('adminbesar.laporan');
+
+    Route::get('/riwayat', [RiwayatController::class,'index'])->name('adminbesar.riwayat');
+
+    Route::post('/adminbesar/logout', [AuthController::class, 'admin_logout'])->name('adminbesar.logout'); // Logout admin
+});
+
+
+// Route untuk user
+Route::group(['middleware' => 'web'], function () {
+    Route::get('/user', [UserController::class, 'home'])->name('user.home');
+    Route::get('/user/opentrip', [UserController::class, 'opentrip'])->name('user.opentrip');
+    Route::get('/user/privatetrip', [UserController::class, 'privatetrip'])->name('user.privatetrip');
+    Route::get('/user/dokumen', [UserController::class, 'dokumen'])->name('user.dokumen');
+    Route::get('/user/profil-kami', [UserController::class, 'profilKami'])->name('user.profil-kami');
+    Route::get('/user/tentang-kami', [UserController::class, 'tentangKami'])->name('user.tentang-kami');
+    Route::get('/user/dokumen/detail', [UserController::class, 'detail'])->name('user.detail');
+    Route::get('/user/opentrip/detail', [UserController::class, 'detailopen'])->name('user.detailopen');
+
+
+    Route::post('/user/logout', [AuthController::class, 'user_logout'])->name('user.logout');
+
+})->middleware('web');
+

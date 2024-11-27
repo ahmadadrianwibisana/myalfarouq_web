@@ -1,0 +1,76 @@
+/*--------------------------------------------------------------
+/* --- Services Section --- */
+.services .card {
+    background-color: var(--surface-color);
+    color: var(--default-color);
+    border: 1px solid color-mix(in srgb, var(--default-color), transparent 85%);
+    position: relative;
+    border-radius: 0;
+    height: 100%;
+  }
+  
+  .services .card .card-img {
+    overflow: hidden;
+    margin-bottom: 15px;
+    border-radius: 0;
+  }
+  
+  
+  .services .card .card-img img {
+    transition: 0.3s ease-in-out;
+  }
+  
+  
+  .services .card h3 {
+    font-weight: 700;
+    font-size: 18px;
+    margin-bottom: 5px;
+    padding: 10px 30px;
+    text-transform: uppercase;
+  }
+  
+  .services .card a {
+    color: var(--heading-color);
+    transition: 0.3;
+  }
+  
+  .services .card a:hover {
+    color: var(--accent-color);
+  }
+  
+  .services .card p {
+    padding: 0 30px;
+    margin-bottom: 30px;
+    color: color-mix(in srgb, var(--default-color), transparent 40%);
+    font-size: 17px;
+  }
+  
+  .services .card:hover .card-img img {
+    transform: scale(1.1);
+  }
+  
+  /* --- Custom Styles for Tour Card --- */
+  /* Ikon jam dan lokasi */
+  .services .card .icon-clock {
+    color: #276f5f; /* Warna hijau untuk ikon jam */
+  }
+  
+  .services .card .icon-location {
+    color: #276f5f; /* Warna hijau untuk ikon lokasi */
+  }
+  
+  /* Tombol Detail */
+  .services .card .btn-detail {
+    background-color: #29222d; /* Warna hitam untuk tombol */
+    color: white; /* Warna teks putih */
+    padding: 5px 15px; /* Ukuran tombol */
+    border-radius: 5px; /* Sudut membulat */
+    text-decoration: none; /* Hilangkan garis bawah */
+    display: inline-block; /* Tombol hanya selebar kontennya */
+    text-align: center; /* Teks tombol di tengah */
+    transition: background-color 0.3s ease-in-out; /* Efek transisi hover */
+  }
+  
+  .services .card .btn-detail:hover {
+    background-color: #1f1a23; /* Warna lebih gelap saat hover */
+  }
