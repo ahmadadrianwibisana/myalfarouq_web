@@ -14,10 +14,17 @@
             </div> 
         </div> 
 
-        <!-- Tombol Tambah Artikel -->
-        <a href="#" class="btn btn-icon icon-left btn-primary">
+        <!-- Success Message -->
+        @if (session('success'))
+            <div class="alert alert-success">
+                {{ session('success') }}
+            </div>
+        @endif
+
+        <!-- Button to Add New Article -->
+        <a href="{{ route('adminbesar.artikel.create') }}" class="btn btn-icon icon-left btn-primary">
             <i class="fas fa-plus"></i> Tambah Artikel
-        </a>  
+        </a>
 
         <div class="card mt-3">
             <div class="card-body"> 
@@ -29,7 +36,6 @@
                                 <th>Judul Artikel</th> 
                                 <th>Deskripsi</th> 
                                 <th>Tanggal Publish</th> 
-                                <th>Admin</th> 
                                 <th>Action</th> 
                             </tr> 
                         </thead>
@@ -43,12 +49,15 @@
                                     <td>{{ $artikel->judul_artikel }}</td> 
                                     <td>{{ $artikel->deskripsi }}</td> 
                                     <td>{{ date('d M Y', strtotime($artikel->tanggal_publish)) }}</td>
-                                    <td>{{ $artikel->adminbesar->name }}</td>
-                                    <td> 
-                                        <a href="#" class="badge badge-info">Detail</a>     
-                                        <a href="#" class="badge badge-warning">Edit</a> 
-                                        <a href="#" class="badge badge-danger" data-confirm-delete="true">Hapus</a> 
-                                    </td> 
+                                    <td>
+                                        <a href="{{ route('adminbesar.artikel.show', $artikel->id) }}" class="badge badge-info">Detail</a>
+                                        <!-- <a href="{{ route('adminbesar.artikel.edit', $artikel->id) }}" class="badge badge-warning">Edit</a>
+                                        <form action="{{ route('adminbesar.artikel.destroy', $artikel->id) }}" method="POST" style="display:inline;">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="badge badge-danger" onclick="return confirm('Are you sure you want to delete this article?');">Hapus</button>
+                                        </form> -->
+                                    </td>
                                 </tr> 
                             @empty 
                                 <tr>

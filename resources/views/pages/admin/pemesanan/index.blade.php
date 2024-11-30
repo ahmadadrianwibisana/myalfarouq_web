@@ -15,7 +15,7 @@
         </div> 
 
         <!-- Tombol Tambah Pemesanan -->
-        <a href="#" class="btn btn-icon icon-left btn-primary">
+        <a href="{{ route('admin.pemesanan.create') }}" class="btn btn-icon icon-left btn-primary">
             <i class="fas fa-plus"></i> Tambah Pemesanan
         </a>  
 
@@ -41,13 +41,13 @@
                             @forelse ($pemesanans as $item) 
                                 <tr> 
                                     <td>{{ ++$no }}</td> 
-                                    <td>{{ $item->user->name }}</td> 
+                                    <td>{{ $item->user->name ?? 'N/A' }}</td> <!-- Menampilkan nama pengguna -->
                                     <td>{{ ucfirst($item->trip_type) }}</td>
                                     <td>
                                         @if ($item->trip_type == 'open_trip')
-                                            {{ $item->open_trip->nama_paket ?? 'N/A' }}
+                                            {{ $item->openTrip->nama_paket ?? 'N/A' }} <!-- Menampilkan nama paket open trip -->
                                         @elseif ($item->trip_type == 'private_trip')
-                                            {{ $item->private_trip->nama_trip ?? 'N/A' }}
+                                            {{ $item->privateTrip->nama_trip ?? 'N/A' }} <!-- Menampilkan nama trip private -->
                                         @endif
                                     </td>
                                     <td>{{ date('d M Y, H:i', strtotime($item->tanggal_pemesanan)) }}</td>
@@ -61,9 +61,9 @@
                                         </span>
                                     </td>
                                     <td> 
-                                        <a href="#" class="badge badge-info">Detail</a> 
-                                        <a href="#" class="badge badge-warning">Edit</a> 
-                                        <a href="#" class="badge badge-danger" data-confirm-delete="true">Hapus</a> 
+                                        <a href="{{ route('admin.pemesanan.show', $item->id) }}" class="badge badge-info">Detail</a> 
+                                        <a href="{{ route('admin.pemesanan.edit', $item->id) }}" class="badge badge-warning">Edit</a> 
+                                        <a href="{{ route('admin.pemesanan.delete', $item->id) }}" class="badge badge-danger" data-confirm-delete="true">Hapus</a> 
                                     </td> 
                                 </tr> 
                             @empty 

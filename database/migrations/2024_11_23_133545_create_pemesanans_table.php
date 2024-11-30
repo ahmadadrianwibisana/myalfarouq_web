@@ -24,6 +24,7 @@ return new class extends Migration
             
             $table->timestamp('tanggal_pemesanan');
             $table->enum('status', ['pending', 'terkonfirmasi', 'dibatalkan'])->default('pending');
+            $table->string('alasan_batal')->nullable();
             $table->timestamps();
         });
     }

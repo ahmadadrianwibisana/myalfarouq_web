@@ -97,144 +97,92 @@
               class="col-lg-5 quote-bg"
               style="background-image:url('{{ asset('assets/user/img/private.jpg') }}')"></div>
 
-            <div class="col-lg-7" data-aos="fade-up" data-aos-delay="200">
-              <form
-                action="forms/get-a-quote.php"
-                method="post"
-                class="php-email-form">
-                <h2>PENDAFTARAN PRIVATE TRIP</h2>
+              <div class="col-lg-7" data-aos="fade-up" data-aos-delay="200">
+    <form action="{{ route('admin.private_trip.store') }}" method="POST" enctype="multipart/form-data" class="php-email-form">
+        @csrf
+        <h2>PENDAFTARAN PRIVATE TRIP</h2>
 
-                <div class="row gy-4">
-                  <!-- <div class="col-md-6">
-                    <input
-                      type="text"
-                      name="departure"
-                      class="form-control"
-                      placeholder="Masukkan Starting Point"
-                      required="" />
-                  </div>
-
-                  <div class="col-md-6">
-                    <input
-                      type="text"
-                      name="delivery"
-                      class="form-control"
-                      placeholder="Masukkan Destinasi Keberangkatan"
-                      required="" />
-                  </div>
-
-                  <div class="col-md-6">
-                    <input
-                      type="text"
-                      name="weight"
-                      class="form-control"
-                      placeholder="Masukkan Tanggal Keberangkatan"
-                      required="" />
-                  </div>
-
-                  <div class="col-md-6">
-                    <input
-                      type="text"
-                      name="dimensions"
-                      class="form-control"
-                      placeholder="Masukkan Tanggal Kepulangan"
-                      required="" />
-                  </div> -->
-
-                  <div class="col-12">
-                    <input
-                      type="text"
-                      name="name"
-                      class="form-control"
-                      placeholder="Masukkan Nama Lengkap"
-                      required="" />
-                  </div>
-
-                  <!-- <div class="col-12">
-                    <input
-                      type="email"
-                      class="form-control"
-                      name="email"
-                      placeholder="Masukkan Email"
-                      required="" />
-                  </div> -->
-
-                  <div class="col-12">
-                    <input
-                      type="text"
-                      class="form-control"
-                      name="phone"
-                      placeholder="Masukkan No Telepon"
-                      required="" />
-                  </div>
-
-                  <!-- <div class="col-12">
-                    <textarea
-                      class="form-control"
-                      name="message"
-                      rows="6"
-                      placeholder="Masukkan Jumlah Peserta"
-                      required=""></textarea>
-                  </div> -->
-
-                  <div class="col-12">
-                    <input
-                      type="text"
-                      name="delivery"
-                      class="form-control"
-                      placeholder="Masukkan Destinasi Keberangkatan"
-                      required="" />
-                  </div>
-
-                  <div class="col-12">
-                    <input
-                      type="text"
-                      name="weight"
-                      class="form-control"
-                      placeholder="Masukkan Tanggal Keberangkatan"
-                      required="" />
-                  </div>
-
-                  <div class="col-12">
-                    <input
-                      type="text"
-                      name="dimensions"
-                      class="form-control"
-                      placeholder="Masukkan Tanggal Kepulangan"
-                      required="" />
-                  </div>
-
-                  <div class="col-12">
-                    <input
-                      type="text"
-                      name="departure"
-                      class="form-control"
-                      placeholder="Masukkan Starting Point"
-                      required="" />
-                  </div>
-
-                  <div class="col-12">
-                    <input
-                      type="text"
-                      name="dimensions"
-                      class="form-control"
-                      placeholder="Masukkan Jumlah Peserta"
-                      required="" />
-                  </div>
-
-                  <div class="col-12 text-center">
-                    <div class="loading">Loading</div>
-                    <div class="error-message"></div>
-                    <div class="sent-message">
-                      Your quote request has been sent successfully. Thank you!
-                    </div>
-
-                    <button type="submit">Submit</button>
-                  </div>
-                </div>
-              </form>
+        <div class="row gy-4">
+            <div class="col-12">
+                <input type="text" name="no_telepon" class="form-control @error('no_telepon') is-invalid @enderror" placeholder="Masukkan No Telepon" required />
+                @error('no_telepon')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
             </div>
-            <!-- End Quote Form -->
+
+            <div class="col-12">
+                <input type="text" name="nama_trip" class="form-control @error('nama_trip') is-invalid @enderror" placeholder="Masukkan Nama Trip" required />
+                @error('nama_trip')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+            </div>
+
+            <div class="col-12">
+                <input type="text" name="destinasi" class="form-control @error('destinasi') is-invalid @enderror" placeholder="Masukkan Destinasi" required />
+                @error('destinasi')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+            </div>
+
+            <div class="col-12">
+                <input type="date" name="tanggal_pergi" class="form-control @error('tanggal_pergi') is-invalid @enderror" placeholder="Masukkan Tanggal Keberangkatan" required />
+                @error('tanggal_pergi')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+            </div>
+
+            <div class="col-12">
+                <input type="date" name="tanggal_kembali" class="form-control @error('tanggal_kembali') is-invalid @enderror" placeholder="Masukkan Tanggal Kepulangan" required />
+                @error('tanggal_kembali')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+            </div>
+
+            <div class="col-12">
+                <input type="text" name="star_point" class="form-control @error('star_point') is-invalid @enderror" placeholder="Masukkan Starting Point" required />
+                @error('star_point')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+            </div>
+
+            <div class="col-12">
+                <input type="number" name="jumlah_peserta" class="form-control @error('jumlah_peserta') is-invalid @enderror" placeholder="Masukkan Jumlah Peserta" required />
+                @error('jumlah_peserta')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+            </div>
+
+            <div class="col-12">
+                <textarea name="deskripsi_trip" class="form-control @error('deskripsi_trip') is-invalid @enderror" placeholder="Masukkan Deskripsi Trip" rows="4" required></textarea>
+                @error('deskripsi_trip')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+            </div>
+
+            <div class="col-12">
+                <input type="number" name="harga" class="form-control @error('harga') is-invalid @enderror" placeholder="Masukkan Harga" required />
+                @error('harga')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+            </div>
+
+            <div class="col-12">
+                <input type="file" name="image" class="form-control @error('image') is-invalid @enderror" accept="image/*" />
+                @error('image')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+                <small class="form-text text-muted">Format gambar yang diizinkan: JPG, PNG.</small>
+            </div>
+
+            <div class="col-12 text-center">
+                <button type="submit">Submit</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+
+
           </div>
         </div>
       </section>

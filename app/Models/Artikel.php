@@ -10,7 +10,6 @@ class Artikel extends Model
     use HasFactory;
 
     protected $fillable = [
-        'adminbesar_id',
         'judul_artikel',
         'deskripsi',
         'tanggal_publish',

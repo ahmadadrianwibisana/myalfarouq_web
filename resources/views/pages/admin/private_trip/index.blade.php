@@ -14,8 +14,8 @@
             </div> 
         </div> 
 
-        <!-- Tombol Tambah Private Trip -->
-        <a href="#" class="btn btn-icon icon-left btn-primary">
+         <!-- Tombol Tambah Private Trip -->
+         <a href="{{ route('admin.private_trip.create') }}" class="btn btn-icon icon-left btn-primary">
             <i class="fas fa-plus"></i> Tambah Private Trip
         </a>  
 
@@ -26,7 +26,7 @@
                         <thead>
                             <tr> 
                                 <th>#</th> 
-                                <th>Nama Trip</th> 
+                                <th>Nama User</th> <!-- Ubah dari Nama Trip menjadi Nama User -->
                                 <th>Destinasi</th> 
                                 <th>Tanggal Pergi</th> 
                                 <th>Tanggal Kembali</th> 
@@ -44,7 +44,7 @@
                             @forelse ($private_trips as $item) 
                                 <tr> 
                                     <td>{{ ++$no }}</td> 
-                                    <td>{{ $item->nama_trip }}</td> 
+                                    <td>{{ $item->user_name }}</td> <!-- Tampilkan nama pengguna -->
                                     <td>{{ $item->destinasi }}</td>
                                     <td>{{ date('d M Y', strtotime($item->tanggal_pergi)) }}</td>
                                     <td>{{ date('d M Y', strtotime($item->tanggal_kembali)) }}</td>
@@ -57,9 +57,9 @@
                                         </span>
                                     </td>
                                     <td> 
-                                        <a href="#" class="badge badge-info">Detail</a> 
-                                        <a href="#" class="badge badge-warning">Edit</a> 
-                                        <a href="#" class="badge badge-danger" data-confirm-delete="true">Hapus</a> 
+                                    <a href="{{ route('admin.private_trip.show', $item->id) }}" class="badge badge-info">Detail</a>                                        
+                                    <a href="{{ route('admin.private_trip.edit', $item->id) }}" class="badge badge-warning">Edit</a> 
+                                        <a href="{{ route('admin.private_trip.delete', $item->id) }}" class="badge badge-danger" data-confirm-delete="true">Hapus</a> 
                                     </td> 
                                 </tr> 
                             @empty 

@@ -15,9 +15,10 @@
         </div> 
 
         <!-- Tombol Tambah Open Trip -->
-        <a href="#" class="btn btn-icon icon-left btn-primary">
+        <a href="{{ route('admin.open_trip.create') }}" class="btn btn-icon icon-left btn-primary">
             <i class="fas fa-plus"></i> Tambah Open Trip
-        </a>  
+        </a>
+ 
 
         <div class="card mt-3">
             <div class="card-body"> 
@@ -51,9 +52,9 @@
                                     <td>Rp{{ number_format($item->harga, 0, ',', '.') }}</td>
                                     <td>{{ $item->kuota }}</td>  
                                     <td> 
-                                        <a href="#" class="badge badge-info">Detail</a> 
-                                        <a href="#" class="badge badge-warning">Edit</a> 
-                                        <a href="#" class="badge badge-danger" data-confirm-delete="true">Hapus</a> 
+                                        <a href="{{ route('admin.open_trip.detail', $item->id) }}" class="badge badge-info">Detail</a>
+                                        <a href="{{ route('admin.open_trip.edit', $item->id) }}" class="badge badge-warning">Edit</a> 
+                                        <a href="{{ route('admin.open_trip.delete', $item->id) }}" class="badge badge-danger" data-confirm-delete="true">Hapus</a> 
                                     </td> 
                                 </tr> 
                             @empty 

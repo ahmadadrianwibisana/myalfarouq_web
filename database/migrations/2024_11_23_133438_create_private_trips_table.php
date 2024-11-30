@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('private_trips', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->unsignedBigInteger('user_id')->nullable();  // Allow null
             $table->string('no_telepon');
             $table->string('nama_trip');
             $table->string('destinasi');
@@ -23,10 +23,11 @@ return new class extends Migration
             $table->string('jumlah_peserta');
             $table->string('deskripsi_trip');
             $table->decimal('harga', 10, 2);
-            $table->date('tanggal_pengajuan');
-            $table->date('tanggal_disetujui')->nullable();
+            $table->date('tanggal_pengajuan'); // Automatically set
+            $table->date('tanggal_disetujui')->nullable(); // Set when status is approved
             $table->enum('status', ['pending', 'disetujui', 'ditolak'])->default('pending');
             $table->string('image')->nullable();
+            $table->text('keterangan_ditolak')->nullable();
             $table->timestamps();
         });
     }

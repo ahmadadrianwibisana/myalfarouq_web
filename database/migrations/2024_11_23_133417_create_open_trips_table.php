@@ -22,6 +22,8 @@ return new class extends Migration
             $table->string('kuota');
             $table->string('deskripsi_trip');
             $table->string('image')->nullable();
+            $table->string('jumlah_peserta');
+            $table->string('star_point');
             $table->timestamps();
         });
     }

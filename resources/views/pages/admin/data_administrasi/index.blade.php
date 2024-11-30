@@ -14,8 +14,9 @@
                 <div class="breadcrumb-item">Data Administrasi</div>
             </div>
         </div>
-        <a href="#" class="btn btn-icon icon-left btn-primary"><i class="fas 
-        fa-plus"></i> Data Administrasi</a> 
+        <a href="{{ route('admin.data_administrasi.create') }}" class="btn btn-icon icon-left btn-primary">
+            <i class="fas fa-plus"></i> Tambah Open Trip
+        </a>
         <div class="card">
             <div class="card-body">
                 <div class="table-responsive">

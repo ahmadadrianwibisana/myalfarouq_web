@@ -23,6 +23,13 @@ class PrivateTrip extends Model
         'tanggal_pengajuan',
         'tanggal_disetujui',
         'status',
-        'image'
+        'image',
+        'keterangan_ditolak'
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class); // Relasi ke User
+    }
 }
+

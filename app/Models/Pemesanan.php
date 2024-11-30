@@ -12,8 +12,28 @@ class Pemesanan extends Model
     protected $fillable = [
         'user_id',
         'trip_type',
-        'trip_id', // pastikan trip_id ada untuk merujuk trip
+        'open_trip_id', // For Open Trip
+        'private_trip_id', // For Private Trip
         'status',
         'tanggal_pemesanan',
+        'alasan_batal'
     ];
+
+    // Relationship with User
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    // Relationship with OpenTrip
+    public function openTrip()
+    {
+        return $this->belongsTo(OpenTrip::class, 'open_trip_id');
+    }
+
+    // Relationship with PrivateTrip
+    public function privateTrip()
+    {
+        return $this->belongsTo(PrivateTrip::class, 'private_trip_id');
+    }
 }
