@@ -13,7 +13,7 @@
         <li class="dropdown">
             <a href="#" data-toggle="dropdown" class="nav-link dropdown-toggle nav-link-lg nav-link-user">
                 <img alt="image" src="{{ asset('assets/templates/admin/img/admin.png') }}" class="rounded-circle mr-1">
-                <div class="d-sm-none d-lg-inline-block">Hi, Admin</div>
+                <div class="d-sm-none d-lg-inline-block">Hi, Admin Besar</div>
             </a>
             <div class="dropdown-menu dropdown-menu-right">
                 <form action="{{ route('adminbesar.logout') }}" method="POST">

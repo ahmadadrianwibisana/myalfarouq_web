@@ -166,6 +166,9 @@ Route::group(['middleware' => 'admin'], function () {
     Route::prefix('adminbesar')->name('adminbesar.')->group(function () {
         Route::resource('riwayat', RiwayatController::class);
     });
+    Route::prefix('adminbesar')->name('adminbesar.')->group(function () {
+        Route::resource('laporan', LaporanController::class);
+    });
 
 // Route untuk admin besar -> dashboard admin besar
 Route::group(['middleware' => 'adminbesar'], function () {
@@ -190,8 +193,13 @@ Route::group(['middleware' => 'adminbesar'], function () {
     Route::delete('/adminbesar/artikel/{id}', [ArtikelController::class, 'destroy'])->name('adminbesar.artikel.destroy');
 
     Route::get('/laporan', [LaporanController::class,'index'])->name('adminbesar.laporan');
+    Route::get('adminbesar/laporan/{id}', [RiwayatController::class, 'show'])->name('adminbesar.laporan.show');
+    Route::post('adminbesar/laporan/filter', [LaporanController::class, 'filterByDate'])->name('adminbesar.laporan.filter');
+
 
     Route::get('/riwayat', [RiwayatController::class,'index'])->name('adminbesar.riwayat');
+    Route::get('adminbesar/riwayat/{id}', [RiwayatController::class, 'show'])->name('adminbesar.riwayat.show');
+
 
     Route::post('/adminbesar/logout', [AuthController::class, 'admin_logout'])->name('adminbesar.logout'); // Logout admin
 });

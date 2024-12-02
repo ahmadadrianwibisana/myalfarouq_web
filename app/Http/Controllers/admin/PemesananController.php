@@ -12,6 +12,7 @@ use App\Models\User;
 use App\Models\OpenTrip;
 use App\Models\PrivateTrip;
 use Illuminate\Validation\Rule;
+use App\Models\Riwayat;
 
 class PemesananController extends Controller
 {
@@ -56,15 +57,22 @@ class PemesananController extends Controller
             'required',
             function ($attribute, $value, $fail) use ($request) {
                 // Cek tipe trip dan validasi ID
-                $model = $request->trip_type === 'open_trip' ? OpenTrip::class : PrivateTrip::class;
-                if (!$model::where('id', $value)->where('status', 'disetujui')->exists()) {
-                    $fail("The selected $attribute is invalid.");
+                if ($request->trip_type === 'open_trip') {
+                    // Hanya memeriksa ID untuk open_trip tanpa status
+                    if (!OpenTrip::where('id', $value)->exists()) {
+                        $fail("The selected $attribute is invalid.");
+                    }
+                } elseif ($request->trip_type === 'private_trip') {
+                    // Memeriksa ID dan status untuk private_trip
+                    if (!PrivateTrip::where('id', $value)->where('status', 'disetujui')->exists()) {
+                        $fail("The selected $attribute is invalid.");
+                    }
                 }
             },
         ],
         'tanggal_pemesanan' => 'required|date',
     ]);
-    
+
     if ($validator->fails()) {
         \Log::error('Kesalahan validasi:', $validator->errors()->toArray());
         return back()->withErrors($validator)->withInput();
@@ -101,6 +109,7 @@ class PemesananController extends Controller
         Alert::error('Gagal!', 'Pemesanan gagal ditambahkan!');
         return redirect()->back();
     }
+
 }
 
     public function show($id)

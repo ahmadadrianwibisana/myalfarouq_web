@@ -26,21 +26,23 @@ class Pemesanan extends Model
         return $this->belongsTo(User::class);
     }
 
-    // Relationship with OpenTrip
     public function openTrip()
     {
         return $this->belongsTo(OpenTrip::class, 'open_trip_id');
     }
 
-    // Relationship with PrivateTrip
     public function privateTrip()
     {
         return $this->belongsTo(PrivateTrip::class, 'private_trip_id');
     }
 
-    // Relasi ke model DataAdministrasi
     public function dataAdministrasi()
     {
         return $this->hasMany(DataAdministrasi::class);
+    }
+
+    public function pembayaran()
+    {
+        return $this->hasOne(Pembayaran::class);
     }
 }

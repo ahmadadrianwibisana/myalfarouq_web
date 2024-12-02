@@ -22,4 +22,9 @@ class DataAdministrasi extends Model
         return $this->belongsTo(Pemesanan::class);
     }
 
+    public function pembayaran()
+    {
+        return $this->hasOne(Pembayaran::class);
+    }
+
 }

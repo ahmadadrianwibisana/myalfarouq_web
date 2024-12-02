@@ -8,6 +8,7 @@ use App\Models\Pembayaran;
 use App\Models\Pemesanan;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+use App\Models\Riwayat;
 
 class PembayaranController extends Controller
 {
@@ -54,13 +55,14 @@ class PembayaranController extends Controller
         $file->move(public_path('bukti_pembayaran'), $fileName); // Move the file to the desired location
     
         // Create a new payment record
-        Pembayaran::create([
+        $pembayaran = Pembayaran::create([
             'pemesanan_id' => $request->pemesanan_id,
             'bukti_pembayaran' => 'bukti_pembayaran/' . $fileName, // Store the relative path in the database
             'tanggal_pembayaran' => $request->tanggal_pembayaran,
             'jumlah_pembayaran' => $request->jumlah_pembayaran,
             'status_pembayaran' => 'pending', // Set initial status
         ]);
+
     
         return redirect()->route('admin.pembayaran.index')->with('success', 'Pembayaran berhasil ditambahkan!');
     }
@@ -154,9 +156,12 @@ class PembayaranController extends Controller
                 $message = 'Status pembayaran tidak dikenali.';
                 break;
         }
-            
+
+
         return redirect()->route('admin.pembayaran.index')->with('success', $message); // Use the dynamic message
     }
+
+    
 
     public function destroy($id)
 {

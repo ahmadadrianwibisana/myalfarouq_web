@@ -10,6 +10,8 @@ use App\Models\Pemesanan; // Mengimpor model Pemesanan
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\File;
 use RealRashid\SweetAlert\Facades\Alert;
+use App\Models\Pembayaran;
+use App\Models\Riwayat;  
 
 class DataAdministrasiController extends Controller
 {
@@ -61,7 +63,7 @@ class DataAdministrasiController extends Controller
         }
     
         // Buat entri baru di DataAdministrasi dengan status 'pending'
-        DataAdministrasi::create([
+        $dataAdministrasi = DataAdministrasi::create([
             'pemesanan_id' => $validated['pemesanan_id'],
             'file_dokumen' => $filePath,
             'status' => 'pending', // Tetapkan status ke 'pending'
@@ -147,9 +149,11 @@ public function update(Request $request, $id)
 
     $dataAdministrasi->save();
 
+
     // Redirect ke halaman index dengan pesan sukses
     return redirect()->route('admin.data_administrasi.index')->with('success', 'Data Administrasi berhasil diperbarui');
 }
+
 
         // Menghapus data administrasi
     public function destroy($id)
@@ -168,4 +172,6 @@ public function update(Request $request, $id)
         // Redirect ke halaman index dengan pesan sukses
         return redirect()->route('admin.data_administrasi.index')->with('success', 'Data Administrasi berhasil dihapus');
     }
+
+    
 }

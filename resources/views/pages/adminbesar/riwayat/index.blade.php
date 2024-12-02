@@ -1,66 +1,48 @@
-@extends('layouts.adminbesar.main') 
-@section('title', 'Admin Besar Riwayat') 
+@extends('layouts.adminbesar.main')
 
-@section('content') 
-<div class="main-content"> 
-    <section class="section"> 
-        <div class="section-header"> 
-            <h1>Riwayat List</h1> 
-            <div class="section-header-breadcrumb"> 
-                <div class="breadcrumb-item active">
-                    <a href="{{ route('adminbesar.dashboard') }}">Dashboard</a>
-                </div> 
-                <div class="breadcrumb-item">Riwayat List</div> 
-            </div> 
-        </div>     
+@section('title', 'Riwayat')
 
-        <div class="card mt-3">
-            <div class="card-body"> 
-                <div class="table-responsive"> 
-                    <table class="table table-bordered table-md"> 
+@section('content')
+<div class="main-content">
+    <section class="section">
+        <div class="section-header">
+            <h1>Riwayat</h1>
+        </div>
+        <div class="card mt-4">
+            <div class="card-body">
+                @if($riwayats->isEmpty())
+                    <div class="alert alert-warning">Tidak ada riwayat yang tersedia.</div>
+                @else
+                    <table class="table table-striped">
                         <thead>
-                            <tr> 
-                                <th>#</th> 
-                                <th>User</th> 
-                                <th>Pemesanan</th> 
-                                <th>Trip Type</th> 
-                                <th>Status Pembayaran</th> 
-                                <th>Status Administrasi</th> 
-                                <th>Jumlah Pembayaran</th> 
-                                <th>Tanggal Pembayaran</th>
-                                <th>Tanggal Riwayat</th> 
-                                <th>Action</th> 
-                            </tr> 
+                            <tr>
+                                <th>ID Pemesanan</th>
+                                <th>ID Pembayaran</th>
+                                <th>Dokumen</th> <!-- Mengganti ID Data Administrasi dengan Dokumen -->
+                                <th>Tanggal</th>
+                                <th>Aksi</th>
+                            </tr>
                         </thead>
                         <tbody>
-                            @php 
-                                $no = 0;
-                            @endphp
-                            @forelse ($riwayats as $riwayat) 
-                                <tr> 
-                                    <td>{{ ++$no }}</td> 
-                                    <td>{{ $riwayat->user->name }}</td> 
-                                    <td>{{ $riwayat->pemesanan->kode_pemesanan }}</td> 
-                                    <td>{{ ucfirst($riwayat->trip_type) }}</td> 
-                                    <td>{{ ucfirst($riwayat->status_pembayaran) }}</td>
-                                    <td>{{ ucfirst($riwayat->status_administrasi) }}</td>
-                                    <td>{{ number_format($riwayat->jumlah_pembayaran, 2, ',', '.') }}</td>
-                                    <td>{{ $riwayat->tanggal_pembayaran ? date('d M Y H:i', strtotime($riwayat->tanggal_pembayaran)) : 'Belum Dibayar' }}</td>
-                                    <td>{{ date('d M Y H:i', strtotime($riwayat->tanggal_riwayat)) }}</td>
-                                    <td> 
-                                    <a href="#" class="badge badge-info">Detail</a>     
-                                    </td> 
-                                </tr> 
-                            @empty 
+                            @foreach ($riwayats as $riwayat)
                                 <tr>
-                                    <td colspan="10" class="text-center">Data Riwayat Kosong</td> 
+                                    <td>{{ $riwayat->pemesanan_id }}</td>
+                                    <td>{{ $riwayat->pembayaran_id }}</td>
+                                    <td>{{ $riwayat->data_administrasi_id }}</td> <!-- Anda bisa mengganti ini dengan data yang lebih informatif -->
+                                    <td>{{ $riwayat->created_at->format('d-m-Y H:i:s') }}</td>
+                                    <td>
+                                        <a href="{{ route('adminbesar.riwayat.show', $riwayat->id) }}" class="btn btn-info">Detail</a>
+                                    </td>
                                 </tr>
-                            @endforelse 
+                            @endforeach
                         </tbody>
-                    </table> 
-                </div> 
-            </div> 
+                    </table>
+
+                    <!-- Menambahkan pagination -->
+                    {{ $riwayats->links() }}
+                @endif
+            </div>
         </div>
-    </section> 
-</div> 
+    </section>
+</div>
 @endsection

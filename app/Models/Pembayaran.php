@@ -22,4 +22,9 @@ class Pembayaran extends Model
     {
         return $this->belongsTo(Pemesanan::class);
     }
+
+    public function dataAdministrasi()
+    {
+        return $this->belongsTo(DataAdministrasi::class); // Ubah ke belongsTo
+    }
 }

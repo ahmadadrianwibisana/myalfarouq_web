@@ -4,28 +4,17 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+
 class Riwayat extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'user_id',
         'pemesanan_id',
-        'trip_type',
-        'status_pembayaran',
-        'status_administrasi',
-        'jumlah_pembayaran',
-        'tanggal_pembayaran',
+        'pembayaran_id',
+        'data_administrasi_id',
         'tanggal_riwayat',
     ];
-
-    /**
-     * Relasi dengan tabel User
-     */
-    public function user()
-    {
-        return $this->belongsTo(User::class);
-    }
 
     /**
      * Relasi dengan tabel Pemesanan
@@ -40,22 +29,14 @@ class Riwayat extends Model
      */
     public function pembayaran()
     {
-        return $this->hasOne(Pembayaran::class);
+        return $this->belongsTo(Pembayaran::class);
     }
 
     /**
-     * Relasi dengan tabel OpenTrip
+     * Relasi dengan tabel Data Administrasi
      */
-    public function openTrip()
+    public function dataAdministrasi()
     {
-        return $this->belongsTo(OpenTrip::class, 'trip_type');
-    }
-
-    /**
-     * Relasi dengan tabel PrivateTrip
-     */
-    public function privateTrip()
-    {
-        return $this->belongsTo(PrivateTrip::class, 'trip_type');
+        return $this->belongsTo(DataAdministrasi::class);
     }
 }
