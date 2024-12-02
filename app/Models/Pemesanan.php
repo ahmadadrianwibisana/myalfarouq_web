@@ -16,7 +16,8 @@ class Pemesanan extends Model
         'private_trip_id', // For Private Trip
         'status',
         'tanggal_pemesanan',
-        'alasan_batal'
+        'alasan_batal',
+        'total_pembayaran'
     ];
 
     // Relationship with User
@@ -35,5 +36,11 @@ class Pemesanan extends Model
     public function privateTrip()
     {
         return $this->belongsTo(PrivateTrip::class, 'private_trip_id');
+    }
+
+    // Relasi ke model DataAdministrasi
+    public function dataAdministrasi()
+    {
+        return $this->hasMany(DataAdministrasi::class);
     }
 }

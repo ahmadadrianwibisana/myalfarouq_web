@@ -73,6 +73,16 @@ class PemesananController extends Controller
     // Tentukan status berdasarkan jenis trip
     $status = $request->trip_type === 'private_trip' ? 'terkonfirmasi' : 'pending';
 
+    // Calculate total payment
+    $totalPembayaran = 0;
+    if ($request->trip_type === 'open_trip') {
+        $openTrip = OpenTrip::findOrFail($request->trip_id);
+        $totalPembayaran = $openTrip->harga * $openTrip->jumlah_peserta; // Use jumlah_peserta from OpenTrip
+    } elseif ($request->trip_type === 'private_trip') {
+        $privateTrip = PrivateTrip::findOrFail($request->trip_id);
+        $totalPembayaran = $privateTrip->harga; // Directly use the price from PrivateTrip
+    }
+
     // Simpan data pemesanan baru ke dalam database
     $pemesanans = Pemesanan::create([
         'user_id' => $request->user_id,
@@ -81,6 +91,7 @@ class PemesananController extends Controller
         'private_trip_id' => $request->trip_type === 'private_trip' ? $request->trip_id : null,
         'tanggal_pemesanan' => $request->tanggal_pemesanan,
         'status' => $status, // Gunakan status yang ditentukan
+        'total_pembayaran' => $totalPembayaran, // Save total payment
     ]);
 
     if ($pemesanans) {
@@ -144,7 +155,16 @@ class PemesananController extends Controller
     
         // Update the booking
         $pemesanan = Pemesanan::findOrFail($id);
-        
+
+        // Calculate total payment
+        $totalPembayaran = 0;
+        if ($request->trip_type === 'open_trip') {
+            $openTrip = OpenTrip::findOrFail($request->trip_id);
+            $totalPembayaran = $openTrip->harga * $openTrip->jumlah_peserta; // Use jumlah_peserta from OpenTrip
+        } elseif ($request->trip_type === 'private_trip') {
+            $privateTrip = PrivateTrip::findOrFail($request->trip_id);
+            $totalPembayaran = $privateTrip->harga; // Directly use the price from PrivateTrip
+        }
         // Simpan alasan pembatalan jika status dibatalkan
         $alasan_batal = $request->status === 'dibatalkan' ? $request->alasan_batal : null;
     
@@ -156,6 +176,7 @@ class PemesananController extends Controller
             'tanggal_pemesanan' => $request->tanggal_pemesanan,
             'status' => $request->status,
             'alasan_batal' => $alasan_batal,
+            'total_pembayaran' => $totalPembayaran, // Update total payment
         ]);
     
         // Mengirim pesan WhatsApp jika status terkonfirmasi

@@ -18,63 +18,20 @@
         </a>
 
         <div class="card mt-4">
-            <form action="{{ route('admin.data_administrasi.store') }}" method="POST" enctype="multipart/form-data" class="needs-validation" novalidate="">
+            <form action="{{ route('admin.data_administrasi.store') }}" method="POST" enctype="multipart/form-data" class="needs-validation" novalidate>
                 @csrf
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="trip_type">Jenis Trip</label>
-                                <select id="trip_type" class="form-control" name="trip_type" required>
-                                    <option value="open_trip">Open Trip</option>
-                                    <option value="private_trip">Private Trip</option>
-                                </select>
-                                <div class="invalid-feedback">
-                                    Kolom ini harus diisi!
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="user_id">User</label>
-                                <select id="user_id" class="form-control" name="user_id" required>
-                                    @foreach ($users as $user)
-                                        <option value="{{ $user->id }}" {{ old('user_id') == $user->id ? 'selected' : '' }}>{{ $user->name }}</option>
-                                    @endforeach
-                                </select>
-                                @error('user_id')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-
-                            <div class="form-group" id="open_trip_group">
-                                <label for="open_trip_id">Open Trip</label>
-                                <select id="open_trip_id" class="form-control" name="open_trip_id">
-                                    @foreach ($open_trips as $open_trip)
-                                        <option value="{{ $open_trip->id }}" {{ old('open_trip_id') == $open_trip->id ? 'selected' : '' }}>{{ $open_trip->nama_paket }}</option>
-                                    @endforeach
-                                </select>
-                                @error('open_trip_id')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-
-                            <div class="form-group" id="private_trip_group" style="display:none;">
-                                <label for="private_trip_id">Private Trip</label>
-                                <select id="private_trip_id" class="form-control" name="private_trip_id">
-                                    @foreach ($private_trips as $private_trip)
-                                        <option value="{{ $private_trip->id }}" {{ old('private_trip_id') == $private_trip->id ? 'selected' : '' }}>{{ $private_trip->nama_paket }}</option>
-                                    @endforeach
-                                </select>
-                                @error('private_trip_id')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-
-                            <div class="form-group">
                                 <label for="pemesanan_id">Pemesanan</label>
-                                <select id="pemesanan_id" class="form-control" name="pemesanan_id" required>
-                                    @foreach ($pemesanan as $order)
-                                        <option value="{{ $order->id }}" {{ old('pemesanan_id') == $order->id ? 'selected' : '' }}>{{ $order->kode_pemesanan }}</option>
+                                <select name="pemesanan_id" id="pemesanan_id" class="form-control @error('pemesanan_id') is-invalid @enderror" required>
+                                    <option value="">Pilih Pemesanan</option>
+                                    @foreach ($pemesanan as $item)
+                                        <option value="{{ $item->id }}" {{ old('pemesanan_id') == $item->id ? 'selected' : '' }}>
+                                            {{ $item->trip_type == 'open_trip' ? $item->openTrip->nama_paket : $item->privateTrip->nama_trip }} 
+                                            (ID: {{ $item->id }}, User: {{ $item->user->name }})
+                                        </option>
                                     @endforeach
                                 </select>
                                 @error('pemesanan_id')
@@ -86,18 +43,23 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="file_dokumen">File Dokumen</label>
-                                <input id="file_dokumen" type="file" class="form-control" name="file_dokumen" required>
+                                <input id="file_dokumen" type="file" class="form-control @error('file_dokumen') is-invalid @enderror" name="file_dokumen" required>
                                 @error('file_dokumen')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
+                                <small class="form-text text-muted">
+                                Silakan unggah dokumen yang valid. Contoh dokumen: 
+                                <strong><a href="{{ asset('uploads/contoh_dokumen.pdf') }}" target="_blank">contoh_dokumen.pdf</a></strong>, 
+                                <strong><a href="{{ asset('uploads/gambar_dokumen.jpg') }}" target="_blank">gambar_dokumen.jpg</a></strong>. 
+                                Format yang diterima: <strong>PDF, JPG, PNG</strong> (maksimal 10MB).
+                            </small>
                             </div>
 
                             <div class="form-group">
                                 <label for="status">Status Dokumen</label>
                                 <select id="status" class="form-control" name="status" required>
-                                    <option value="pending" {{ old('status') == 'pending' ? 'selected' : '' }}>Pending</option>
-                                    <option value="approved" {{ old('status') == 'approved' ? 'selected' : '' }}>Approved</option>
-                                    <option value="rejected" {{ old('status') == 'rejected' ? 'selected' : '' }}>Rejected</option>
+                                    <option value="pending" selected>Pending</option>
+                                    <!-- Hapus opsi lain -->
                                 </select>
                                 @error('status')
                                     <div class="invalid-feedback">{{ $message }}</div>
@@ -116,17 +78,33 @@
 
 @push('scripts')
     <script>
-        document.getElementById('trip_type').addEventListener('change', function() {
-            let tripType = this.value;
-            let openTripGroup = document.getElementById('open_trip_group');
-            let privateTripGroup = document.getElementById('private_trip_group');
+        // JavaScript untuk validasi form
+        (function() {
+            'use strict';
 
-            if (tripType === 'open_trip') {
-                openTripGroup.style.display = 'block';
-                privateTripGroup.style.display = 'none';
-            } else if (tripType === 'private_trip') {
-                openTripGroup.style.display = 'none';
-                privateTripGroup.style.display = 'block';
+            // Fetch all the forms we want to apply custom Bootstrap validation styles to
+            var forms = document.querySelectorAll('.needs-validation');
+
+            // Loop over them and prevent submission
+            Array.prototype.slice.call(forms).forEach(function(form) {
+                form.addEventListener('submit', function(event) {
+                    if (!form.checkValidity()) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    form.classList.add('was-validated');
+                }, false);
+            });
+        })();
+
+        // Optional: Menambahkan interaksi lainnya jika diperlukan
+        document.getElementById('file_dokumen').addEventListener('change',function() {
+            const fileInput = this;
+            const filePath = fileInput.value;
+            const allowedExtensions = /(\.jpg|\.jpeg|\.png|\.pdf)$/i;
+            if (!allowedExtensions.exec(filePath)) {
+                alert('Silakan unggah file yang valid (PDF, JPG, PNG).');
+                fileInput.value = ''; // Clear the input
             }
         });
     </script>

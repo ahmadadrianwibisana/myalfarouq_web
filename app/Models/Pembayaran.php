@@ -15,4 +15,9 @@ class Pembayaran extends Model
         'tanggal_pembayaran',
         'jumlah_pembayaran',
     ];
+
+    public function pemesanan()
+    {
+        return $this->belongsTo(Pemesanan::class);
+    }
 }

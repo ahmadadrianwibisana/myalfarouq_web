@@ -10,10 +10,16 @@ class DataAdministrasi extends Model
     use HasFactory;
 
     protected $fillable = [
-        'trip_type',
-        'user_id',
-        'trip_id',
+        'pemesanan_id',
         'file_dokumen',
         'status',
     ];
+
+    // Relasi ke model Pemesanan
+
+    public function pemesanan()
+    {
+        return $this->belongsTo(Pemesanan::class);
+    }
+
 }

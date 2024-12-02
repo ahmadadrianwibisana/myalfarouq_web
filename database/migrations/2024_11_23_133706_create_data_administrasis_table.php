@@ -13,16 +13,7 @@ return new class extends Migration
     {
         Schema::create('data_administrasis', function (Blueprint $table) {
             $table->id();
-            $table->enum('trip_type', ['open_trip', 'private_trip']);
-            $table->foreignId('user_id')->constrained()->onDelete('cascade'); // Relasi dengan pengguna
-            
-            // Kolom untuk open_trip_id jika trip_type adalah open_trip
-            $table->foreignId('open_trip_id')->nullable()->constrained('open_trips')->onDelete('cascade');
-            
-            // Kolom untuk private_trip_id jika trip_type adalah private_trip
-            $table->foreignId('private_trip_id')->nullable()->constrained('private_trips')->onDelete('cascade');
-            
-            $table->foreignId('pemesanan_id')->constrained()->onDelete('cascade'); // Relasi dengan pemesanan
+            $table->foreignId('pemesanan_id')->constrained('pemesanans')->onDelete('cascade'); // Relasi dengan pemesanan
             $table->string('file_dokumen'); // Menyimpan nama file dokumen yang diupload
             $table->enum('status', ['pending', 'approved', 'rejected'])->default('pending'); // Status dokumen
             $table->timestamps();

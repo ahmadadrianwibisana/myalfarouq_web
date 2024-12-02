@@ -97,6 +97,10 @@ Route::group(['middleware' => 'guest'], function () {
         Route::resource('pemesanan', PemesananController::class);
     });
 
+    Route::prefix('admin')->name('admin.')->group(function () {
+        Route::resource('pembayaran', PembayaranController::class);
+    });
+
 // Route untuk admin -> dashboard admin
 Route::group(['middleware' => 'admin'], function () {
     Route::get('/admin', [AdminController::class, 'dashboard'])->name('admin.dashboard'); // Halaman dashboard admin
@@ -133,11 +137,21 @@ Route::group(['middleware' => 'admin'], function () {
 
     // Pembayaran
     Route::get('/pembayaran', [PembayaranController::class, 'index'])->name('admin.pembayaran');
+    Route::get('/admin/pembayaran/create', [PembayaranController::class, 'create'])->name('admin.pembayaran.create');
+    Route::post('/admin/pembayaran/store', [PembayaranController::class, 'store'])->name('admin.pembayaran.store');
+    Route::post('/admin/pembayaran/{id}', [PembayaranController::class, 'show'])->name('admin.pembayaran.show');
+    Route::put('admin/pembayaran/{id}', [PembayaranController::class, 'edit'])->name('admin.pembayaran.edit');
+    Route::put('admin/pembayaran/{id}', [PembayaranController::class, 'update'])->name('admin.pembayaran.update');
+    Route::delete('/admin/pembayaran/{id}', [PembayaranController::class, 'delete'])->name('admin.pembayaran.delete');
 
     // Route Data Administrsi
     Route::get('/data_administrasi', [DataAdministrasiController::class, 'index'])->name('admin.data_administrasi');
     Route::get('/admin/data_administrasi/create', [DataAdministrasiController::class, 'create'])->name('admin.data_administrasi.create');
     Route::post('/admin/data_administrasi/store', [DataAdministrasiController::class, 'store'])->name('admin.data_administrasi.store');
+    Route::get('admin/data_administrasi/{id}', [DataAdministrasiController::class, 'show'])->name('admin.data_administrasi.show');
+    Route::get('/admin/data-administrasi/{id}/edit', [DataAdministrasiController::class, 'edit'])->name('admin.data_administrasi.edit');
+    Route::put('/admin/data-administrasi/{id}', [DataAdministrasiController::class, 'update'])->name('admin.data_administrasi.update');
+    Route::delete('/admin/data-administrasi/{id}', [DataAdministrasiController::class, 'destroy'])->name('admin.data_administrasi.destroy');
 
 
     Route::post('/admin/logout', [AuthController::class, 'admin_logout'])->name('admin.logout'); // Logout admin

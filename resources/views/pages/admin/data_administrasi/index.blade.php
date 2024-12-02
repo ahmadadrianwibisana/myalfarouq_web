@@ -15,7 +15,7 @@
             </div>
         </div>
         <a href="{{ route('admin.data_administrasi.create') }}" class="btn btn-icon icon-left btn-primary">
-            <i class="fas fa-plus"></i> Tambah Open Trip
+            <i class="fas fa-plus"></i> Tambah Data Administrasi
         </a>
         <div class="card">
             <div class="card-body">
@@ -26,6 +26,7 @@
                                 <th>#</th>
                                 <th>Nama Pengguna</th>
                                 <th>Jenis Trip</th>
+                                <th>Tanggal Pemesanan</th>
                                 <th>Nama Trip</th>
                                 <th>File Dokumen</th>
                                 <th>Status</th>
@@ -37,19 +38,28 @@
                             @forelse ($data_administrasis as $item)
                                 <tr>
                                     <td>{{ ++$no }}</td>
-                                    <td>{{ $item->user->name }}</td>
-                                    <td>{{ ucfirst(str_replace('_', ' ', $item->trip_type)) }}</td>
+                                    <td>{{ $item->pemesanan->user ? $item->pemesanan->user->name : 'User  tidak ditemukan' }}</td>
+                                    <td>{{ ucfirst(str_replace('_', ' ', $item->pemesanan->trip_type)) }}</td>
                                     <td>
-                                        @if ($item->trip_type == 'open_trip' && $item->open_trip)
-                                            {{ $item->open_trip->nama_trip }}
-                                        @elseif ($item->trip_type == 'private_trip' && $item->private_trip)
-                                            {{ $item->private_trip->nama_trip }}
+                                        @if ($item->pemesanan)
+                                            {{ \Carbon\Carbon::parse($item->pemesanan->tanggal_pemesanan)->format('d-m-Y') ?? 'Tanggal tidak ditemukan' }}
                                         @else
-                                            -
+                                            Tanggal tidak ditemukan
                                         @endif
                                     </td>
                                     <td>
-                                        <a href="{{ asset('storage/'.$item->file_dokumen) }}" target="_blank" class="badge badge-primary">Lihat Dokumen</a>
+                                        @if ($item->pemesanan)
+                                            @if ($item->pemesanan->trip_type == 'open_trip')
+                                                {{ $item->pemesanan->openTrip->nama_paket ?? 'Nama Trip tidak ditemukan' }}
+                                            @elseif ($item->pemesanan->trip_type == 'private_trip')
+                                                {{ $item->pemesanan->privateTrip->nama_trip ?? 'Nama Trip tidak ditemukan' }}
+                                            @endif
+                                        @else
+                                            Pemesanan tidak ditemukan
+                                        @endif
+                                    </td>
+                                    <td>
+                                        <a href="{{ asset('storage/'.$item->file_dokumen) }}" target="_blank" class="badge badge-primary">Lihat Dokumen                                        </a>
                                     </td>
                                     <td>
                                         <span class="badge 
@@ -61,12 +71,14 @@
                                         </span>
                                     </td>
                                     <td>
-                                        <a href="#" class="badge badge-info">Detail</a>
+                                        <a href="{{ route('admin.data_administrasi.show', $item->id) }}" class="badge badge-info">Detail</a>
+                                        <a href="{{ route('admin.data_administrasi.edit', $item->id) }}" class="badge badge-warning">Edit</a>
+                                        <a href="{{ route('admin.data_administrasi.destroy', $item->id) }}" class="badge badge-danger" data-confirm-delete="true">Hapus</a> 
                                     </td>
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="7" class="text-center">Data Administrasi Kosong</td>
+                                    <td colspan="8" class="text-center">Data Administrasi Kosong</td>
                                 </tr>
                             @endforelse
                         </tbody>

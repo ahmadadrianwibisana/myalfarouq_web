@@ -93,29 +93,33 @@ class AuthController extends Controller
     public function post_register(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'name' => 'required',
-            'email' => 'required|email:dns',
-            'password' => 'required|min:8|max:8',
+            'name' => 'required|string|max:255',
+            'email' => 'required|email:dns|unique:users,email',
+            'password' => 'required|min:8|max:20',
+            'no_telepon' => 'required|regex:/^08[1-9][0-9]{6,10}$/',
         ]);
-
+    
         if ($validator->fails()) {
-            Alert::error('Gagal!', 'Pastikan semua terisi dengan benar!');
-            return redirect()->back();
+            Alert::error('Gagal!', 'Pastikan semua data terisi dengan benar atau email sudah terdaftar!');
+            return redirect()->back()->withErrors($validator)->withInput();
         }
-
+    
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => bcrypt($request->password),
             'no_telepon' => $request->no_telepon,
+            'image' => 'default.jpg', // Default image
         ]);
-
+    
         if ($user) {
-            Alert::success('Berhasil!', 'Akun baru berhasil dibuat, silahkan melakukan login!');
+            Alert::success('Berhasil!', 'Akun baru berhasil dibuat, silahkan login!');
             return redirect('/');
         } else {
             Alert::error('Gagal!', 'Akun gagal dibuat, silahkan coba lagi!');
             return redirect()->back();
         }
     }
+    
+    
 }

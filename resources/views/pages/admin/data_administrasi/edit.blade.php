@@ -1,91 +1,58 @@
 @extends('layouts.admin.main')
-@section('title', 'Admin Edit Open Trip')
+@section('title', 'Admin Edit Data Administrasi')
 @section('content')
 <div class="main-content">
     <section class="section">
         <div class="section-header">
-            <h1>Edit Open Trip</h1>
+            <h1>Edit Data Administrasi</h1>
             <div class="section-header-breadcrumb">
                 <div class="breadcrumb-item active"><a href="{{ route('admin.dashboard') }}">Dashboard</a></div>
-                <div class="breadcrumb-item active"><a href="{{ route('admin.open_trip.index') }}">Open Trip</a></div>
-                <div class="breadcrumb-item">Edit Open Trip</div>
+                <div class="breadcrumb-item active"><a href="{{ route('admin.data_administrasi.index') }}">Data Administrasi</a></div>
+                <div class="breadcrumb-item">Edit Data Administrasi</div>
             </div>
         </div>
-        <a href="{{ route('admin.open_trip.index') }}" class="btn btn-icon icon-left btn-warning">
+        <a href="{{ route('admin.data_administrasi.index') }}" class="btn btn-icon icon-left btn-warning">
             <i class="fas fa-arrow-left"></i> Kembali
         </a>
 
         <div class="card mt-4">
-            <form action="{{ route('admin.open_trip.update', $openTrip->id) }}" method="POST" enctype="multipart/form-data" class="needs-validation" novalidate="">
+            <form action="{{ route('admin.data_administrasi.update', $dataAdministrasi->id) }}" method="POST" enctype="multipart/form-data" class="needs-validation" novalidate="">
                 @csrf
                 @method('PUT')
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="nama_paket">Nama Paket</label>
-                                <input id="nama_paket" type="text" class="form-control" name="nama_paket" required value="{{ $openTrip->nama_paket }}">
+                                <label for="pemesanan_id">Pemesanan</label>
+                                <select id="pemesanan_id" class="form-control" name="pemesanan_id" required>
+                                    <option value="">Pilih Pemesanan</option>
+                                    @foreach($pemesanan as $item)
+                                        <option value="{{ $item->id }}" {{ $item->id == $dataAdministrasi->pemesanan_id ? 'selected' : '' }}>
+                                            {{ $item->id }} - {{ $item->user->name }} ({{ $item->status }})
+                                        </option>
+                                    @endforeach
+                                </select>
                                 <div class="invalid-feedback">
                                     Kolom ini harus diisi!
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label for="tanggal_berangkat">Tanggal Berangkat</label>
-                                <input id="tanggal_berangkat" type="date" class="form-control" name="tanggal_berangkat" required value="{{ $openTrip->tanggal_berangkat }}">
-                                <div class="invalid-feedback">
-                                    Kolom ini harus diisi!
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label for="lama_keberangkatan">Lama Keberangkatan</label>
-                                <input id="lama_keberangkatan" type="text" class="form-control" name="lama_keberangkatan" required value="{{ $openTrip->lama_keberangkatan }}">
-                                <div class="invalid-feedback">
-                                    Kolom ini harus diisi!
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label for="harga">Harga</label>
-                                <input id="harga" type="number" class="form-control" name="harga" required value="{{ $openTrip->harga }}" step="0.01">
-                                <div class="invalid-feedback">
-                                    Kolom ini harus diisi!
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="destinasi">Destinasi</label>
-                                <input id="destinasi" type="text" class="form-control" name="destinasi" required value="{{ $openTrip->destinasi }}">
-                                <div class="invalid-feedback">
-                                    Kolom ini harus diisi!
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label for="tanggal_pulang">Tanggal Pulang</label>
-                                <input id="tanggal_pulang" type="date" class="form-control" name="tanggal_pulang" required value="{{ $openTrip->tanggal_pulang }}">
-                                <div class="invalid-feedback">
-                                    Kolom ini harus diisi!
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label for="kuota">Kuota</label>
-                                <input id="kuota" type="number" class="form-control" name="kuota" required value="{{ $openTrip->kuota }}">
-                                <div class="invalid-feedback">
-                                    Kolom ini harus diisi!
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label for="image">Gambar</label>
-                                <input id="image" type="file" class="form-control" name="image" accept="image/*">
-                                @if($openTrip->image)
-                                    <img src="{{ asset('storage/' . $openTrip->image) }}" alt="Trip Image" width="100">
+                                <label for="file_dokumen">File Dokumen</label>
+                                <input id="file_dokumen" type="file" class="form-control" name="file_dokumen" accept="application/pdf,image/*">
+                                @if($dataAdministrasi->file_dokumen)
+                                    <a href="{{ asset('storage/' . $dataAdministrasi->file_dokumen) }}" target="_blank">Lihat Dokumen</a>
                                 @endif
-                                <small class="form-text text-muted">Format gambar yang diizinkan: JPG, PNG.</small>
+                                <div class="invalid-feedback">
+                                    Kolom ini harus diisi!
+                                </div>
                             </div>
-                        </div>
-                        <div class="col-md-12">
                             <div class="form-group">
-                                <label for="deskripsi_trip">Deskripsi Trip</label>
-                                <textarea id="deskripsi_trip" class="form-control" name="deskripsi_trip" rows="4" required>{{ $openTrip->deskripsi_trip }}</textarea>
+                                <label for="status">Status</label>
+                                <select id="status" class="form-control" name="status" required>
+                                    <option value="pending" {{ $dataAdministrasi->status == 'pending' ? 'selected' : '' }}>Pending</option>
+                                    <option value="approved" {{ $dataAdministrasi->status == 'approved' ? 'selected' : '' }}>Approved</option>
+                                    <option value="rejected" {{ $dataAdministrasi->status == 'rejected' ? 'selected' : '' }}>Rejected</option>
+                                </select>
                                 <div class="invalid-feedback">
                                     Kolom ini harus diisi!
                                 </div>
