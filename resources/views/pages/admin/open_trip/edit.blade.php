@@ -75,24 +75,40 @@
                             </div>
                             <div class="form-group">
                                 <label for="star_point">Star Point</label>
-                                <input id="star_point" type="text" class="form-control" name="star_point" required="">
+                                <input id="star_point" type="text" class="form-control @error('star_point') is-invalid @enderror" name="star_point" value="{{ old('star_point', $openTrip->star_point) }}" required>
                                 <div class="invalid-feedback">
                                     Kolom ini harus diisi!
                                 </div>
                             </div>
+
                             <div class="form-group">
                                 <label for="jumlah_peserta">Jumlah Peserta</label>
-                                <input id="jumlah_peserta" type="number" class="form-control" name="jumlah_peserta" value="0" required="" min="0">
+                                <input id="jumlah_peserta" type="number" class="form-control @error('jumlah_peserta') is-invalid @enderror" name="jumlah_peserta" value="{{ old('jumlah_peserta', $openTrip->jumlah_peserta) }}" required min="0">
                                 <div class="invalid-feedback">
                                     Kolom ini harus diisi!
                                 </div>
                             </div>
+
                             <div class="form-group">
                                 <label for="image">Gambar</label>
-                                <input id="image" type="file" class="form-control" name="image" accept="image/*">
+                                <input id="image" type="file" class="form-control @error('image') is-invalid @enderror" name="image" accept="image/*">
+                                
                                 @if($openTrip->image)
-                                    <img src="{{ asset('storage/' . $openTrip->image) }}" alt="Trip Image" width="100">
+                                    @php
+                                        $oldPath = public_path('open_trip_images/' . $openTrip->image);
+                                    @endphp
+
+                                    @if(file_exists($oldPath))
+                                        <div class="mt-2">
+                                            <img src="{{ asset('open_trip_images/' . $openTrip->image) }}" alt="Trip Image" width="100">
+                                        </div>
+                                    @else
+                                        <div class="mt-2 text-danger">
+                                            Gambar tidak ditemukan.
+                                        </div>
+                                    @endif
                                 @endif
+                                
                                 <small class="form-text text-muted">Format gambar yang diizinkan: JPG, PNG.</small>
                             </div>
                         </div>

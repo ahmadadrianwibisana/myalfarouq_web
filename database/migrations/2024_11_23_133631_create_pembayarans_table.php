@@ -17,6 +17,8 @@ return new class extends Migration
             $table->string('bukti_pembayaran');
             $table->timestamp('tanggal_pembayaran');
             $table->string('jumlah_pembayaran');
+            $table->enum('status_pembayaran', ['pending', 'success', 'failed'])->default('pending'); // Add enum column
+            $table->string('alasan_gagal')->nullable();
             $table->timestamps();
         });
     }

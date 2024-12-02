@@ -70,6 +70,24 @@
                                 <span class="text-secondary">{{ $pembayaran->jumlah_pembayaran }}</span>
                             </li>
                             <li class="mb-3">
+                            <strong>Status Pembayaran:</strong> 
+                                <span class="text-secondary">
+                                    @if ($pembayaran->status_pembayaran == 'pending')
+                                        <span class="badge badge-warning">Pending</span>
+                                        <p class="text-warning">Pembayaran belum dikonfirmasi. Silakan tunggu konfirmasi dari admin.</p>
+                                    @elseif ($pembayaran->status_pembayaran == 'success')
+                                        <span class="badge badge-success">Success</span>
+                                        <p class="text-success">Pembayaran telah berhasil dilakukan.</p>
+                                    @elseif ($pembayaran->status_pembayaran == 'failed')
+                                        <span class="badge badge-danger">Failed</span>
+                                        <p class="text-danger">Pembayaran gagal. Alasan: {{ $pembayaran->alasan_gagal }}</p>
+                                    @else
+                                        <span class="badge badge-secondary">Status tidak dikenali</span>
+                                        <p class="text-secondary">Status pembayaran tidak dapat diidentifikasi.</p>
+                                    @endif
+                                </span>
+                            </li>
+                            <li class="mb-3">
                                 <strong>Bukti Pembayaran:</strong> 
                                 <a href="{{ asset($pembayaran->bukti_pembayaran) }}" target="_blank" class="btn btn-info">
                                     <i class="fas fa-file-download"></i> Lihat Bukti Pembayaran
@@ -79,6 +97,7 @@
                     </div>
                 </div>
             </div>
+        </div>
         </div>
     </section>
 </div>

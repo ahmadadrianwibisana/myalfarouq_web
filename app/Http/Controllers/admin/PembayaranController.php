@@ -59,6 +59,7 @@ class PembayaranController extends Controller
             'bukti_pembayaran' => 'bukti_pembayaran/' . $fileName, // Store the relative path in the database
             'tanggal_pembayaran' => $request->tanggal_pembayaran,
             'jumlah_pembayaran' => $request->jumlah_pembayaran,
+            'status_pembayaran' => 'pending', // Set initial status
         ]);
     
         return redirect()->route('admin.pembayaran.index')->with('success', 'Pembayaran berhasil ditambahkan!');
@@ -89,46 +90,72 @@ class PembayaranController extends Controller
             'bukti_pembayaran' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:10240', // Max 10MB
             'tanggal_pembayaran' => 'required|date',
             'jumlah_pembayaran' => 'required|string',
+            'status_pembayaran' => 'required|in:pending,success,failed', // Ensure status is valid
+            'alasan_gagal' => 'nullable|string', // Add validation for failure reason
         ]);
-
+    
         // Check if the validation fails
         if ($validator->fails()) {
             return back()->withErrors($validator)->withInput();
         }
-
+    
         // Retrieve the payment record
         $pembayaran = Pembayaran::findOrFail($id);
-
+    
         // Check the status of the pemesanan
         $pemesanan = Pemesanan::find($request->pemesanan_id);
         if ($pemesanan->status !== 'terkonfirmasi') {
             return back()->withErrors(['pemesanan_id' => 'Pemesanan harus terkonfirmasi untuk mengupdate pembayaran.'])->withInput();
         }
-
+    
         // Update the payment record
         $pembayaran->pemesanan_id = $request->pemesanan_id;
         $pembayaran->tanggal_pembayaran = $request->tanggal_pembayaran;
         $pembayaran->jumlah_pembayaran = $request->jumlah_pembayaran;
-
+    
         // Handle file upload if a new file is provided
         if ($request->hasFile('bukti_pembayaran')) {
             // Delete the old file if it exists
             if ($pembayaran->bukti_pembayaran) {
-                Storage::delete($pembayaran->bukti_pembayaran);
+                // Use unlink() for files in public directory
+                unlink(public_path($pembayaran->bukti_pembayaran));
             }
-
+    
             // Store the uploaded file
             $file = $request->file('bukti_pembayaran');
             $fileName = time() . '_' . $file->getClientOriginalName(); // Generate a unique file name
             $file->move(public_path('bukti_pembayaran'), $fileName); // Move the file to the desired location
-
+    
             $pembayaran->bukti_pembayaran = 'bukti_pembayaran/' . $fileName; // Update the path in the database
         }
+    
+        // Update the payment status
+        $pembayaran->status_pembayaran = $request->status_pembayaran;
 
+        // If status is failed, save the reason
+        if ($request->status_pembayaran === 'failed') {
+            $pembayaran->alasan_gagal = $request->alasan_gagal; // Save the failure reason
+        } else {
+            $pembayaran->alasan_gagal = null; // Clear the reason if not failed
+        }
+    
         // Save the changes
         $pembayaran->save();
-
-        return redirect()->route('admin.pembayaran.index')->with('success', 'Pembayaran berhasil diperbarui!');
+    
+        // Set a success message based on the payment status
+        switch ($pembayaran->status_pembayaran) {
+            case 'pending':
+                $message = 'Pembayaran belum dikonfirmasi. Silakan tunggu konfirmasi dari admin.';
+                break;
+            case 'success':
+                $message = 'Pembayaran telah berhasil dilakukan.';
+                break;
+            default:
+                $message = 'Status pembayaran tidak dikenali.';
+                break;
+        }
+            
+        return redirect()->route('admin.pembayaran.index')->with('success', $message); // Use the dynamic message
     }
 
     public function destroy($id)

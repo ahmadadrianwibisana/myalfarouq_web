@@ -36,7 +36,7 @@ class PemesananController extends Controller
     {
         // Fetch all users, private trips, and open trips
         $users = User::select('id', 'name')->get();
-        $privateTrips = PrivateTrip::select('id', 'nama_trip')->get();
+        $privateTrips = PrivateTrip::select('id', 'nama_trip')->where('status', 'disetujui')->get();
         $openTrips = OpenTrip::select('id', 'nama_paket')->get();
 
         return view('pages.admin.pemesanan.create', compact('users', 'privateTrips', 'openTrips'));
@@ -57,7 +57,7 @@ class PemesananController extends Controller
             function ($attribute, $value, $fail) use ($request) {
                 // Cek tipe trip dan validasi ID
                 $model = $request->trip_type === 'open_trip' ? OpenTrip::class : PrivateTrip::class;
-                if (!$model::find($value)) {
+                if (!$model::where('id', $value)->where('status', 'disetujui')->exists()) {
                     $fail("The selected $attribute is invalid.");
                 }
             },

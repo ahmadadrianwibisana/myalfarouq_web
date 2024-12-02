@@ -75,7 +75,7 @@
                             </div>
                             <div class="form-group">
                                 <label for="star_point">Star Point</label>
-                                <input id="star_point" type="text" class="form-control" name="star_point" required="">
+                                <input id="star_point" type="text" class="form-control @error('star_point') is-invalid @enderror" name="star_point" value="{{ old('star_point') }}" required>
                                 <div class="invalid-feedback">
                                     Kolom ini harus diisi!
                                 </div>
@@ -83,14 +83,15 @@
 
                             <div class="form-group">
                                 <label for="jumlah_peserta">Jumlah Peserta</label>
-                                <input id="jumlah_peserta" type="number" class="form-control" name="jumlah_peserta" value="0" required="" min="0">
+                                <input id="jumlah_peserta" type="number" class="form-control @error('jumlah_peserta') is-invalid @enderror" name="jumlah_peserta" value="{{ old('jumlah_peserta', 0) }}" required min="0">
                                 <div class="invalid-feedback">
                                     Kolom ini harus diisi!
                                 </div>
                             </div>
+
                             <div class="form-group">
                                 <label for="image">Gambar</label>
-                                <input id="image" type="file" class="form-control" name="image" accept="image/*">
+                                <input id="image" type="file" class="form-control @error('image') is-invalid @enderror" name="image" accept="image/*">
                                 <small class="form-text text-muted">Format gambar yang diizinkan: JPG, PNG.</small>
                             </div>
                         </div>

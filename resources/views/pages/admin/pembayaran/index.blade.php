@@ -31,6 +31,8 @@
                                 <th>Trip</th>
                                 <th>Bukti Pembayaran</th>
                                 <th>Tanggal Pembayaran</th>
+                                <th>Jumlah Pembayaran</th>
+                                <th>Status Pembayaran</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -53,6 +55,8 @@
                                         @endif
                                     </td>
                                     <td>{{ date('d M Y, H:i', strtotime($item->tanggal_pembayaran)) }}</td>
+                                    <td>{{  $item->jumlah_pembayaran }}</td>
+                                    <td>{{  $item->status_pembayaran }}</td> <!-- Menampilkan status -->
                                     <td>
                                         <a href="{{ route('admin.pembayaran.show', $item->id) }}" class="badge badge-info">Detail</a>
                                         <a href="{{ route('admin.pembayaran.edit', $item->id) }}" class="badge badge-warning">Edit</a>

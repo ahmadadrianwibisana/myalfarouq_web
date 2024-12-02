@@ -13,6 +13,7 @@ use App\Http\Controllers\AdminBesar\ArtikelController;
 use App\Http\Controllers\AdminBesar\LaporanController;
 use App\Http\Controllers\AdminBesar\RiwayatController;
 use App\Http\Controllers\User\UserController;
+use App\Models\Riwayat;
 use Symfony\Component\VarDumper\Cloner\Data;
 
 // Route untuk tamu (guest) -> login dan register
@@ -161,6 +162,9 @@ Route::group(['middleware' => 'admin'], function () {
 // Grouping admin besar routes
     Route::prefix('adminbesar')->name('adminbesar.')->group(function () {
         Route::resource('artikel', ArtikelController::class);
+    });
+    Route::prefix('adminbesar')->name('adminbesar.')->group(function () {
+        Route::resource('riwayat', RiwayatController::class);
     });
 
 // Route untuk admin besar -> dashboard admin besar
