@@ -53,7 +53,7 @@
           <li><a href="{{ route('user.opentrip') }}">Open Trip</a></li>
           <li><a href="{{ route('user.privatetrip') }}">Private Trip</a></li>
           <li><a href="{{ route('user.dokumen') }}">Artikel</a></li>
-          <li><a href="{{ route('user.opentrip') }}">Trip Saya</a></li>
+          <li><a href="{{ route('user.tripsaya') }}">Trip Saya</a></li>
           <li class="dropdown">
               <a href="#">
                   <span>Profil</span>

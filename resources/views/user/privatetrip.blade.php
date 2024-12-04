@@ -45,7 +45,7 @@
           <li><a href="{{ route('user.opentrip') }}">Open Trip</a></li>
           <li><a href="{{ route('user.privatetrip') }}">Private Trip</a></li>
           <li><a href="{{ route('user.dokumen') }}">Artikel</a></li>
-          <li><a href="{{ route('user.opentrip') }}">Trip Saya</a></li>
+          <li><a href="{{ route('user.tripsaya') }}">Trip Saya</a></li>
           <li class="dropdown">
               <a href="#">
                   <span>Profil</span>
@@ -98,82 +98,76 @@
               style="background-image:url('{{ asset('assets/user/img/private.jpg') }}')"></div>
 
               <div class="col-lg-7" data-aos="fade-up" data-aos-delay="200">
-    <form action="{{ route('admin.private_trip.store') }}" method="POST" enctype="multipart/form-data" class="php-email-form">
+    <form action="{{ route('user.private_trip.store') }}" method="POST" enctype="multipart/form-data" class="php-email-form">
         @csrf
         <h2>PENDAFTARAN PRIVATE TRIP</h2>
 
         <div class="row gy-4">
+            <!-- No Telepon -->
             <div class="col-12">
-                <input type="text" name="no_telepon" class="form-control @error('no_telepon') is-invalid @enderror" placeholder="Masukkan No Telepon" required />
+                <input type="text" name="no_telepon" class="form-control @error('no_telepon') is-invalid @enderror" placeholder="Masukkan No Telepon" value="{{ old('no_telepon') }}" required />
                 @error('no_telepon')
                     <div class="invalid-feedback">{{ $message }}</div>
                 @enderror
             </div>
 
+            <!-- Nama Trip -->
             <div class="col-12">
-                <input type="text" name="nama_trip" class="form-control @error('nama_trip') is-invalid @enderror" placeholder="Masukkan Nama Trip" required />
+                <input type="text" name="nama_trip" class="form-control @error('nama_trip') is-invalid @enderror" placeholder="Masukkan Nama Pengaju Trip" value="{{ old('nama_trip') }}" required />
                 @error('nama_trip')
                     <div class="invalid-feedback">{{ $message }}</div>
                 @enderror
             </div>
 
+            <!-- Destinasi -->
             <div class="col-12">
-                <input type="text" name="destinasi" class="form-control @error('destinasi') is-invalid @enderror" placeholder="Masukkan Destinasi" required />
+                <input type="text" name="destinasi" class="form-control @error('destinasi') is-invalid @enderror" placeholder="Masukkan Destinasi" value="{{ old('destinasi') }}" required />
                 @error('destinasi')
                     <div class="invalid-feedback">{{ $message }}</div>
                 @enderror
             </div>
 
+            <!-- Tanggal Pergi -->
             <div class="col-12">
-                <input type="date" name="tanggal_pergi" class="form-control @error('tanggal_pergi') is-invalid @enderror" placeholder="Masukkan Tanggal Keberangkatan" required />
+                <input type="date" name="tanggal_pergi" class="form-control @error('tanggal_pergi') is-invalid @enderror" value="{{ old('tanggal_pergi') }}" required />
                 @error('tanggal_pergi')
                     <div class="invalid-feedback">{{ $message }}</div>
                 @enderror
             </div>
 
+            <!-- Tanggal Kembali -->
             <div class="col-12">
-                <input type="date" name="tanggal_kembali" class="form-control @error('tanggal_kembali') is-invalid @enderror" placeholder="Masukkan Tanggal Kepulangan" required />
+                <input type="date" name="tanggal_kembali" class="form-control @error('tanggal_kembali') is-invalid @enderror" value="{{ old('tanggal_kembali') }}" required />
                 @error('tanggal_kembali')
                     <div class="invalid-feedback">{{ $message }}</div>
                 @enderror
             </div>
 
+            <!-- Starting Point -->
             <div class="col-12">
-                <input type="text" name="star_point" class="form-control @error('star_point') is-invalid @enderror" placeholder="Masukkan Starting Point" required />
+                <input type="text" name="star_point" class="form-control @error('star_point') is-invalid @enderror" placeholder="Masukkan Starting Point" value="{{ old('star_point') }}" required />
                 @error('star_point')
                     <div class="invalid-feedback">{{ $message }}</div>
                 @enderror
             </div>
 
+            <!-- Jumlah Peserta -->
             <div class="col-12">
-                <input type="number" name="jumlah_peserta" class="form-control @error('jumlah_peserta') is-invalid @enderror" placeholder="Masukkan Jumlah Peserta" required />
+                <input type="number" name="jumlah_peserta" class="form-control @error('jumlah_peserta') is-invalid @enderror" placeholder="Masukkan Jumlah Peserta" value="{{ old('jumlah_peserta') }}" required />
                 @error('jumlah_peserta')
                     <div class="invalid-feedback">{{ $message }}</div>
                 @enderror
             </div>
 
+            <!-- Deskripsi Trip -->
             <div class="col-12">
-                <textarea name="deskripsi_trip" class="form-control @error('deskripsi_trip') is-invalid @enderror" placeholder="Masukkan Deskripsi Trip" rows="4" required></textarea>
+                <textarea name="deskripsi_trip" class="form-control @error('deskripsi_trip') is-invalid @enderror" placeholder="Masukkan Deskripsi Trip" rows="4" required>{{ old('deskripsi_trip') }}</textarea>
                 @error('deskripsi_trip')
                     <div class="invalid-feedback">{{ $message }}</div>
                 @enderror
             </div>
 
-            <div class="col-12">
-                <input type="number" name="harga" class="form-control @error('harga') is-invalid @enderror" placeholder="Masukkan Harga" required />
-                @error('harga')
-                    <div class="invalid-feedback">{{ $message }}</div>
-                @enderror
-            </div>
-
-            <div class="col-12">
-                <input type="file" name="image" class="form-control @error('image') is-invalid @enderror" accept="image/*" />
-                @error('image')
-                    <div class="invalid-feedback">{{ $message }}</div>
-                @enderror
-                <small class="form-text text-muted">Format gambar yang diizinkan: JPG, PNG.</small>
-            </div>
-
+            <!-- Submit Button -->
             <div class="col-12 text-center">
                 <button type="submit">Submit</button>
             </div>

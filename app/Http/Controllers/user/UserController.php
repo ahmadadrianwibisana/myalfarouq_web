@@ -4,6 +4,9 @@ namespace App\Http\Controllers\User;
 
 
 use App\Http\Controllers\Controller;
+use App\Models\Trip;
+use App\Models\PrivateTrip;
+
 use Illuminate\Http\Request;
 
 
@@ -56,6 +59,58 @@ class UserController extends Controller
     {
         return view('user.detailopen');  // The view you want to show for the detail page
     }
+
+    public function showTripsSaya()
+    {
+        // Ambil data trip berdasarkan user yang sedang login
+        $private_trips = PrivateTrip::where('user_id', auth()->user()->id)->get();
+
+        // Passing data ke view tripsaya
+        return view('user.tripsaya', compact('private_trips'));
+    }
+// -----------------------------------------------------------------------------
+    // Method untuk menyimpan data private trip
+    public function store(Request $request)
+    {
+        // Validasi input
+        $request->validate([
+            'no_telepon' => 'required|string',
+            'nama_trip' => 'required|string',
+            'destinasi' => 'required|string',
+            'tanggal_pergi' => 'required|date',
+            'tanggal_kembali' => 'required|date',
+            'star_point' => 'required|string',
+            'jumlah_peserta' => 'required|integer',
+            'deskripsi_trip' => 'required|string',
+        ]);
+
+        // Simpan data ke dalam tabel private_trips
+        PrivateTrip::create([
+            'no_telepon' => $request->no_telepon,
+            'nama_trip' => $request->nama_trip,
+            'destinasi' => $request->destinasi,
+            'tanggal_pergi' => $request->tanggal_pergi,
+            'tanggal_kembali' => $request->tanggal_kembali,
+            'star_point' => $request->star_point,
+            'jumlah_peserta' => $request->jumlah_peserta,
+            'deskripsi_trip' => $request->deskripsi_trip,
+        ]);
+
+        // Redirect ke halaman trip saya dengan pesan sukses
+        return redirect()->route('user.privatetrip')->with('success', 'Private Trip berhasil disubmit!');
+    }
+
+    // Method untuk menampilkan trip saya
+    public function tripSaya()
+    {
+        // Ambil semua data trip yang sudah disubmit
+        $privateTrips = PrivateTrip::all();
+
+        // Tampilkan data di halaman trip saya
+        return view('user.trip_saya', compact('privateTrips'));
+    }
+    
+    
 
 
 }
