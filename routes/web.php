@@ -136,6 +136,8 @@ Route::group(['middleware' => 'admin'], function () {
 
 
 
+
+
     // Pembayaran
     Route::get('/pembayaran', [PembayaranController::class, 'index'])->name('admin.pembayaran');
     Route::get('/admin/pembayaran/create', [PembayaranController::class, 'create'])->name('admin.pembayaran.create');
@@ -211,6 +213,7 @@ Route::group(['middleware' => 'adminbesar'], function () {
 // Route untuk user
 Route::group(['middleware' => 'web'], function () {
     Route::get('/user', [UserController::class, 'home'])->name('user.home');
+<<<<<<< HEAD
     
     // Artikel 
     Route::get('/user/dokumen', [UserController::class, 'dokumen'])->name('user.dokumen');
@@ -239,6 +242,35 @@ Route::group(['middleware' => 'web'], function () {
     Route::delete('/user/tripsaya/batal-pemesanan/{id}', [UserController::class, 'batalPemesanan'])->name('user.tripsaya.batalPemesanan');
     Route::get('/user/tripsaya/detail/{id}', [UserController::class, 'detailPemesanan'])->name('user.tripsaya.detail-pemesanan');
     
+=======
+    Route::get('/user/opentrip', [UserController::class, 'opentrip'])->name('user.opentrip');
+
+
+    Route::get('/user/privatetrip', [UserController::class, 'privatetrip'])->name('user.privatetrip');
+    Route::post('user/private-trip', [UserController::class, 'store'])->name('user.private_trip.store');
+    Route::get('user/trip-saya', [UserController::class, 'tripSaya'])->name('user.trip_saya');
+
+
+
+    Route::get('/user/dokumen', [UserController::class, 'dokumen'])->name('user.dokumen');
+
+
+    Route::get('/user/profil-kami', [UserController::class, 'profilKami'])->name('user.profil-kami');
+
+
+    Route::get('/user/tentang-kami', [UserController::class, 'tentangKami'])->name('user.tentang-kami');
+
+
+    Route::get('/user/dokumen/detail', [UserController::class, 'detail'])->name('user.detail');
+
+
+    Route::get('/user/opentrip/detail', [UserController::class, 'detailopen'])->name('user.detailopen');
+
+
+    Route::get('user/tripsaya', [UserController::class, 'showTripsSaya'])->name('user.tripsaya');
+
+
+>>>>>>> 6698e896e4ee9804ef66c5a69f29fa41f7ab645a
 
     Route::post('/user/logout', [AuthController::class, 'user_logout'])->name('user.logout');
 

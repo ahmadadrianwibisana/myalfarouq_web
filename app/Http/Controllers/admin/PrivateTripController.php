@@ -85,6 +85,11 @@ public function store(Request $request)
         'tanggal_disetujui' => null,  // Set null terlebih dahulu
     ]);
 
+    {
+        dd($request->all()); // Untuk melihat data yang dikirimkan
+        // Proses penyimpanan data ke database di sini
+    }
+
     if ($privateTrip) {
         Alert::success('Sukses!', 'Private Trip telah berhasil ditambahkan!');
         return redirect()->route('admin.private_trip.index');

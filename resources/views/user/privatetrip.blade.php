@@ -95,6 +95,7 @@
         <div class="row g-0" data-aos="fade-up" data-aos-delay="100">
             <div class="col-lg-5 quote-bg" style="background-image:url('{{ asset('assets/user/img/private.jpg') }}')"></div>
 
+<<<<<<< HEAD
             <div class="col-lg-7" data-aos="fade-up" data-aos-delay="200">
             <form action="{{ route('user.private_trip.store') }}" method="POST" enctype="multipart/form-data" class="php-email-form">
                 
@@ -175,6 +176,81 @@
     </div>
 @endif
 
+=======
+              <div class="col-lg-7" data-aos="fade-up" data-aos-delay="200">
+    <form action="{{ route('user.private_trip.store') }}" method="POST" enctype="multipart/form-data" class="php-email-form">
+        @csrf
+        <h2>PENDAFTARAN PRIVATE TRIP</h2>
+
+        <div class="row gy-4">
+            <!-- No Telepon -->
+            <div class="col-12">
+                <input type="text" name="no_telepon" class="form-control @error('no_telepon') is-invalid @enderror" placeholder="Masukkan No Telepon" value="{{ old('no_telepon') }}" required />
+                @error('no_telepon')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+            </div>
+
+            <!-- Nama Trip -->
+            <div class="col-12">
+                <input type="text" name="nama_trip" class="form-control @error('nama_trip') is-invalid @enderror" placeholder="Masukkan Nama Pengaju Trip" value="{{ old('nama_trip') }}" required />
+                @error('nama_trip')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+            </div>
+
+            <!-- Destinasi -->
+            <div class="col-12">
+                <input type="text" name="destinasi" class="form-control @error('destinasi') is-invalid @enderror" placeholder="Masukkan Destinasi" value="{{ old('destinasi') }}" required />
+                @error('destinasi')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+            </div>
+
+            <!-- Tanggal Pergi -->
+            <div class="col-12">
+                <input type="date" name="tanggal_pergi" class="form-control @error('tanggal_pergi') is-invalid @enderror" value="{{ old('tanggal_pergi') }}" required />
+                @error('tanggal_pergi')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+            </div>
+
+            <!-- Tanggal Kembali -->
+            <div class="col-12">
+                <input type="date" name="tanggal_kembali" class="form-control @error('tanggal_kembali') is-invalid @enderror" value="{{ old('tanggal_kembali') }}" required />
+                @error('tanggal_kembali')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+            </div>
+
+            <!-- Starting Point -->
+            <div class="col-12">
+                <input type="text" name="star_point" class="form-control @error('star_point') is-invalid @enderror" placeholder="Masukkan Starting Point" value="{{ old('star_point') }}" required />
+                @error('star_point')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+            </div>
+
+            <!-- Jumlah Peserta -->
+            <div class="col-12">
+                <input type="number" name="jumlah_peserta" class="form-control @error('jumlah_peserta') is-invalid @enderror" placeholder="Masukkan Jumlah Peserta" value="{{ old('jumlah_peserta') }}" required />
+                @error('jumlah_peserta')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+            </div>
+
+            <!-- Deskripsi Trip -->
+            <div class="col-12">
+                <textarea name="deskripsi_trip" class="form-control @error('deskripsi_trip') is-invalid @enderror" placeholder="Masukkan Deskripsi Trip" rows="4" required>{{ old('deskripsi_trip') }}</textarea>
+                @error('deskripsi_trip')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+            </div>
+
+            <!-- Submit Button -->
+            <div class="col-12 text-center">
+                <button type="submit">Submit</button>
+>>>>>>> 6698e896e4ee9804ef66c5a69f29fa41f7ab645a
             </div>
         </div>
     </div>
