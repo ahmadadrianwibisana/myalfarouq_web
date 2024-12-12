@@ -22,6 +22,7 @@
                     <div class="col-md-6">
                         <label for="month" class="font-weight-bold" style="color: #276f5f;">Bulan:</label>
                         <select id="month" class="form-control form-control-sm" onchange="filterByMonthYear()">
+                            <option value="">Semua</option>
                             @foreach(range(1, 12) as $month)
                                 <option value="{{ $month }}">{{ date('F', mktime(0, 0, 0, $month, 1)) }}</option>
                             @endforeach
@@ -30,7 +31,8 @@
                     <div class="col-md-6">
                         <label for="year" class="font-weight-bold" style="color: #276f5f;">Tahun:</label>
                         <select id="year" class="form-control form-control-sm" onchange="filterByMonthYear()">
-                            @foreach(range(date('Y'), date('Y') - 5) as $year)
+                            <option value="">Semua</option>
+                            @foreach(range(2020, 2030) as $year)
                                 <option value="{{ $year }}">{{ $year }}</option>
                             @endforeach
                         </select>
@@ -77,7 +79,7 @@
                                     <td>Rp {{ number_format($item->total_pembayaran, 2, ',', '.') }}</td>
                                     <td> 
                                         <a href="{{ route('adminbesar.laporan.show', $item->id) }}" class="btn btn-info btn-sm" style="background-color: #276f5f; border-color: #276f5f;">
-                                            <i class="fas fa-eye"></i> Detail
+                                        <i class="fas fa-eye"></i> Detail
                                         </a>     
                                     </td> 
                                 </tr> 
@@ -97,8 +99,6 @@
                     <div class="form-group mb-0">
                         <label for="filterPendapatan" class="font-weight-bold" style="color: #276f5f;">Filter Pendapatan:</label>
                         <select id="filterPendapatan" class="form-control form-control-sm" onchange="filterPendapatan(this.value)">
-                            <option value="harian">Harian</option>
-                            <option value="mingguan">Mingguan</option>
                             <option value="bulanan" selected>Bulanan</option>
                             <option value="tahunan">Tahunan</option>
                         </select>
@@ -119,19 +119,21 @@
     function filterPendapatan(type) {
         let total = 0;
 
-        switch (type) {
-            case 'harian':
-                total = Object.values(totalPendapatan['harian']).reduce((a, b) => a + b, 0);
-                break;
-            case 'mingguan':
-                total = Object.values(totalPendapatan['mingguan']).reduce((a, b) => a + b, 0);
-                break;
-            case 'bulanan':
+        const month = document.getElementById('month').value;
+        const year = document.getElementById('year').value;
+
+        if (type === 'bulanan') {
+            if (month) {
+                total = totalPendapatan['bulanan'][`${year}-${month.padStart(2, '0')}`] || 0;
+            } else {
                 total = Object.values(totalPendapatan['bulanan']).reduce((a, b) => a + b, 0);
-                break;
-            case 'tahunan':
+            }
+        } else if (type === 'tahunan') {
+            if (year) {
+                total = totalPendapatan['tahunan'][year] || 0;
+            } else {
                 total = Object.values(totalPendapatan['tahunan']).reduce((a, b) => a + b, 0);
-                break;
+            }
         }
 
         document.getElementById('totalPendapatan').textContent = `Total Pendapatan: Rp ${new Intl.NumberFormat('id-ID', { minimumFractionDigits: 2 }).format(total)}`;
@@ -143,18 +145,22 @@
 
         const filteredData = pemesananData.filter(item => {
             const date = new Date(item.tanggal_pemesanan);
-            return date.getMonth() + 1 == month && date.getFullYear() == year;
+            const monthMatch = month ? (date.getMonth() + 1 == month) : true; // Jika bulan tidak dipilih, cocokkan semua
+            const yearMatch = year ? (date.getFullYear() == year) : true; // Jika tahun tidak dipilih, cocokkan semua
+            return monthMatch && yearMatch;
         });
 
         const tableBody = document.getElementById('pemesananTable');
         tableBody.innerHTML = '';
+
+        let totalPendapatanFiltered = 0; // Inisialisasi total pendapatan yang difilter
 
         if (filteredData.length === 0) {
             tableBody.innerHTML = '<tr><td colspan="7" class="text-center">Data Pemesanan Kosong</td></tr>';
         } else {
             filteredData.forEach((item, index) => {
                 const row = `
-                    <tr>
+                    <tr class="text-center">
                         <td>${index + 1}</td>
                         <td>${item.user?.name || 'N/A'}</td>
                         <td>${item.trip_type.charAt(0).toUpperCase() + item.trip_type.slice(1)}</td>
@@ -164,7 +170,7 @@
                             </span>
                         </td>
                         <td>${new Date(item.tanggal_pemesanan).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })}</td>
-                        <td>Rp ${new Intl.NumberFormat('id-ID', { minimumFractionDigits: 2 }).format(item.total_pembayaran)}</td>
+                                                <td>Rp ${new Intl.NumberFormat('id-ID', { minimumFractionDigits: 2 }).format(item.total_pembayaran)}</td>
                         <td>
                             <a href="/adminbesar/laporan/${item.id}" class="btn btn-info btn-sm" style="background-color: #276f5f; border-color: #276f5f;">
                                 <i class="fas fa-eye"></i> Detail
@@ -173,8 +179,12 @@
                     </tr>
                 `;
                 tableBody.innerHTML += row;
+                totalPendapatanFiltered += item.total_pembayaran; // Tambahkan total pendapatan
             });
         }
+
+        // Update total pendapatan
+        document.getElementById('totalPendapatan').textContent = `Total Pendapatan: Rp ${new Intl.NumberFormat('id-ID', { minimumFractionDigits: 2 }).format(totalPendapatanFiltered)}`;
     }
 
     function getStatusColor(status) {

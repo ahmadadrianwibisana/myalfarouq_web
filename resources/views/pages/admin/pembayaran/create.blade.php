@@ -89,53 +89,75 @@
                 </div>
             </form>
             @push('scripts')
-    <script>
-        // JavaScript untuk validasi form
-        (function() {
-            'use strict';
-            var forms = document.querySelectorAll('.needs-validation');
-            Array.prototype.slice.call(forms).forEach(function(form) {
-                form.addEventListener('submit', function(event) {
-                    if (!form.checkValidity()) {
-                        event.preventDefault();
-                        event.stopPropagation();
-                    }
-                    form.classList.add('was-validated');
-                }, false);
-            });
-        })();
+            <script>
+    var totalPembayaran = 0; // Variabel untuk menyimpan total pembayaran
 
-        // Optional: Menambahkan interaksi lainnya jika diperlukan
-        document.getElementById('bukti_pembayaran').addEventListener('change', function() {
-            const fileInput = this;
-            const filePath = fileInput.value;
-            const allowedExtensions = /(\.jpg|\.jpeg|\.png|\.pdf)$/i;
-            if (!allowedExtensions.exec(filePath)) {
-                alert('Silakan unggah file yang valid (PDF, JPG, PNG).');
-                fileInput.value = ''; // Clear the input
-            }
+    function updateTotalPembayaran() {
+        var select = document.getElementById('pemesanan_id');
+        var selectedOption = select.options[select.selectedIndex];
+        totalPembayaran = selectedOption.getAttribute('data-total-pembayaran');
+
+        // Set the total payment input value
+        document.getElementById('total_pembayaran').value = totalPembayaran;
+    }
+
+    // JavaScript untuk validasi form
+    (function() {
+        'use strict';
+        var forms = document.querySelectorAll('.needs-validation');
+        Array.prototype.slice.call(forms).forEach(function(form) {
+            form.addEventListener('submit', function(event) {
+                var jumlahPembayaran = document.getElementById('jumlah_pembayaran').value;
+
+                // Validasi jumlah pembayaran
+                if (parseFloat(jumlahPembayaran) !== parseFloat(totalPembayaran)) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    alert('Jumlah pembayaran harus sesuai dengan total pembayaran yang ditampilkan.');
+                }
+
+                if (!form.checkValidity()) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+                form.classList.add('was-validated');
+            }, false);
         });
+    })();
 
-        // AJAX call to get total payment based on selected pemesanan_id
-        document.getElementById('pemesanan_id').addEventListener('change', function() {
-            const pemesananId = this.value;
-            const totalPembayaranInput = document.getElementById('total_pembayaran');
+    // Optional: Menambahkan interaksi lainnya jika diperlukan
+    document.getElementById('bukti_pembayaran').addEventListener('change', function() {
+        const fileInput = this;
+        const filePath = fileInput.value;
+        const allowedExtensions = /(\.jpg|\.jpeg|\.png|\.pdf)$/i;
+        if (!allowedExtensions.exec(filePath)) {
+            alert('Silakan unggah file yang valid (PDF, JPG, PNG).');
+            fileInput.value = ''; // Clear the input
+        }
+    });
 
-            if (pemesananId) {
-                fetch(`/admin/pembayaran/total/${pemesananId}`)
-                    .then(response => response.json())
-                    .then(data => {
-                        totalPembayaranInput.value = data.total; // Set the total payment amount
-                    })
-                    .catch(error => {
-                        console.error('Error fetching total payment:', error);
-                        totalPembayaranInput.value = ''; // Clear the field in case of error
-                    });
-            } else {
-                totalPembayaranInput.value = ''; // Clear the field if no pemesanan is selected
-            }
-        });
-    </script>
+    // AJAX call to get total payment based on selected pemesanan_id
+    document.getElementById('pemesanan_id').addEventListener('change', function() {
+        const pemesananId = this.value;
+        const totalPembayaranInput = document.getElementById('total_pembayaran');
+
+        if (pemesananId) {
+            fetch(`/admin/pembayaran/total/${pemesananId}`)
+                .then(response => response.json())
+                .then(data => {
+                    totalPembayaranInput.value = data.total; // Set the total payment amount
+                    totalPembayaran = data.total; // Update the total payment variable
+                })
+                .catch(error => {
+                    console.error('Error fetching total payment:', error);
+                    totalPembayaranInput.value = ''; // Clear the field in case of error
+                });
+        } else {
+            totalPembayaranInput.value = ''; // Clear the field if no pemesanan is selected
+            totalPembayaran = 0; // Reset total payment variable
+        }
+    });
+</script>
 @endpush
 
 @endsection

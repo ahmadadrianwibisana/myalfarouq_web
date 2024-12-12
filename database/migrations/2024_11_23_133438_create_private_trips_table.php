@@ -20,7 +20,6 @@ return new class extends Migration
             $table->date('tanggal_pergi');
             $table->date('tanggal_kembali');
             $table->string('star_point');
-            $table->string('jumlah_peserta');
             $table->string('deskripsi_trip');
             $table->decimal('harga', 10, 2);
             $table->date('tanggal_pengajuan'); // Automatically set

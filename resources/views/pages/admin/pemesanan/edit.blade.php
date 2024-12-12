@@ -35,25 +35,15 @@
                 <div class="card-body">
                     <div class="form-group">
                         <label for="user_id">Nama Pemesan</label>
-                        <select id="user_id" class="form-control" name="user_id" required>
-                            <option value="">-- Pilih Pengguna --</option>
-                            @foreach($users as $user)
-                            <option value="{{ $user->id }}" {{ $pemesanan->user_id == $user->id ? 'selected' : '' }}>
-                                    {{ $user->name }} ({{ $user->no_telepon }})
-                                </option>
-                            @endforeach
-                        </select>
-                        <div class="invalid-feedback">Kolom ini harus diisi!</div>
+                        <input type="text" class="form-control" value="{{ $pemesanan->user->name }} ({{ $pemesanan->user->no_telepon }})" disabled>
+                        <input type="hidden" name="user_id" value="{{ $pemesanan->user_id }}">
                     </div>
-
                     <div class="form-group">
-                        <label for="trip_type">Tipe Trip</label>
-                        <select id="trip_type" class="form-control" name="trip_type" required>
-                            <option value="open_trip" {{ $pemesanan->trip_type == 'open_trip' ? 'selected' : '' }}>Open Trip</option>
-                            <option value="private_trip" {{ $pemesanan->trip_type == 'private_trip' ? 'selected' : '' }}>Private Trip</option>
-                        </select>
-                        <div class="invalid-feedback">Kolom ini harus diisi!</div>
-                    </div>
+    <label for="trip_type">Tipe Trip</label>
+    <input type="text" id="trip_type" class="form-control" value="{{ $pemesanan->trip_type == 'open_trip' ? 'Open Trip' : 'Private Trip' }}" disabled>
+    <input type="hidden" name="trip_type" value="{{ $pemesanan->trip_type }}">
+    <div class="invalid-feedback">Kolom ini harus diisi!</div>
+</div>
 
                     <div class="form-group">
                         <label for="trip_id">Trip</label>
@@ -65,22 +55,36 @@
                                     </option>
                                 @endforeach
                             @elseif ($pemesanan->trip_type == 'private_trip')
-                                @foreach($privateTrips as $privateTrip)
-                                    <option value="{{ $privateTrip->id }}" {{ $pemesanan->private_trip_id == $privateTrip->id ? 'selected' : '' }}>
-                                        {{ $privateTrip->nama_trip }}
-                                    </option>
-                                @endforeach
+                                <option value="{{ $pemesanan->private_trip_id }}" selected>
+                                    {{ $privateTrips->find($pemesanan->private_trip_id)->nama_trip ?? 'Trip Tidak Ditemukan' }}
+                                </option>
+                                
                             @endif
-                        </select>
+                            </select>
                         <div class="invalid-feedback">Kolom ini harus diisi!</div>
                     </div>
 
+
+                    
                     <div class="form-group">
                         <label for="tanggal_pemesanan">Tanggal Pemesanan</label>
                         <input id="tanggal_pemesanan" type="date" class="form-control" name="tanggal_pemesanan" required value="{{ \Carbon\Carbon::parse($pemesanan->tanggal_pemesanan)->format('Y-m-d') }}">
                         <div class="invalid-feedback">Kolom ini harus diisi!</div>
                     </div>
-                
+
+                    <div class="form-group" id="jumlah_peserta_field" style="display: {{ $pemesanan->trip_type === 'open_trip' ? 'block' : 'none' }};">
+                        <label for="jumlah_peserta">Jumlah Peserta</label>
+                        <input type="number" name="jumlah_peserta" id="jumlah_peserta" class="form-control" value="{{ old('jumlah_peserta', $pemesanan->jumlah_peserta) }}" min="1" required>
+                        @error('jumlah_peserta')
+                            <div class="text-danger">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <div class="form-group">
+                        <label for="tour_gate">Tour Gate</label>
+                        <input type="text" id="tour_gate" name="tour_gate" class="form-control" value="{{ old('tour_gate', $pemesanan->tour_gate) }}" placeholder="Masukkan Tour Gate">
+                        <div class="invalid-feedback">Kolom ini harus diisi!</div>
+                    </div>
 
                     <div class="form-group">
                         <label for="status">Status</label>
@@ -94,7 +98,7 @@
                         @enderror
                     </div>
 
-                    <div class="form-group" id="alasan_batal_container" style="display: none;">
+                    <div class="form-group" id="alasan_batal_container" style="display: {{ $pemesanan->status == 'dibatalkan' ? 'block' : 'none' }};">
                         <label for="alasan_batal">Alasan Pembatalan</label>
                         <textarea id="alasan_batal" name="alasan_batal" class="form-control">{{ old('alasan_batal', $pemesanan->alasan_batal) }}</textarea>
                         <div class="invalid-feedback">Kolom ini harus diisi jika status dibatalkan!</div>
@@ -111,10 +115,25 @@
     </section>
 </div>
 
-<script>
-document.addEventListener("DOMContentLoaded", function() {
+<script>document.addEventListener("DOMContentLoaded", function() {
+    const tripTypeInput = document.querySelector('input[name="trip_type"]');
+    const jumlahPesertaField = document.getElementById('jumlah_peserta_field');
     const statusSelect = document.getElementById('status');
     const alasanBatalContainer = document.getElementById('alasan_batal_container');
+
+    // Inisialisasi tampilan saat halaman dimuat
+    toggleTripType();
+    toggleAlasanBatal();
+
+    function toggleTripType() {
+        const tripType = tripTypeInput.value;
+
+        if (tripType === 'open_trip') {
+            jumlahPesertaField.style.display = 'block'; // Tampilkan input jumlah peserta
+        } else {
+            jumlahPesertaField.style.display = 'none'; // Sembunyikan input jumlah peserta
+        }
+    }
 
     function toggleAlasanBatal() {
         if (statusSelect.value === 'dibatalkan') {
@@ -123,9 +142,6 @@ document.addEventListener("DOMContentLoaded", function() {
             alasanBatalContainer.style.display = 'none';
         }
     }
-
-    // Inisialisasi tampilan saat halaman dimuat
-    toggleAlasanBatal();
 
     // Tambahkan event listener untuk perubahan status
     statusSelect.addEventListener('change', toggleAlasanBatal);

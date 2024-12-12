@@ -24,6 +24,15 @@
                     <div class="col-md-6">
                         <p><strong>User:</strong> <span class="text-muted">{{ $pemesanan->user->name ?? 'N/A' }}</span></p>
                         <p><strong>Trip Type:</strong> <span class="text-success">{{ ucfirst($pemesanan->trip_type) }}</span></p>
+                        <p><strong>Nama Trip:</strong> 
+                            @if ($pemesanan->trip_type == 'private_trip')
+                                {{ $pemesanan->privateTrip->nama_trip ?? 'N/A' }}
+                            @elseif ($pemesanan->trip_type == 'open_trip')
+                                {{ $pemesanan->openTrip->nama_paket ?? 'N/A' }}
+                            @else
+                                N/A
+                            @endif
+                        </p>
                         <p><strong>Status:</strong> <span class="text-success">{{ ucfirst($pemesanan->status) }}</span></p>
                     </div>
                     <div class="col-md-6">

@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-
+use Illuminate\Validation\ValidationException;
 class Pemesanan extends Model
 {
     use HasFactory;
@@ -17,7 +17,9 @@ class Pemesanan extends Model
         'status',
         'tanggal_pemesanan',
         'alasan_batal',
-        'total_pembayaran'
+        'total_pembayaran',
+        'tour_gate', // Add this line
+        'jumlah_peserta', // Add jumlah_peserta here
     ];
 
     // Relationship with User
@@ -44,5 +46,14 @@ class Pemesanan extends Model
     public function pembayaran()
     {
         return $this->hasOne(Pembayaran::class);
+    }
+
+    public static function validate($data)
+    {
+        if ($data['trip_type'] === 'open_trip' && empty($data['jumlah_peserta'])) {
+            throw new ValidationException('Jumlah peserta harus diisi untuk open trip.');
+        }
+
+        // Tambahkan validasi lain sesuai kebutuhan
     }
 }

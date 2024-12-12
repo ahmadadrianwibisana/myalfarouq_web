@@ -45,7 +45,7 @@
           <li><a href="{{ route('user.opentrip') }}">Open Trip</a></li>
           <li><a href="{{ route('user.privatetrip') }}">Private Trip</a></li>
           <li><a href="{{ route('user.dokumen') }}">Artikel</a></li>
-          <li><a href="{{ route('user.opentrip') }}">Trip Saya</a></li>
+          <li><a href="{{ route('user.tripsaya') }}">Trip Saya</a></li>
           <li class="dropdown">
               <a href="#">
                   <span>Profil</span>
@@ -100,18 +100,18 @@
         <div class="container" data-aos="fade-up" data-aos-delay="100">
           <div class="row gy-4">
             <div class="col-lg-4">
-              <div
-                class="info-item d-flex"
-                data-aos="fade-up"
-                data-aos-delay="300">
-                <i class="bi bi-geo-alt flex-shrink-0"></i>
-                <div>
-                  <h3>Whatsapp:</h3>
-                  <a href="https://wa.me/6282269497774" target="_blank"
-                    >+62 822 6949 7774</a
-                  >
-                </div>
+            <div class="info-item d-flex" data-aos="fade-up" data-aos-delay="300">
+              <i class="bi bi-whatsapp flex-shrink-0"></i>
+              <div>
+                <h3>Whatsapp:</h3>
+                <p>
+                  <a href="https://wa.me/6282269497774" target="_blank">+62 822 6949 7774</a>
+                </p>
+                <p>
+                  <a href="https://wa.me/6281234567890" target="_blank">+62 812 3456 7890</a>
+                </p>
               </div>
+            </div>
               <!-- End Info Item -->
 
               <div

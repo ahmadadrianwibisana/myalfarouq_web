@@ -31,5 +31,7 @@ class PrivateTrip extends Model
     {
         return $this->belongsTo(User::class); // Relasi ke User
     }
+
+    
 }
 

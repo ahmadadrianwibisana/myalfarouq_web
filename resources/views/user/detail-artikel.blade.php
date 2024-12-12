@@ -45,7 +45,7 @@
           <li><a href="{{ route('user.opentrip') }}">Open Trip</a></li>
           <li><a href="{{ route('user.privatetrip') }}">Private Trip</a></li>
           <li><a href="{{ route('user.dokumen') }}">Artikel</a></li>
-          <li><a href="{{ route('user.opentrip') }}">Trip Saya</a></li>
+          <li><a href="{{ route('user.tripsaya') }}">Trip Saya</a></li>
           <li class="dropdown">
               <a href="#">
                   <span>Profil</span>
@@ -70,103 +70,84 @@
     </div>
   </header>
     <main class="main detailartikel">
-      <!-- Page Title -->
-      <div
-        class="page-title dark-background"
-        data-aos="fade"
-        style="background-image: url('{{ asset('assets/img/background.png') }}')">
-        <div class="container position-relative">
-          <h1>Detail Artikel</h1>
-          <h2>Dokumentasi Trip</h2>
-          <nav class="breadcrumbs">
-            <ol>
-              <li><a href="index.html">Home</a></li>
-              <li><a href="artikel.html">Artikel</a></li>
-              <li class="current">Detail Artikel</li>
-            </ol>
-          </nav>
-        </div>
-      </div>
-      <!-- End Page Title -->
+     <!-- Page Title -->
+<div
+  class="page-title dark-background"
+  data-aos="fade"
+  style="background-image: url('{{ asset('assets/img/background.png') }}')">
+  <div class="container position-relative">
+    <h1>Detail Artikel</h1>
+    <h2>{{ $artikel->judul_artikel }}</h2>
+    <nav class="breadcrumbs">
+      <ol>
+        <li><a href="{{ route('user.home') }}">Home</a></li>
+        <li><a href="{{ route('user.dokumen') }}">Artikel</a></li>
+        <li class="current">Detail Artikel</li>
+      </ol>
+    </nav>
+  </div>
+</div>
+<!-- End Page Title -->
 
-      <!-- Detail Section -->
-      <section id="detail" class="detail section">
-        <div class="container">
-          <div class="row gy-4">
+   <!-- detail-artikel.blade.php -->
+<section id="detail" class="detail section">
+    <div class="container">
+        <div class="row gy-4">
             <!-- Konten Utama -->
             <div class="col-lg-8" data-aos="fade-up">
-              <div class="detail-content">
-                <!-- Teks Artikel -->
-                <h2 style="text-align: justify">
-                  Dokumentasi Private Tour 2 Negara Tgl 18 – 22 Agustus 2024
-                  sebanyak 40 pax
-                </h2>
-                <p class="text-muted" style="text-align: justify">
-                  <i class="bi bi-calendar-event" style="color: #276f5f"></i>
-                  Agustus 23, 2024 &nbsp;&nbsp;
-                  <i class="bi bi-file-earmark-text" style="color: #276f5f"></i>
-                  Dokumentasi
-                </p>
-                <p style="text-align: justify">
-                  Trip ini merupakan pengalaman yang luar biasa dengan 40
-                  peserta yang mengikuti private tour ke 2 negara. Peserta
-                  menikmati destinasi menarik dengan fasilitas terbaik,
-                  memastikan perjalanan berjalan dengan nyaman dan penuh
-                  kenangan.
-                </p>
-                <p style="text-align: justify">
-                  Mulai dari kunjungan ke landmark terkenal hingga mencicipi
-                  kuliner khas lokal, tour ini memberikan pengalaman tak
-                  terlupakan. Dokumentasi ini mencakup momen terbaik selama
-                  perjalanan.
-                </p>
+                <div class="detail-content">
+                    <!-- Teks Artikel -->
+                    <h2 style="text-align: justify">
+                        {{ $artikel->judul_artikel }}
+                    </h2>
+                    <p class="text-muted" style="text-align: justify">
+                        <i class="bi bi-calendar-event" style="color: #276f5f"></i>
+                        {{ date('d M Y', strtotime($artikel->tanggal_publish)) }} &nbsp;&nbsp;
+                        <i class="bi bi-file-earmark-text" style="color: #276f5f"></i>
+                        Dokumentasi
+                    </p>
+                    <p style="text-align: justify">
+                        {{ $artikel->deskripsi }}
+                    </p>
 
-                <!-- Galeri Tambahan -->
-                <div class="additional-gallery mt-4">
-                  <h3>Galeri Tambahan</h3>
-                  <div class="row">
-                    <div class="col-4">
-                      <img
-                        src="{{ asset('assets/img/open1.jpg') }}"
-                        alt="Gallery Image 1"
-                        class="img-fluid rounded mb-3" />
+                    <!-- Galeri Tambahan -->
+                    <div class="additional-gallery mt-4">
+                        <h3>Galeri Tambahan</h3>
+                        <div class="row">
+                            @if ($artikel->images->isNotEmpty())
+                                @foreach ($artikel->images as $image)
+                                    <div class="col-4">
+                                        <img src="{{ asset('storage/' . $image->image_path) }}" alt="Gallery Image" class="img-fluid rounded mb-3" />
+                                    </div>
+                                @endforeach
+                            @else
+                                <p>Tidak ada gambar untuk artikel ini.</p>
+                            @endif
+                        </div>
                     </div>
-                    <div class="col-4">
-                      <img
-                        src="{{ asset('assets/img/open2.jpg') }}"
-                        alt="Gallery Image 2"
-                        class="img-fluid rounded mb-3" />
-                    </div>
-                    <div class="col-4">
-                      <img
-                        src="{{ asset('assets/img/open2.jpg') }}"
-                        alt="Gallery Image 3"
-                        class="img-fluid rounded mb-3" />
-                    </div>
-                  </div>
+                    <!-- End Galeri Tambahan -->
                 </div>
-                <!-- End Galeri Tambahan -->
-              </div>
             </div>
             <!-- End Konten Utama -->
 
             <!-- Sidebar -->
             <div class="col-lg-4" data-aos="fade-up">
-              <div class="sidebar">
-                <!-- Gambar Utama -->
-                <div class="main-image mb-4">
-                  <img
-                    src="{{ asset('assets/img/open1.jpg') }}"
-                    alt="Dokumentasi Private Tour 2 Negara"
-                    class="img-fluid rounded" />
+                <div class="sidebar">
+                    <!-- Gambar Utama -->
+                    <div class="main-image mb-4">
+                        @if ($artikel->images->isNotEmpty())
+                            <img src="{{ asset('storage/' . $artikel->images->first()->image_path) }}" alt="Dokumentasi Artikel" class="img-fluid rounded" />
+                        @else
+                            <img src="{{ asset('assets/img/default.jpg') }}" alt="Default Image" class="img-fluid rounded" />
+                        @endif
+                    </div>
                 </div>
-              </div>
             </div>
             <!-- End Sidebar -->
-          </div>
         </div>
-      </section>
-      <!-- End Detail Section -->
+    </div>
+</section>
+<!-- End Detail Section -->
     </main>
 
     <footer id="footer" class="footer dark-background">

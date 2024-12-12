@@ -174,29 +174,31 @@ Route::group(['middleware' => 'admin'], function () {
 Route::group(['middleware' => 'adminbesar'], function () {
     Route::get('/adminbesar', [AdminBesarController::class, 'dashboard'])->name('adminbesar.dashboard'); // Halaman dashboard admin
 
+    // Artikel
     Route::get('/artikel', [ArtikelController::class,'index'])->name('adminbesar.artikel');
     // Route for showing the create form
     Route::get('/adminbesar/artikel/create', [ArtikelController::class, 'create'])->name('adminbesar.artikel.create');
     // Route for storing a new article
     Route::post('/adminbesar/artikel', [ArtikelController::class, 'store'])->name('adminbesar.artikel.store');
-
     // Route for showing a single article (optional)
     Route::get('/adminbesar/artikel/{id}', [ArtikelController::class, 'show'])->name('adminbesar.artikel.show');
-
     // Route for showing the edit form (optional)
     Route::get('/adminbesar/artikel/{id}/edit', [ArtikelController::class, 'edit'])->name('adminbesar.artikel.edit');
-
     // Route for updating an article (optional)
     Route::put('/adminbesar/artikel/{id}', [ArtikelController::class, 'update'])->name('adminbesar.artikel.update');
-
     // Route for deleting an article (optional)
     Route::delete('/adminbesar/artikel/{id}', [ArtikelController::class, 'destroy'])->name('adminbesar.artikel.destroy');
 
+
+    // Laporan
     Route::get('/laporan', [LaporanController::class,'index'])->name('adminbesar.laporan');
     Route::get('adminbesar/laporan/{id}', [RiwayatController::class, 'show'])->name('adminbesar.laporan.show');
+    Route::get('/adminbesar/laporan/total-pendapatan-per-bulan', [LaporanController::class, 'totalPendapatanPerBulan']);
+    Route::get('/adminbesar/laporan/total-pendapatan-per-tahun', [LaporanController::class, 'totalPendapatanPerTahun']);
     Route::post('adminbesar/laporan/filter', [LaporanController::class, 'filterByDate'])->name('adminbesar.laporan.filter');
 
 
+    // Riwayat
     Route::get('/riwayat', [RiwayatController::class,'index'])->name('adminbesar.riwayat');
     Route::get('adminbesar/riwayat/{id}', [RiwayatController::class, 'show'])->name('adminbesar.riwayat.show');
 
@@ -209,14 +211,34 @@ Route::group(['middleware' => 'adminbesar'], function () {
 // Route untuk user
 Route::group(['middleware' => 'web'], function () {
     Route::get('/user', [UserController::class, 'home'])->name('user.home');
-    Route::get('/user/opentrip', [UserController::class, 'opentrip'])->name('user.opentrip');
-    Route::get('/user/privatetrip', [UserController::class, 'privatetrip'])->name('user.privatetrip');
+    
+    // Artikel 
     Route::get('/user/dokumen', [UserController::class, 'dokumen'])->name('user.dokumen');
-    Route::get('/user/profil-kami', [UserController::class, 'profilKami'])->name('user.profil-kami');
-    Route::get('/user/tentang-kami', [UserController::class, 'tentangKami'])->name('user.tentang-kami');
     Route::get('/user/dokumen/detail', [UserController::class, 'detail'])->name('user.detail');
-    Route::get('/user/opentrip/detail', [UserController::class, 'detailopen'])->name('user.detailopen');
+    Route::get('/detail-artikel/{id}', [UserController::class, 'detailArtikel'])->name('user.detail-artikel');
 
+
+    // Open Trip
+    Route::get('/user/opentrip', [UserController::class, 'opentrip'])->name('user.opentrip');
+    Route::get('/open-trip/{id}', [UserController::class, 'detailopen'])->name('user.detailopen');
+    Route::post('opentrip/{id}/book', [UserController::class, 'bookOpenTrip'])->name('user.bookOpenTrip');
+
+    // Privat Trip
+    Route::get('/user/privatetrip', [UserController::class, 'privatetrip'])->name('user.privatetrip');
+    Route::post('/user/private_trip/store', [UserController::class, 'storePrivateTrip'])->name('user.private_trip.store');
+
+    // Profil Kami
+    Route::get('/user/profil-kami', [UserController::class, 'profilKami'])->name('user.profil-kami');
+    
+    // Tentang Kami
+    Route::get('/user/tentang-kami', [UserController::class, 'tentangKami'])->name('user.tentang-kami');
+
+
+    // Trip Saya
+    Route::get('/user/tripsaya', [UserController::class, 'tripsaya'])->name('user.tripsaya');
+    Route::delete('/user/tripsaya/batal-pemesanan/{id}', [UserController::class, 'batalPemesanan'])->name('user.tripsaya.batalPemesanan');
+    Route::get('/user/tripsaya/detail/{id}', [UserController::class, 'detailPemesanan'])->name('user.tripsaya.detail-pemesanan');
+    
 
     Route::post('/user/logout', [AuthController::class, 'user_logout'])->name('user.logout');
 

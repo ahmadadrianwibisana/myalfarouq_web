@@ -39,7 +39,6 @@ class OpenTripController extends Controller
         'kuota' => 'required|integer|min:1',
         'deskripsi_trip' => 'required|string',
         'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048', // Max 2MB
-        'jumlah_peserta' => 'required|integer|min:0',
         'star_point' => 'required|string|max:255',
     ]);
 
@@ -71,7 +70,6 @@ class OpenTripController extends Controller
         'kuota' => $request->kuota,
         'deskripsi_trip' => $request->deskripsi_trip,
         'image' => $imageName,
-        'jumlah_peserta' => $request->jumlah_peserta,
         'star_point' => $request->star_point,
     ]);
 
@@ -114,7 +112,6 @@ public function update(Request $request, $id)
         'kuota' => 'required|integer|min:1',
         'deskripsi_trip' => 'required|string',
         'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048', // Max 2MB
-        'jumlah_peserta' => 'required|integer|min:0',
         'star_point' => 'required|string|max:255',
     ]);
 
@@ -153,7 +150,6 @@ public function update(Request $request, $id)
         'kuota' => $request->kuota,
         'deskripsi_trip' => $request->deskripsi_trip,
         'image' => $imageName,
-        'jumlah_peserta' => $request->jumlah_peserta,
         'star_point' => $request->star_point,
     ]);
 

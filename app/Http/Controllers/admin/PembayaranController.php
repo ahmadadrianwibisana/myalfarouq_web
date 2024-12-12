@@ -43,6 +43,12 @@ class PembayaranController extends Controller
             return back()->withErrors($validator)->withInput();
         }
     
+        // Ambil pemesanan dan periksa total pembayaran
+        $pemesanan = Pemesanan::find($request->pemesanan_id);
+        if ($pemesanan->total_pembayaran != $request->jumlah_pembayaran) {
+            return back()->withErrors(['jumlah_pembayaran' => 'Jumlah pembayaran harus sesuai dengan total pembayaran.'])->withInput();
+        }
+
         // Check the status of the pemesanan
         $pemesanan = Pemesanan::find($request->pemesanan_id);
         if ($pemesanan->status !== 'terkonfirmasi') {
@@ -100,6 +106,13 @@ class PembayaranController extends Controller
         if ($validator->fails()) {
             return back()->withErrors($validator)->withInput();
         }
+
+        // Ambil pemesanan dan periksa total pembayaran
+        $pemesanan = Pemesanan::find($request->pemesanan_id);
+        if ($pemesanan->total_pembayaran != $request->jumlah_pembayaran) {
+            return back()->withErrors(['jumlah_pembayaran' => 'Jumlah pembayaran harus sesuai dengan total pembayaran.'])->withInput();
+        }
+
     
         // Retrieve the payment record
         $pembayaran = Pembayaran::findOrFail($id);

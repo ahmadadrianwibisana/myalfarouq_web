@@ -11,34 +11,32 @@ class LaporanController extends Controller
 {
     public function index()
     {
-        // Mengambil semua pemesanan dengan relasi yang diperlukan
-        $pemesanan = Pemesanan::with(['user', 'openTrip', 'privateTrip', 'dataAdministrasi', 'pembayaran'])->get();
-
+        // Mengambil semua pemesanan dengan relasi yang diperlukan dan filter sesuai kriteria
+        $pemesanan = Pemesanan::with(['user', 'openTrip', 'privateTrip', 'dataAdministrasi', 'pembayaran'])
+            ->where('status', 'terkonfirmasi')
+            ->whereHas('dataAdministrasi', function($query) {
+                $query->where('status', 'approved');
+            })
+            ->whereHas('pembayaran', function($query) {
+                $query->where('status_pembayaran', 'success');
+            })
+            ->get();
+    
         // Menghitung total pendapatan
         $totalPendapatan = $this->hitungTotalPendapatan($pemesanan);
-
+    
         return view('pages.adminbesar.laporan.index', compact('pemesanan', 'totalPendapatan'));
     }
-
+    
     private function hitungTotalPendapatan($pemesanan)
     {
         $totalPendapatan = [
-            'harian' => [],
-            'mingguan' => [],
             'bulanan' => [],
             'tahunan' => [],
         ];
     
         foreach ($pemesanan as $item) {
             $tanggal = Carbon::parse($item->tanggal_pemesanan);
-            
-            // Hitung pendapatan harian
-            $totalPendapatan['harian'][$tanggal->format('Y-m-d')] = 
-                ($totalPendapatan['harian'][$tanggal->format('Y-m-d')] ?? 0) + $item->total_pembayaran;
-    
-            // Hitung pendapatan mingguan
-            $totalPendapatan['mingguan'][$tanggal->format('W-Y')] = 
-                ($totalPendapatan['mingguan'][$tanggal->format('W-Y')] ?? 0) + $item->total_pembayaran;
     
             // Hitung pendapatan bulanan
             $totalPendapatan['bulanan'][$tanggal->format('Y-m')] = 
@@ -52,16 +50,50 @@ class LaporanController extends Controller
         return $totalPendapatan;
     }
 
-    private function hitungTotalPendapatanMingguan()
+    public function totalPendapatanPerBulan(Request $request)
     {
-        return Pemesanan::where('tanggal_pemesanan', '>=', Carbon::now()->startOfWeek())
+        $month = $request->input('month');
+        $year = $request->input('year');
+
+        // Validasi input bulan dan tahun
+        if (!$month || !$year) {
+            return response()->json(['error' => 'Bulan dan tahun harus diisi'], 400);
+        }
+
+        $totalPendapatan = Pemesanan::whereMonth('tanggal_pemesanan', $month)
+            ->whereYear('tanggal_pemesanan', $year)
+            ->where('status', 'terkonfirmasi')
+            ->whereHas('dataAdministrasi', function($query) {
+                $query->where('status', 'approved');
+            })
+            ->whereHas('pembayaran', function($query) {
+                $query->where('status_pembayaran', 'success');
+            })
             ->sum('total_pembayaran');
+
+        return response()->json(['totalPendapatan' => $totalPendapatan]);
     }
 
-    private function hitungTotalPendapatanTahunan()
+    public function totalPendapatanPerTahun(Request $request)
     {
-        return Pemesanan::where('tanggal_pemesanan', '>=', Carbon::now()->startOfYear())
+        $year = $request->input('year');
+
+        // Validasi input tahun
+        if (!$year) {
+            return response()->json(['error' => 'Tahun harus diisi'], 400);
+        }
+
+        $totalPendapatan = Pemesanan::whereYear('tanggal_pemesanan', $year)
+            ->where('status', 'terkonfirmasi')
+            ->whereHas('dataAdministrasi', function($query) {
+                $query->where('status', 'approved');
+            })
+            ->whereHas('pembayaran', function($query) {
+                $query->where('status_pembayaran', 'success');
+            })
             ->sum('total_pembayaran');
+
+        return response()->json(['totalPendapatan' => $totalPendapatan]);
     }
 
     public function show($id)
@@ -69,25 +101,33 @@ class LaporanController extends Controller
         // Mengambil pemesanan berdasarkan ID dengan relasi yang diperlukan
         $pemesanan = Pemesanan::with(['user', 'openTrip', 'privateTrip', 'dataAdministrasi', 'pembayaran'])->findOrFail($id);
 
-        // Menghitung total pendapatan mingguan dan tahunan
-        $totalPendapatanMingguan = $this->hitungTotalPendapatanMingguan();
-        $totalPendapatanTahunan = $this->hitungTotalPendapatanTahunan();
-
-        return view('pages.adminbesar.laporan.show', compact('pemesanan', 'totalPendapatanMingguan', 'totalPendapatanTahunan'));
+        return view('pages.adminbesar.laporan.show', compact('pemesanan'));
     }
-
+    
     // Optional: Add methods for filtering by date range
     public function filterByDate(Request $request)
     {
+        $request->validate([
+            'start_date' => 'required|date',
+            'end_date' => 'required|date|after_or_equal:start_date',
+        ]);
+    
         $startDate = Carbon::parse($request->input('start_date'));
         $endDate = Carbon::parse($request->input('end_date'));
-
+    
         $pemesanan = Pemesanan::with(['user', 'openTrip', 'privateTrip', 'dataAdministrasi', 'pembayaran'])
             ->whereBetween('tanggal_pemesanan', [$startDate, $endDate])
+            ->where('status', 'terkonfirmasi')
+            ->whereHas('dataAdministrasi', function($query) {
+                $query->where('status', 'approved');
+            })
+            ->whereHas('pembayaran', function($query){
+                $query->where('status_pembayaran', 'success');
+            })
             ->get();
-
+    
         $totalPendapatan = $this->hitungTotalPendapatan($pemesanan);
-
+    
         return view('pages.adminbesar.laporan.index', compact('pemesanan', 'totalPendapatan'));
     }
 }

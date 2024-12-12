@@ -46,7 +46,6 @@
                             <li><strong>Lama Keberangkatan:</strong> {{ $open_trips->lama_keberangkatan }}</li>
                             <li><strong>Star Point:</strong> {{ $open_trips->star_point }}</li>
                             <li><strong>Kuota:</strong> {{ $open_trips->kuota }}</li>
-                            <li><strong>Jumlah Peserta:</strong> {{ $open_trips->jumlah_peserta }}</li>
                         </ul>
                         <hr> 
                         <p>{{ $open_trips->deskripsi_trip }}</p> 

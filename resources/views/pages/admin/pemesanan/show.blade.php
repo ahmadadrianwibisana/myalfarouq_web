@@ -59,15 +59,17 @@
                                 @endif
                             </p>
                             <p><strong>Tanggal Pemesanan:</strong> {{ date('d M Y', strtotime($pemesanan->tanggal_pemesanan)) }}</p>
-                            
+                            <p><strong>Tour Gate:</strong> {{ $pemesanan->tour_gate ?? 'N/A' }}</p>
+
                             <!-- Total Payment Display -->
-                            <div class="border rounded p-3 mb-4" style="background-color: #e9f7fe; border: 1px solid #b3e0ff;">
+                                                        <!-- Total Payment Display -->
+                                                        <div class="border rounded p-3 mb-4" style="background-color: #e9f7fe; border: 1px solid #b3e0ff;">
                                 <h4 class="text-primary text-center">Total Pembayaran:</h4>
                                 <p class="mb-0 text-center" style="font-size: 1.5rem; font-weight: bold; color: #007bff;">
                                     Rp. {{ number_format($pemesanan->total_pembayaran, 2, ',', '.') }}
                                 </p>
                             </div>
-                            
+
                             <p><strong>Deskripsi:</strong> 
                                 @if ($pemesanan->trip_type == 'open_trip')
                                     {{ $tripDetails->deskripsi_trip ?? 'Tidak ada deskripsi' }}
@@ -86,7 +88,7 @@
                                 <p><strong>Harga per Peserta:</strong> Rp. {{ number_format($tripDetails->harga, 2, ',', '.') }}</p>
                                 <p><strong>Lama Keberangkatan:</strong> {{ $tripDetails->lama_keberangkatan ?? 'N/A' }}</p>
                                 <p><strong>Kuota:</strong> {{ $tripDetails->kuota ?? 'N/A' }}</p>
-                                <p><strong>Jumlah Peserta:</strong> {{ $tripDetails->jumlah_peserta ?? 'N/A' }}</p>
+                                <p><strong>Jumlah Peserta:</strong> {{ $pemesanan->jumlah_peserta ?? 'N/A' }}</p> <!-- Menampilkan jumlah peserta -->
                             @elseif ($pemesanan->trip_type == 'private_trip')
                                 <p><strong>Destinasi:</strong> {{ $tripDetails->destinasi ?? 'N/A' }}</p>
                                 <p><strong>Tanggal Pergi:</strong> {{ \Carbon\Carbon::parse($tripDetails->tanggal_pergi)->format('d M Y') }}</p>
@@ -111,7 +113,7 @@
                         @elseif($pemesanan->status == 'dibatalkan' && !empty($pemesanan->alasan_batal))
                             <p><strong>Keterangan Ditolak:</strong> {{ $pemesanan->alasan_batal }}</p>
                         @elseif($pemesanan->status == 'dibatalkan' && !empty($pemesanan->alasan_batal))
-                            <div class="alert alert-danger mt-3" role="alert">
+                        <div class="alert alert-danger mt-3" role="alert">
                                 <strong>Pemesanan Dibatalkan!</strong> {{ $pemesanan->alasan_batal }}
                             </div>
                         @endif

@@ -18,7 +18,8 @@ class OpenTrip extends Model
         'kuota',
         'deskripsi_trip',
         'image',
-        'jumlah_peserta',
         'star_point'
     ];
+
+    
 }

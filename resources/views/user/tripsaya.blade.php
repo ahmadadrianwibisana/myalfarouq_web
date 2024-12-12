@@ -1,179 +1,413 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Enhanced Wide Card</title>
-    <link crossorigin="anonymous" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" rel="stylesheet"/>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>MyAlfarouq - Web</title>
+    <meta name="description" content="" />
+    <meta name="keywords" content="" />
+
+    <!-- Favicons -->
+    <link href="{{ asset('assets/user/img/logo.png') }}" rel="icon" />
+    <link href="{{ asset('assets/user/img/apple-touch-icon.png') }}" rel="apple-touch-icon" />
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+      rel="stylesheet" />
+
+    <!-- Vendor CSS Files -->
+    <link href="{{ asset('assets/user/vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet" />
+    <link href="{{ asset('assets/user/vendor/bootstrap-icons/bootstrap-icons.css') }}" rel="stylesheet" />
+    <link href="{{ asset('assets/user/vendor/aos/aos.css') }}" rel="stylesheet" />
+    <link href="{{ asset('assets/user/vendor/fontawesome-free/css/all.min.css') }}" rel="stylesheet" />
+    <link href="{{ asset('assets/user/vendor/glightbox/css/glightbox.min.css') }}" rel="stylesheet" />
+    <link href="{{ asset('assets/user/vendor/swiper/swiper-bundle.min.css') }}" rel="stylesheet" />
+
+    <!-- Main CSS File -->
+    <link href="{{ asset('assets/user/css/main.css') }}" rel="stylesheet" />
     <style>
-        body {
-            background-color: #e0f0ef;
-            font-family: Arial, sans-serif;
-        }
+body {
+    background-color: #f8f9fa; /* Warna latar belakang yang lebih terang */
+}
 
-        .card {
-            border-radius: 15px;
-            padding: 20px;
-            background-color: #b0d4d4;
-            width: 900px; /* Increased width for a wider card */
-            margin: 20px auto;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-        }
+.card-custom {
+    max-width: 70%; /* Atur lebar maksimum kartu menjadi 90% dari lebar layar */
+    width: 600px; /* Lebar tetap untuk layar besar */
+    margin: 20px auto; /* Pusatkan kartu di dalam container */
+    background-color: #276f5f; /* Warna latar belakang kartu */
+    border-radius: 15px; /* Sudut melengkung */
+    padding: 20px; /* Tambahkan padding di dalam kartu */
+    color: white; /* Warna teks di dalam kartu */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Bayangan untuk efek kedalaman */
+    transition: transform 0.3s, box-shadow 0.3s; /* Transisi untuk efek hover */
+}
 
-        .card img {
-            border-radius: 10px;
-            width: 100%; /* Make the image responsive and fit the container */
-            height: auto; /* Keep aspect ratio intact */
-        }
+.card-custom:hover {
+    transform: translateY(-5px); /* Efek mengangkat saat hover */
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2); /* Bayangan lebih dalam saat hover */
+}
 
-        .card-title {
-            font-size: 2rem; /* Adjusted font size for wider layout */
-            font-weight: bold;
-            color: #276f5f;
-        }
+.btn-custom {
+    background-color: #dc3545; /* Warna tombol */
+    color: white; /* Warna teks tombol */
+    border: none; /* Tanpa border */
+    border-radius: 5px; /* Sudut melengkung tombol */
+    padding: 10px 15px; /* Padding tombol */
+    transition: background-color 0.3s; /* Transisi untuk efek hover */
+}
 
-        .card-text {
-            font-size: 1.2rem; /* Adjusted font size */
-            color: #555;
-        }
+.btn-custom:hover {
+    background-color: #c82333; /* Warna tombol saat hover */
+}
 
-        .status {
-            font-size: 1.3rem; /* Slightly larger font for status */
-            font-weight: bold;
-            color: #276f5f;
-        }
+.header-custom {
+    background-color: #2d2d2d; /* Warna latar belakang header */
+    color: white; /* Warna teks header */
+    padding: 15px 20px; /* Padding header */
+    border-radius: 15px; /* Sudut melengkung header */
+    display: flex; /* Flexbox untuk tata letak */
+    align-items: center; /* Pusatkan item secara vertikal */
+    text-align: center; /* Pusatkan teks di header */
+}
 
-        .btn-danger {
-            background-color: #d9534f;
-            border: none;
-            font-size: 1.1rem;
-            padding: 12px 30px; /* Slightly wider padding */
-            border-radius: 5px;
-            transition: background-color 0.3s ease;
-        }
+.status-btn {
+    color: white; /* Warna teks status */
+    border-radius: 15px; /* Sudut melengkung */
+    padding: 5px 10px; /* Padding status */
+    font-weight: bold; /* Tebal untuk teks status */
+}
 
-        .btn-danger:hover {
-            background-color: #c9302c;
-        }
+.status-pending {
+    background-color: #ffc107; /* Warna kuning untuk status 'pending' */
+}
 
-        .info-label {
-            font-weight: bold;
-            color: #4a4a4a;
-        }
+.status-confirmed {
+    background-color: #28a745; /* Warna hijau untuk status 'terkonfirmasi' */
+}
 
-        .info-value {
-            background-color: #ffffff;
-            padding: 6px 12px;
-            border-radius: 5px;
-            display: inline-block;
-            color: #333;
-        }
+.status-cancelled {
+    background-color: #dc3545; /* Warna merah untuk status 'dibatalkan' */
+}
 
-        .info-section {
-            margin-bottom: 15px;
-        }
+/* Media Queries untuk responsivitas */
+@media (max-width: 768px) {
+    .card-custom {
+        padding: 15px; /* Kurangi padding pada layar kecil */
+        width: 95%; /* Lebar kartu menjadi 95% pada layar kecil */
+    }
+    .header-custom {
+        font-size: 1.2rem; /* Sesuaikan ukuran font pada header */
+    }
+}
+</style>
 
-        .ket {
-            font-size: 1rem;
-            color: #4a4a4a;
-            font-style: italic;
-            line-height: 1.5;
-        }
 
-        /* Add some hover effects for the info labels */
-        .info-label:hover {
-            color: #276f5f;
-            cursor: pointer;
-        }
 
-        /* Adjust layout for side-by-side info sections */
-        .row.custom-row {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 15px;
-        }
-
-        .col-custom {
-            flex: 1;
-            margin-right: 20px;
-        }
-
-        /* Responsive Design for smaller screens */
-        @media (max-width: 991px) {
-            .card {
-                width: 80%; /* Make the card responsive */
-            }
-        }
-    </style>
 </head>
-<body>
 
-<div class="card">
-    <div class="row">
-        <div class="col-md-4">
-            <img alt="Group of people in front of Petronas Towers" class="img-fluid" src="https://storage.googleapis.com/a1aa/image/UeN1dRgVVYXLYC3rbR1nMNFz9siQuVJ1ztfVQXasWadoVK1TA.jpg"/>
+<body class="services-page">
+    <header id="header" class="header d-flex align-items-center fixed-top">
+        <div class="container-fluid container-xl position-relative d-flex align-items-center">
+            <a href="{{ route('user.home') }}" class="logo d-flex align-items-center me-auto">
+                <img src="{{ asset('assets/user/img/logo.png') }}" alt="Logo" />
+            </a>
+
+            <nav id="navmenu" class="navmenu">
+                <ul>
+                    <li><a href="{{ route('user.home') }}" class="active">Home</a></li>
+                    <li><a href="{{ route('user.opentrip') }}">Open Trip</a></li>
+                    <li><a href="{{ route('user.privatetrip') }}">Private Trip</a></li>
+                    <li><a href="{{ route('user.dokumen') }}">Artikel</a></li>
+                    <li><a href="{{ route('user.tripsaya') }}">Trip Saya</a></li>
+                    <li class="dropdown">
+                        <a href="#">
+                            <span>Profil</span>
+                            <i class="bi bi-chevron-down toggle-dropdown"></i>
+                        </a>
+                        <ul>
+                            <li><a href="{{ route('user.profil-kami') }}">Profil Kami</a></li>
+                            <li><a href="{{ route('user.tentang-kami') }}">Tentang Kami</a></li>
+                        </ul>
+                    </li>
+                </ul>
+
+                <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
+            </nav>
+            <a class="btn-getstarted" href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                Logout
+            </a>
+
+            <form id="logout-form" action="{{ route('user.logout') }}" method="POST" style="display: none;">
+                @csrf
+            </form>
         </div>
-        <div class="col-md-8">
-            <h5 class="card-title">
-                Ahmad Adrian Wibisana
-            </h5>
-            <p class="card-text">
-                085365474309
-            </p>
-            <p class="card-text">
-                <i class="fas fa-users"></i>
-                20 Orang
-            </p>
-            <div class="row custom-row">
-                <div class="col-custom">
-                    <span class="info-label">Star Point:</span>
-                    <span class="info-value">Pekanbaru</span>
+    </header>
+    
+    <main class="main">
+   <!-- Flash Messages -->
+   
+    <!-- Page Title -->
+    <div class="page-title dark-background" data-aos="fade" style="background-image: url('{{ asset('assets/user/img/background.png') }}')">
+        <div class="container position-relative">
+            <h1>TRIP SAYA</h1>
+            <h2>Alfarouq Travel</h2>
+            <nav class="breadcrumbs">
+                <ol>
+                    <li><a href="{{ route('user.home') }}">Home</a></li>
+                    <li class="current">Trip Saya</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+    <!-- End Page Title -->
+
+    <section>
+        <div class="container mt-4">
+            @if($pemesanans->isEmpty())
+                <div class="alert alert-info text-center">
+                    Anda belum melakukan pemesanan.
                 </div>
-                <div class="col-custom">
-                    <span class="info-label">Destinasi:</span>
-                    <span class="info-value">Malaysia - Singapore</span>
+            @else
+                @foreach($pemesanans as $pemesanan)
+                    <div class="card card-custom mb-4">
+                        <div class="row">
+                        <div class="col-md-4">
+                            @if($pemesanan->trip_type === 'open_trip' && $pemesanan->openTrip && $pemesanan->openTrip->image)
+                                <img alt="Open Trip Image" class="img-fluid rounded" 
+                                    src="{{ asset('open_trip_images/' . $pemesanan->openTrip->image) }}" />
+                            @elseif($pemesanan->trip_type === 'private_trip' && $pemesanan->privateTrip && $pemesanan->privateTrip->image)
+                                <img alt="Private Trip Image" class="img-fluid rounded" 
+                                    src="{{ asset('private_trip_images/' . $pemesanan->privateTrip->image) }}" />
+                            @else
+                                <img alt="Default Image" class="img-fluid rounded" 
+                                    src="{{ asset('default_image_url.jpg') }}" />
+                            @endif
+                        </div>
+                            <div class="col-md-8">
+                            <h5 class="text-white">
+                                {{ $pemesanan->openTrip->nama_paket ?? $pemesanan->privateTrip->nama_trip }}
+                                <span class="text-white">({{ ucfirst($pemesanan->trip_type) }})</span>
+                            </h5>                               
+                                <p class="text-white">{{ $pemesanan->user->no_telepon }}</p>
+                                <div class="d-flex align-items-center mb-2">
+                                    <i class="fas fa-user"></i>
+                                    <span class="ms-2">{{ $pemesanan->jumlah_peserta }} Orang</span>
+                                </div>
+                                <div class="row">
+                                    <div class="col-6">
+                                        <p>
+                                            <strong>Star Point</strong><br/>
+                                            {{ $pemesanan->openTrip->star_point ?? $pemesanan->privateTrip->star_point ?? 'N/A' }}
+                                        </p>
+                                    </div>
+                                    <div class="col-6">
+                                        <p>
+                                            <strong>Destinasi</strong><br/>
+                                            {{ $pemesanan->openTrip->destinasi ?? $pemesanan->privateTrip->destinasi ?? 'N/A' }}
+                                        </p>
+                                    </div>
+                                    <div class="col-6">
+                                        <p>
+                                            <strong>Keberangkatan</strong><br/>
+                                            {{ \Carbon\Carbon::parse($pemesanan->tanggal_keberangkatan)->format('d/m/Y') ?? 'N/A' }}
+                                        </p>
+                                    </div>
+                                    <div class="col-6">
+                                        <p>
+                                            <strong>Kepulangan</strong><br/>
+                                            {{ \Carbon\Carbon::parse($pemesanan->tanggal_kepulangan)->format('d/m/Y') ?? 'N/A' }}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <hr class="bg-white"/> <!-- Mengubah warna garis pemisah menjadi putih -->
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <p class="text-white"><strong>Status</strong></p>
+                                <span class="status-btn 
+                                    {{ $pemesanan->status == 'pending' ? 'status-pending' : 
+                                    ($pemesanan->status == 'terkonfirmasi' ? 'status-confirmed' : 
+                                    ($pemesanan->status == 'dibatalkan' ? 'status-cancelled' : '')) }}">
+                                    {{ ucfirst($pemesanan->status) }} <!-- Menggunakan ucfirst untuk huruf kapital pertama -->
+                                </span>
+                            </div>
+                            
+                            <div>
+                            <a href="{{ route('user.tripsaya.detail-pemesanan', $pemesanan->id) }}" class="btn btn-info">Detail Pemesanan</a>
+                            @if($pemesanan->status == 'pending')
+                                <form action="{{ route('user.tripsaya.batalPemesanan', $pemesanan->id) }}" method="POST" class="d-inline" id="cancel-form-{{ $pemesanan->id }}">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="button" class="btn btn-danger" onclick="confirmCancellation({{ $pemesanan->id }})" aria-label="Batal Pemesanan">Batalkan Pemesanan</button>
+                                </form>
+                            @elseif($pemesanan->status == 'terkonfirmasi')
+                                <p class="text-warning">Pemesanan Anda telah terkonfirmasi. Jika Anda ingin membatalkan, harap <a href="https://wa.me/6282269497774" target="_blank" class="text-primary">hubungi admin melalui WhatsApp</a>.</p>
+                            @endif
+                            </div>
+
+                            
+                        </div>
+                    </div>
+                @endforeach
+            @endif
+        </div>
+    </section>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    function confirmCancellation(pemesananId) {
+        Swal.fire({
+            title: 'Apakah Anda yakin?',
+            text: "Pemesanan ini akan dibatalkan!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Ya, batalkan!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Use AJAX to submit the form
+                $.ajax({
+                    url: document.getElementById('cancel-form-' + pemesananId).action,
+                    type: 'POST',
+                    data: {
+                        _method: 'DELETE',
+                        _token: '{{ csrf_token() }}'
+                    },
+                    success: function(response) {
+                        // Show success message
+                        Swal.fire({
+                            title: 'Berhasil!',
+                            text: response.message,
+                            icon: 'success',
+                            confirmButtonText: 'OK'
+                        }).then(() => {
+                            // Optionally, remove the canceled booking from the UI
+                            $('#cancel-form-' + pemesananId).closest('.card').remove();
+                        });
+                    },
+                    error: function(xhr) {
+                        // Handle error
+                        Swal.fire({
+                            title: 'Error!',
+                            text: xhr.responseJSON.error || 'Terjadi kesalahan saat membatalkan pemesanan.',
+                            icon: 'error',
+                            confirmButtonText: 'OK'
+                        });
+                    }
+                });
+            }
+        });
+    }
+</script>
+
+</main>
+
+
+
+
+    <footer id="footer" class="footer dark-background">
+        <div class="container footer-top">
+            <div class="row gy-4">
+                <div class="col-lg-5 col-md-12 footer-about">
+                    <a href="{{ route('user.home') }}" class="logo d-flex align-items-center">
+                        <img src="{{ asset('assets/user/img/logo1.png') }}" alt="" />
+                    </a>
+                    <h5>CV. Alfarouq Tour and Travel</h5>
+                    <p>
+                        Alfarouq Travel menawarkan paket perjalanan tour travel tiga
+                        negara yaitu Malaysia, Singapura dan Thailand dengan harga spesial
+                        khusus untuk per-orangan, keluarga dan rombongan.
+                    </p>
+                </div>
+
+                <div class="col-lg-3 col-md-12 footer-contact text-center text-md-start">
+                <h4>Alamat                     Kami</h4>
+                    <p>
+                        <strong>Alamat:</strong>
+                        <a href="https://maps.app.goo.gl/DFDBN3553ycHLxTm7">Jl. Dock Yard, Dumai, Riau, Indonesia</a>
+                    </p>
+                    <p>
+                        <strong>Email:</strong>
+                        <a href="mailto:alfarouqtourtravel@gmail.com">alfarouqtourtravel@gmail.com</a>
+                    </p>
+                    <p>
+                        <strong>WhatsApp:</strong>
+                        <a href="https://wa.me/6282269497774" target="_blank">+62 822 6949 7774</a>
+                    </p>
+                    <p>
+                        <strong>Instagram:</strong>
+                        <a href="https://instagram.com/alfarouqtourtravel" target="_blank">alfarouqtourtravel</a>
+                    </p>
+                </div>
+
+                <div class="col-lg-2 col-6 footer-links">
+                    <h4>Menu</h4>
+                    <ul>
+                        <li><a href="{{ route('user.home') }}" class="active">Home</a></li>
+                        <li><a href="{{ route('user.opentrip') }}">Open Trip</a></li>
+                        <li><a href="{{ route('user.privatetrip') }}">Private Trip</a></li>
+                        <li><a href="{{ route('user.dokumen') }}">Artikel</a></li>
+                        <li><a href="{{ route('user.profil-kami') }}">Profil Kami</a></li>
+                    </ul>
+                </div>
+
+                <div class="col-lg-2 col-6 footer-links">
+                    <h4>Trip Saya</h4>
+                    <ul>
+                        <li><a href="#">2 Negara : Start Pekanbaru</a></li>
+                        <li><a href="#">2 Negara : Start Dumai</a></li>
+                        <li><a href="#">3 Negara : Start Jakarta</a></li>
+                        <li><a href="#">3 Negara : Start Pekanbaru</a></li>
+                        <li><a href="#">1 Negara : Start Pekanbaru</a></li>
+                    </ul>
                 </div>
             </div>
-            <div class="row custom-row">
-                <div class="col-custom">
-                    <span class="info-label">Keberangkatan:</span>
-                    <span class="info-value">27/10/2024</span>
-                </div>
-                <div class="col-custom">
-                    <span class="info-label">Kepulangan:</span>
-                    <span class="info-value">31/10/2024</span>
-                </div>
+        </div>
+
+        <div class="container copyright text-center mt-4">
+            <p>
+                © <span>Copyright</span> <strong class="px-1 sitename">2024</strong>
+                <span> Alfarouq Travel</span>
+            </p>
+            <div class="credits">
+                Designed by <a href="https://bootstrapmade.com/">MyAlfarouq_Travel</a>
             </div>
         </div>
-    </div>
-    <hr/>
-    <div class="row">
-        <div class="col-md-2">
-            <p class="status">
-                Status
-            </p>
-        </div>
-        <div class="col-md-10">
-            <button class="btn btn-danger">
-                Ditolak
-            </button>
-        </div>
-    </div>
-    <hr/>
-    <div class="row">
-        <div class="col-md-2">
-            <p class="status">
-                Ket.
-            </p>
-        </div>
-        <div class="col-md-10">
-            <p class="ket">
-                Tidak bisa berangkat pada tanggal tersebut, silahkan pilih tanggal setelah/sebelum itu dan juga bisa lihat penawaran yang telah tersedia.
-            </p>
-        </div>
-    </div>
-</div>
+    </footer>
 
+    <div class="whatsapp-button">
+        <a href="https://wa.me/6282269497774?text=Halo,%20saya%20ingin%20bertanya." target="_blank" rel="noopener noreferrer" aria-label="Chat WhatsApp">
+            <i class="bi bi-whatsapp"></i>
+            <span>Chat Kami</span>
+        </a>
+    </div>
+
+    <!-- Scroll Top -->
+    <a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center">
+        <i class="bi bi-arrow-up-short"></i>
+    </a>
+
+    <!-- Preloader -->
+    <div id="preloader"></div>
+
+    <!-- Vendor JS Files -->
+    <script src="{{ asset('assets/user/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+    <script src="{{ asset('assets/user/vendor/php-email-form/validate.js') }}"></script>
+    <script src="{{ asset('assets/user/vendor/aos/aos.js') }}"></script>
+    <script src="{{ asset('assets/user/vendor/purecounter/purecounter_vanilla.js') }}"></script>
+    <script src="{{ asset('assets/user/vendor/glightbox/js/glightbox.min.js') }}"></script>
+    <script src="{{ asset('assets/user/vendor/swiper/swiper-bundle.min.js') }}"></script>
+
+    <!-- Main JS File -->
+    <script src="{{ asset('assets/user/js/main.js') }}"></script>
+
+    <!-- Isotope JS CDN -->
+    <script src="https://unpkg.com/isotope-layout@3.0.6/dist/isotope.pkgd.min.js"></script>
 </body>
 </html>

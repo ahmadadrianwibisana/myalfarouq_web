@@ -119,222 +119,104 @@
   </header>
 
   <main class="main">
+    <!-- Flash Messages -->
+    
     <!-- Page Title -->
-    <div class="page-title dark-background" data-aos="fade" style="background-image: url('{{ asset('assets/img/background.png') }}')">
+    <div class="page-title dark-background" data-aos="fade" style="background-image: url('{{ asset('assets/user/img/background.png') }}')">
         <div class="container position-relative">
-            <h1>Detail Open Trip</h1>
-            <h2>{{ $open_trips->nama_paket }}</h2>
+            <h1>Detail Pemesanan</h1>
+            <h2>Alfarouq Travel</h2>
             <nav class="breadcrumbs">
                 <ol>
                     <li><a href="{{ route('user.home') }}">Home</a></li>
-                    <li><a href="{{ route('user.opentrip') }}">Open Trip</a></li>
-                    <li class="current">Detail Open Trip</li>
+                    <li><a href="{{ route('user.tripsaya') }}">Trip Saya</a></li>
+                    <li class="current">Detail Pemesanan</li>
                 </ol>
             </nav>
         </div>
     </div>
     <!-- End Page Title -->
-    
 
     <div class="max-w-5xl mx-auto p-4">
         <div class="flex flex-col md:flex-row">
             <div class="md:w-1/2">
-                <img alt="{{ $open_trips->nama_paket }}" class="rounded-lg shadow-md" height="400" src="{{ asset('open_trip_images/' . $open_trips->image) }}" width="600" />
-                <div class="mt-4">
-                    <h2 class="text-lg font-semibold text-green-700">Include</h2>
-                    <ul class="list-disc list-inside text-sm text-gray-700 mt-2">
-                        <li>TIKET PESAWAT/KAPAL FERRY PULANG PERGI</li>
-                        <li>HOTEL BINTANG 3/4</li>
-                        <li>BUS PARIWISATA PREMIUM</li>
-                        <li>MAKAN 3X SEHARI & SARAPAN DIHOTEL</li>
-                        <li>DRIVER, MINYAK, TOL, dan PARKIR</li>
-                        <li>TOUR LEADER dan TOUR GUIDE PROFESIONAL</li>
-                        <li>PENGISIAN EAD MADC (Malaysia Digital Arrival Card)</li>
-                        <li>DIPANDU PENGISIAN MOBILE SINGAPURA</li>
-                        <li>FREE TIKET CABLE CAR GENTING HIGHLAND</li>
-                        <li>FREE MINERAL WATER SETIAP HARI</li>
-                        <li>FREE DOKUMENTASI FOTO dan VIDIO KONTEN</li>
-                    </ul>
-                </div>
+                @if($pemesanan->trip_type === 'open_trip' && $pemesanan->openTrip && $pemesanan->openTrip->image)
+                    <img alt="{{ $pemesanan->openTrip->nama_paket }}" class="rounded-lg shadow-md" height="400" src="{{ asset('open_trip_images/' . $pemesanan->openTrip->image) }}" width="600" />
+                @elseif($pemesanan->trip_type === 'private_trip' && $pemesanan->privateTrip && $pemesanan->privateTrip->image)
+                    <img alt="{{ $pemesanan->privateTrip->nama_trip }}" class="rounded-lg shadow-md" height="400" src="{{ asset('private_trip_images/' . $pemesanan->privateTrip->image) }}" width="600" />
+                @else
+                    <img alt="Default Image" class="rounded-lg shadow-md" height="400" src="{{ asset('default_image_url.jpg') }}" width="600" />
+                @endif
             </div>
             <div class="md:w-1/2 md:pl-8 mt-8 md:mt-0">
-                <h1 class="text-2xl font-semibold text-green-700">{{ $open_trips->nama_paket }}</h1>
+                <h1 class="text-2xl font-semibold text-green-700">{{ $pemesanan->openTrip->nama_paket ?? $pemesanan->privateTrip->nama_trip }}</h1>
                 <div class="flex items-center text-sm text-gray-600 mt-2">
                     <i class="fas fa-map-marker-alt mr-2 text-[#276f5f]"></i>
-                    <span>{{ $open_trips->destinasi }}</span>
+                    <span>{{ $pemesanan->openTrip->destinasi ?? $pemesanan->privateTrip->destinasi }}</span>
                 </div>
                 <div class="flex items-center text-sm text-gray-600 mt-2">
                     <i class="fas fa-calendar-alt mr-2 text-[#276f5f]"></i>
-                    <span>{{ \Carbon\Carbon::parse($open_trips->tanggal_berangkat)->format('d F Y') }} - {{ \Carbon\Carbon::parse($open_trips->tanggal_pulang)->format('                    F Y') }}</span>
+                    <span>{{ \Carbon\Carbon::parse($pemesanan->tanggal_keberangkatan)->format('d F Y') }} - {{ \Carbon\Carbon::parse($pemesanan->tanggal_kepulangan)->format('d F Y') }}</span>
                 </div>
                 <div class="flex items-center text-sm text-gray-600 mt-2">
-                    <i class="fas fa-clock mr-2 text-[#276f5f]"></i>
-                    <span>{{ $open_trips->lama_keberangkatan }}</span>
+                    <i class="fas fa-user mr-2 text-[#276f5f]"></i>
+                    <span>{{ $pemesanan->jumlah_peserta }} Peserta</span>
                 </div>
 
                 <div class="mt-4">
-                    <h2 class="text-lg font-semibold text-green-700">Kuota</h2>
-                    <p class="text-sm text-gray-700">{{ $open_trips->kuota }} Peserta</p>
+                    <h2 class="text-lg font-semibold text-green-700">Status Pemesanan</h2>
+                    <p class="text-sm text-gray-700">{{ ucfirst($pemesanan->status) }}</p>
                 </div>
 
                 <div class="mt-4">
-                    <h2 class="text-lg font-semibold text-green-700">Satuan</h2>
-                    <p class="text-xl font-bold text-gray-800">Rp {{ number_format($open_trips->harga, 0, ',', '.') }}</p>
+                    <h2 class="text-lg font-semibold text-green-700">Total Pembayaran</h2>
+                    <p class="text-xl font-bold text-gray-800">Rp {{ number_format($pemesanan->total_pembayaran, 0, ',', '.') }}</p>
                 </div>
 
-                <!-- Form Pemesanan -->
-                <form id="bookingForm" action="{{ route('user.bookOpenTrip', $open_trips->id) }}" method="POST">
-                    @csrf
-                    <input type="hidden" name="trip_type" value="open_trip">
-                    <div class="mt-4 flex items-center">
-                        <button id="decrease" type="button" class="bg-gray-200 text-gray-600 px-2 py-1 rounded-l">-</button>
-                        <span id="participantCount" class="bg-gray-100 text-gray-800 px-4 py-1">1</span>
-                        <button id="increase" type="button" class="bg-gray-200 text-gray-600 px-2 py-1 rounded-r">+</button>
-                    </div>
-                    <input type="hidden" name="jumlah_peserta" id="jumlah_peserta" value="1">
-                    <div class="mt-4">
-                        <h2 class="text-lg font-semibold text-green-700">Harga Total</h2>
-                        <p id="totalPrice" class="text-xl font-bold text-gray-800">Rp {{ number_format($open_trips->harga, 0, ',', '.') }}</p>
-                    </div>
-                    <div class="mt-4">
-                        <button type="button" id="confirmBooking" class="bg-black text-white px-4 py-2 rounded">Pesan Sekarang</button>
-                    </div>
-                </form>
-
-                <div class="mt-4 flex items-center text-sm text-gray-600">
-                    <i class="fas fa-download mr-2"></i>
-                    <a class="text-green-700" href="#">Unduh ITENERY</a>
-                </div>
                 <div class="mt-4">
-                    <h2 class="text-lg font-semibold text-green-700">Exclude</h2>
-                    <ul class="list-disc list-inside text-sm text-gray-700 mt-2">
-                        <li>CHOP PASSPORT IMIGRASI</li>
-                        <li>JAJAN PRIBADI</li>
-                        <li>EXTRA BAGASI</li>
-                    </ul>
-                    <div class="mt-4">
-                        <h2 class="text-lg font-semibold text-green-700">Deskripsi</h2>
-                        <p class="text-sm text-gray-700">{{ $open_trips->deskripsi_trip }}</p>
+                    <h2 class="text-lg font-semibold text-green-700">Deskripsi</h2>
+                    <p class="text-sm text-gray-700">{{ $pemesanan->openTrip->deskripsi_trip ?? $pemesanan->privateTrip->deskripsi_trip }}</p>
+                </div>
+
+                <div class="mt-4">
+                    <h2 class="text-lg font-semibold text-green-700">Informasi Tambahan</h2>
+                    @if ($pemesanan->trip_type == 'open_trip')
+                        <p><strong>Destinasi:</strong> {{ $pemesanan->openTrip->destinasi ?? 'N/A' }}</p>
+                        <p><strong>Tanggal Berangkat:</strong> {{ \Carbon\Carbon::parse($pemesanan->openTrip->tanggal_berangkat)->format('d M Y') }}</p>
+                        <p><strong>Tanggal Pulang:</strong> {{ \Carbon\Carbon::parse($pemesanan->openTrip->tanggal_pulang)->format('d M Y') }}</p>
+                        <p><strong>Harga per Peserta:</strong> Rp. {{ number_format($pemesanan->openTrip->harga, 0, ',', '.') }}</p>
+                        <p><strong>Lama Keberangkatan:</strong> {{ $pemesanan->openTrip->lama_keberangkatan ?? 'N/A' }}</p>
+                        <p><strong>Kuota:</strong> {{ $pemesanan->openTrip->kuota ?? 'N/A' }}</p>
+                    @elseif ($pemesanan->trip_type == 'private_trip')
+                        <p><strong>Destinasi:</strong> {{ $pemesanan->privateTrip->destinasi ?? 'N/A' }}</p>
+                        <p><strong>Tanggal Pergi:</strong> {{ \Carbon\Carbon::parse($pemesanan->privateTrip->tanggal_pergi)->format('d M Y') }}</p>
+                        <p><strong>Tanggal Kembali:</strong> {{ \Carbon\Carbon::parse($pemesanan->privateTrip->tanggal_kembali)->format('d M Y') }}</p>
+                        <p><strong>Star Point:</strong> {{ $pemesanan->privateTrip->star_point ?? 'N/A' }}</p>
+                        <p><strong>Harga:</strong> Rp. {{ number_format($pemesanan->privateTrip->harga, 0, ',', '.') }}</p>
+                    @endif
+                </div>
+
+                <!-- Display messages based on status -->
+                @if($pemesanan->status == 'pending')
+                    <div class="alert alert-warning mt-3" role="alert">
+                        <strong>Pemesanan masih dalam proses!</strong> Pemesanan Anda belum disetujui.
                     </div>
-                </div>
+                @elseif($pemesanan->status == 'terkonfirmasi')
+                    <div class="alert alert-success mt-3" role="alert">
+                        <strong>Pemesanan telah disetujui!</strong> Tanggal disetujui: {{ \Carbon\Carbon::parse($pemesanan->tanggal_disetujui)->format('d M Y') }}.
+                    </div>
+                @elseif($pemesanan->status == 'dibatalkan' && !empty($pemesanan->alasan_batal))
+                    <div class="alert alert-danger mt-3" role="alert">
+                        <strong>Pemesanan Dibatalkan!</strong> {{ $pemesanan->alasan_batal }}
+                    </div>
+                @endif
             </div>
         </div>
     </div>
-
-
-    @if(session('success'))
-    <div id="successModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-        <div class="card">
-            <div class="card-header">
-                <h5 class="modal-title">Terima Kasih</h5>
-            </div>
-            <div class="card-body">
-                <p>{{ session('success') }}</p>
-                <div class="flex justify-center mt-4">
-                    <button id="closeSuccessModal" class="btn btn-order">Tutup</button>
-                </div>
-            </div>
-        </div>
-    </div>
-@endif
-
-    <!-- Modal for Alert -->
-    <div id="alertModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden">
-        <div class="bg-white rounded-lg p-6 max-w-sm mx-auto">
-            <h2 class="text-lg font-semibold text-red-600">Peringatan!</h2>
-            <p class="text-sm text-gray-700">Jumlah peserta tidak boleh lebih dari kuota yang tersedia.</p>
-            <div class="mt-4 flex justify-end">
-                <button id="closeModal" class="bg-green-500 text-white px-4 py-2 rounded">Tutup</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Confirmation Modal -->
-    <div id="confirmationModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden">
-        <div class="modal-content bg-white rounded-lg p-6 max-w-sm mx-auto">
-            <h5 class="modal-title">Ajukan pesanan?</h5>
-            <p id="confirmationMessage">Anda akan melakukan pesanan untuk {{ $open_trips->nama_paket }} dengan 1 peserta.</p>
-            <div class="d-flex justify-content-center">
-                <button type="button" id="cancelOrder" class="btn btn-cancel me-2">Batal</button>
-                <button type="button" id="confirmOrder" class="btn btn-order">Pesan</button>
-            </div>
-        </div>
-    </div>
-
-    <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const pricePerPerson = {{ $open_trips->harga }};
-        const kuota = {{ $open_trips->kuota }};
-        let participantCount = 1;
-        const participantCountElement = document.getElementById('participantCount');
-        const totalPriceElement = document.getElementById('totalPrice');
-        const alertModal = document.getElementById('alertModal');
-        const confirmationModal = document.getElementById('confirmationModal');
-        const closeModalButton = document.getElementById('closeModal');
-        const cancelOrderButton = document.getElementById('cancelOrder');
-        const confirmOrderButton = document.getElementById('confirmOrder');
-        const closeSuccessModalButton = document.getElementById('closeSuccessModal');
-
-        // Periksa apakah tombol closeSuccessModalButton ada
-        if (closeSuccessModalButton) {
-            closeSuccessModalButton.addEventListener('click', function() {
-                document.getElementById('successModal').style.display = 'none';
-            });
-        }
-
-        document.getElementById('increase').addEventListener('click', function() {
-            if (participantCount < kuota) {
-                participantCount++;
-                updateTotalPrice();
-            } else {
-                alertModal.classList.remove('hidden');
-            }
-        });
-
-        document.getElementById('decrease').addEventListener('click', function() {
-            if (participantCount > 1) {
-                participantCount--;
-                updateTotalPrice();
-            }
-        });
-
-        document.getElementById('confirmBooking').addEventListener('click', function() {
-            // Update the confirmation message with the current participant count
-            const confirmationMessage = document.getElementById('confirmationMessage');
-            confirmationMessage.textContent = `Anda akan melakukan pesanan untuk {{ $open_trips->nama_paket }} dengan ${participantCount} peserta.`;
-            
-            confirmationModal.classList.remove('hidden');
-        });
-
-        closeModalButton.addEventListener('click', function() {
-            alertModal.classList.add('hidden');
-        });
-
-        cancelOrderButton.addEventListener('click', function() {
-            confirmationModal.classList.add('hidden');
-        });
-
-        confirmOrderButton.addEventListener('click', function() {
-            document.getElementById('jumlah_peserta').value = participantCount; // Update hidden input
-            document.getElementById('bookingForm').submit(); // Submit the form
-        });
-
-        function updateTotalPrice() {
-            participantCountElement.textContent = participantCount;
-            const totalPrice = pricePerPerson * participantCount;
-            totalPriceElement.textContent = 'Rp ' + totalPrice.toLocaleString('id-ID');
-            document.getElementById('jumlah_peserta').value = participantCount; // Update hidden input
-        }
-        
-
-        // Initialize total price
-        updateTotalPrice();
-    });
-</script>
 </main>
-    
 
-    <footer id="footer" class="footer dark-background">
+
+  <footer id="footer" class="footer dark-background">
       <div class="container footer-top">
         <div class="row gy-4">
         <div class="col-lg-5 col-md-12 footer-about">
