@@ -165,7 +165,7 @@
                 </div>
                 <div class="flex items-center text-sm text-gray-600 mt-2">
                     <i class="fas fa-calendar-alt mr-2 text-[#276f5f]"></i>
-                    <span>{{ \Carbon\Carbon::parse($open_trips->tanggal_berangkat)->format('d F Y') }} - {{ \Carbon\Carbon::parse($open_trips->tanggal_pulang)->format('                    F Y') }}</span>
+                    <span>{{ \Carbon\Carbon::parse($open_trips->tanggal_berangkat)->format('d F Y') }} - {{ \Carbon\Carbon::parse($open_trips->tanggal_pulang)->format('d F Y') }}</span>
                 </div>
                 <div class="flex items-center text-sm text-gray-600 mt-2">
                     <i class="fas fa-clock mr-2 text-[#276f5f]"></i>

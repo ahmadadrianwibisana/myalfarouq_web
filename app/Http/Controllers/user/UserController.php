@@ -4,8 +4,6 @@ namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
 use App\Models\Trip;
-use App\Models\PrivateTrip;
-
 use Illuminate\Http\Request;
 use App\Models\Artikel;
 use App\Models\OpenTrip;
@@ -13,6 +11,7 @@ use App\Models\PrivateTrip;
 use RealRashid\SweetAlert\Facades\Alert;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Pemesanan;
+use App\Models\Pembayaran;
 
 
 class UserController extends Controller
@@ -235,7 +234,7 @@ class UserController extends Controller
         }
     
         // Fetch the authenticated user's bookings with related open trips and private trips
-        $pemesanans = Pemesanan::with(['openTrip', 'privateTrip'])
+        $pemesanans = Pemesanan::with(['openTrip', 'privateTrip','pembayaran'])
             ->where('user_id', auth()->id())
             ->get();
     
@@ -265,7 +264,6 @@ class UserController extends Controller
         }
     }
 
-<<<<<<< HEAD
      // Method for detail pemesanan
     public function detailPemesanan($id)
     {
@@ -274,59 +272,132 @@ class UserController extends Controller
         
         return view('user.detail-pemesanan', compact('pemesanan'));
     }
-=======
-    public function showTripsSaya()
-    {
-        // Ambil data trip berdasarkan user yang sedang login
-        $private_trips = PrivateTrip::where('user_id', auth()->user()->id)->get();
 
-        // Passing data ke view tripsaya
-        return view('user.tripsaya', compact('private_trips'));
+    public function editPemesanan($id)
+    {
+        $pemesanan = Pemesanan::with('openTrip')->findOrFail($id);
+        
+        // Pastikan hanya open_trip yang bisa diedit
+        if ($pemesanan->trip_type !== 'open_trip') {
+            return redirect()->route('user.tripsaya')->with('error', 'Hanya pemesanan open trip yang dapat diedit.');
+        }
+
+        // Cek status pemesanan
+        if ($pemesanan->status !== 'pending') {
+            return redirect()->route('user.tripsaya')->with('error', 'Pemesanan tidak dapat diedit karena statusnya sudah ' . ucfirst($pemesanan->status) . '.');
+        }
+    
+        // Ambil semua open trips untuk dropdown
+        $openTrips = OpenTrip::all();
+    
+        return view('user.edit-pemesanan', compact('pemesanan', 'openTrips'));
     }
-// -----------------------------------------------------------------------------
-    // Method untuk menyimpan data private trip
-    public function store(Request $request)
-    {
-        // Validasi input
-        $request->validate([
-            'no_telepon' => 'required|string',
-            'nama_trip' => 'required|string',
-            'destinasi' => 'required|string',
-            'tanggal_pergi' => 'required|date',
-            'tanggal_kembali' => 'required|date',
-            'star_point' => 'required|string',
-            'jumlah_peserta' => 'required|integer',
-            'deskripsi_trip' => 'required|string',
-        ]);
 
-        // Simpan data ke dalam tabel private_trips
-        PrivateTrip::create([
-            'no_telepon' => $request->no_telepon,
-            'nama_trip' => $request->nama_trip,
-            'destinasi' => $request->destinasi,
-            'tanggal_pergi' => $request->tanggal_pergi,
-            'tanggal_kembali' => $request->tanggal_kembali,
-            'star_point' => $request->star_point,
+    public function updatePemesanan(Request $request, $id)
+    {
+        $pemesanan = Pemesanan::findOrFail($id);
+        
+        // Check the status of the booking
+        if ($pemesanan->status !== 'pending') {
+            return redirect()->route('user.tripsaya')->with('error', 'Pemesanan tidak dapat diperbarui karena statusnya sudah ' . ucfirst($pemesanan->status) . '.');
+        }
+    
+        // Validate input
+        $validator = Validator::make($request->all(), [
+            'jumlah_peserta' => 'required|integer|min:1',
+            'open_trip_id' => 'required|exists:open_trips,id', // Ensure the trip ID is valid
+        ]);
+    
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
+    
+        // Get the open trip to check the quota
+        $openTrip = OpenTrip::findOrFail($request->open_trip_id);
+    
+        // Check if the number of participants exceeds the quota
+        if ($request->jumlah_peserta > $openTrip->kuota) {
+            return redirect()->back()->withErrors(['jumlah_peserta' => 'Jumlah peserta tidak boleh lebih dari kuota yang tersedia (' . $openTrip->kuota . ').'])->withInput();
+        }
+    
+        // Calculate total payment
+        $totalPembayaran = $openTrip->harga * $request->jumlah_peserta;
+    
+        // Update the booking
+        $pemesanan->update([
             'jumlah_peserta' => $request->jumlah_peserta,
-            'deskripsi_trip' => $request->deskripsi_trip,
+            'open_trip_id' => $request->open_trip_id,
+            'total_pembayaran' => $totalPembayaran,
         ]);
-
-        // Redirect ke halaman trip saya dengan pesan sukses
-        return redirect()->route('user.privatetrip')->with('success', 'Private Trip berhasil disubmit!');
+    
+        return redirect()->route('user.detailPemesanan', $pemesanan->id)->with('success', 'Pemesanan berhasil diperbarui!');
     }
 
-    // Method untuk menampilkan trip saya
-    public function tripSaya()
+    public function getOpenTripQuota($id)
     {
-        // Ambil semua data trip yang sudah disubmit
-        $privateTrips = PrivateTrip::all();
+        $openTrip = OpenTrip::findOrFail($id);
+        return response()->json(['kuota' => $openTrip->kuota]);
+    }
 
-        // Tampilkan data di halaman trip saya
-        return view('user.trip_saya', compact('privateTrips'));
+
+    public function showUploadBuktiPembayaran($id)
+    {
+        // Find the booking (pemesanan) by ID
+        $pemesanan = Pemesanan::with('openTrip', 'privateTrip')->findOrFail($id);
+        
+        // Check if a payment proof already exists
+        $pembayaran = Pembayaran::where('pemesanan_id', $pemesanan->id)->first();
+    
+        // Return the view with the pemesanan and pembayaran data
+        return view('user.pembayaran', compact('pemesanan', 'pembayaran'));
     }
     
+    public function uploadBuktiPembayaran(Request $request, $id)
+    {
+        // Validate input
+        $validator = Validator::make($request->all(), [
+            'bukti_pembayaran' => 'required|file|mimes:jpg,jpeg,png,pdf|max:10240', // Max 10MB
+        ]);
     
-
->>>>>>> 6698e896e4ee9804ef66c5a69f29fa41f7ab645a
-
+        if ($validator->fails()) {
+            return back()->withErrors($validator)->withInput();
+        }
+    
+        // Find the booking by ID
+        $pemesanan = Pemesanan::findOrFail($id);
+    
+        // Ensure the booking status is confirmed
+        if ($pemesanan->status !== 'terkonfirmasi') {
+            return back()->withErrors(['status' => 'Hanya pemesanan terkonfirmasi yang dapat mengupload bukti pembayaran.'])->withInput();
+        }
+    
+        // Check if a payment proof already exists
+        $pembayaran = Pembayaran::where('pemesanan_id', $pemesanan->id)->first();
+    
+        // Save the payment proof file
+        $file = $request->file('bukti_pembayaran');
+        $fileName = time() . '_' . $file->getClientOriginalName();
+        $file->move(public_path('bukti_pembayaran'), $fileName);
+    
+        if ($pembayaran) {
+            // Update existing payment proof
+            $pembayaran->update([
+                'bukti_pembayaran' => 'bukti_pembayaran/' . $fileName,
+                'tanggal_pembayaran' => now(),
+                'jumlah_pembayaran' => $pemesanan->total_pembayaran,
+                'status_pembayaran' => 'pending', // Set initial status
+            ]);
+            return redirect()->route('user.detailPemesanan', $pemesanan->id)->with('success', 'Bukti pembayaran berhasil diperbarui!');
+        } else {
+            // Save new payment proof information in the Pembayaran table
+            Pembayaran::create([
+                'pemesanan_id' => $pemesanan->id,
+                'bukti_pembayaran' => 'bukti_pembayaran/' . $fileName,
+                'tanggal_pembayaran' => now(),
+                'jumlah_pembayaran' => $pemesanan->total_pembayaran,
+                'status_pembayaran' => 'pending', // Set initial status
+            ]);
+            return redirect()->route('user.detailPemesanan', $pemesanan->id)->with('success', 'Bukti pembayaran berhasil diupload!');
+        }
+    }
 }

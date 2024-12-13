@@ -149,18 +149,44 @@
                 @endif
             </div>
             <div class="md:w-1/2 md:pl-8 mt-8 md:mt-0">
-                <h1 class="text-2xl font-semibold text-green-700">{{ $pemesanan->openTrip->nama_paket ?? $pemesanan->privateTrip->nama_trip }}</h1>
-                <div class="flex items-center text-sm text-gray-600 mt-2">
-                    <i class="fas fa-map-marker-alt mr-2 text-[#276f5f]"></i>
-                    <span>{{ $pemesanan->openTrip->destinasi ?? $pemesanan->privateTrip->destinasi }}</span>
-                </div>
-                <div class="flex items-center text-sm text-gray-600 mt-2">
-                    <i class="fas fa-calendar-alt mr-2 text-[#276f5f]"></i>
-                    <span>{{ \Carbon\Carbon::parse($pemesanan->tanggal_keberangkatan)->format('d F Y') }} - {{ \Carbon\Carbon::parse($pemesanan->tanggal_kepulangan)->format('d F Y') }}</span>
-                </div>
+            <h1 class="text-2xl font-semibold text-green-700">{{ ucwords($pemesanan->openTrip->nama_paket ?? $pemesanan->privateTrip->nama_trip) }}</h1>
+            <p class="text-lg font-semibold text-green-700"><span>Type : </span>{{ ucfirst($pemesanan->trip_type) }}</>
+
+            <div class="mt-4">
+                @if ($pemesanan->trip_type == 'open_trip')
+                    <div class="flex items-center text-sm text-gray-600 mt-2">
+                        <i class="fas fa-map-marker-alt mr-2 text-[#276f5f]"></i>
+                        <span>{{ $pemesanan->openTrip->destinasi ?? 'N/A' }}</span>
+                    </div>
+                    <div class="flex items-center text-sm text-gray-600 mt-2">
+                        <i class="fas fa-calendar-alt mr-2 text-[#276f5f]"></i>
+                        <span>
+                            {{ \Carbon\Carbon::parse($pemesanan->openTrip->tanggal_berangkat)->format('d M Y') }} - 
+                            {{ \Carbon\Carbon::parse($pemesanan->openTrip->tanggal_pulang)->format('d M Y') }}
+                        </span>
+                    </div>
+                @elseif ($pemesanan->trip_type == 'private_trip')
+                    <div class="flex items-center text-sm text-gray-600 mt-2">
+                        <i class="fas fa-map-marker-alt mr-2 text-[#276f5f]"></i>
+                        <span>{{ $pemesanan->privateTrip->destinasi ?? 'N/A' }}</span>
+                    </div>
+                    <div class="flex items-center text-sm text-gray-600 mt-2">
+                        <i class="fas fa-calendar-alt mr-2 text-[#276f5f]"></i>
+                        <span>
+                          {{ \Carbon\Carbon::parse($pemesanan->privateTrip->tanggal_pergi)->format('d M Y') }} - 
+                          {{ \Carbon\Carbon::parse($pemesanan->privateTrip->tanggal_kembali)->format('d M Y') }}
+                        </span>
+                    </div>
+                @endif
+           
                 <div class="flex items-center text-sm text-gray-600 mt-2">
                     <i class="fas fa-user mr-2 text-[#276f5f]"></i>
                     <span>{{ $pemesanan->jumlah_peserta }} Peserta</span>
+                </div>
+
+                <div class="mt-4">
+                    <h2 class="text-lg font-semibold text-green-700">{{ ucwords($pemesanan->user->name) }}</h2>
+                    <p class="text-sm text-gray-700">{{ $pemesanan->user->no_telepon }}</p>
                 </div>
 
                 <div class="mt-4">
@@ -181,16 +207,10 @@
                 <div class="mt-4">
                     <h2 class="text-lg font-semibold text-green-700">Informasi Tambahan</h2>
                     @if ($pemesanan->trip_type == 'open_trip')
-                        <p><strong>Destinasi:</strong> {{ $pemesanan->openTrip->destinasi ?? 'N/A' }}</p>
-                        <p><strong>Tanggal Berangkat:</strong> {{ \Carbon\Carbon::parse($pemesanan->openTrip->tanggal_berangkat)->format('d M Y') }}</p>
-                        <p><strong>Tanggal Pulang:</strong> {{ \Carbon\Carbon::parse($pemesanan->openTrip->tanggal_pulang)->format('d M Y') }}</p>
                         <p><strong>Harga per Peserta:</strong> Rp. {{ number_format($pemesanan->openTrip->harga, 0, ',', '.') }}</p>
                         <p><strong>Lama Keberangkatan:</strong> {{ $pemesanan->openTrip->lama_keberangkatan ?? 'N/A' }}</p>
                         <p><strong>Kuota:</strong> {{ $pemesanan->openTrip->kuota ?? 'N/A' }}</p>
                     @elseif ($pemesanan->trip_type == 'private_trip')
-                        <p><strong>Destinasi:</strong> {{ $pemesanan->privateTrip->destinasi ?? 'N/A' }}</p>
-                        <p><strong>Tanggal Pergi:</strong> {{ \Carbon\Carbon::parse($pemesanan->privateTrip->tanggal_pergi)->format('d M Y') }}</p>
-                        <p><strong>Tanggal Kembali:</strong> {{ \Carbon\Carbon::parse($pemesanan->privateTrip->tanggal_kembali)->format('d M Y') }}</p>
                         <p><strong>Star Point:</strong> {{ $pemesanan->privateTrip->star_point ?? 'N/A' }}</p>
                         <p><strong>Harga:</strong> Rp. {{ number_format($pemesanan->privateTrip->harga, 0, ',', '.') }}</p>
                     @endif
@@ -210,6 +230,44 @@
                         <strong>Pemesanan Dibatalkan!</strong> {{ $pemesanan->alasan_batal }}
                     </div>
                 @endif
+                <div class="mt-4">
+                      @if($pemesanan->trip_type === 'open_trip')
+                          @if($pemesanan->status === 'pending')
+                              <a href="{{ route('user.editPemesanan', $pemesanan->id) }}" class="btn btn-primary">Edit Pemesanan</a>
+                          @elseif($pemesanan->status === 'terkonfirmasi')
+                              <p class="text-danger">Pemesanan Anda untuk open trip telah terkonfirmasi. Jika Anda ingin membatalkan, harap <a href="https://wa.me/6282269497774" target="_blank" class="text-primary">hubungi admin melalui WhatsApp</a>.</p>
+                              <!-- Button to confirm payment -->
+                <a href="{{ route('user.showUploadBuktiPembayaran', $pemesanan->id) }}" class="btn btn-success mt-2">Konfirmasi Pembayaran</a>
+                          @elseif($pemesanan->status === 'dibatalkan')
+                              <p class="text-danger">Pemesanan Anda untuk open trip telah dibatalkan/ditolak. Jika Anda ingin mengajukan pertanyaan lebih lanjut, silakan <a href="https://wa.me/6282269497774" target="_blank" class="text-primary">hubungi admin melalui WhatsApp</a>.</p>
+                          @else
+                              <p class="text-danger">Status pemesanan tidak dikenali.</p>
+                          @endif
+                      @elseif($pemesanan->trip_type === 'private_trip')
+                          @if($pemesanan->status === 'terkonfirmasi')
+                              <p class="text-danger">Pemesanan Anda untuk private trip telah terkonfirmasi. Jika Anda ingin membatalkan, harap <a href="https://wa.me/6282269497774" target="_blank" class="text-primary">hubungi admin melalui WhatsApp</a>.</p>
+                              <!-- Button to confirm payment -->
+                              <a href="{{ route('user.showUploadBuktiPembayaran', $pemesanan->id) }}" class="btn btn-success mt-2">Konfirmasi Pembayaran</a>
+                          @elseif($pemesanan->status === 'dibatalkan')
+                              <p class="text-danger">Pemesanan Anda untuk private trip telah dibatalkan/ditolak. Jika Anda ingin mengajukan pertanyaan lebih lanjut, silakan <a href="https://wa.me/6282269497774" target="_blank" class="text-primary">hubungi admin melalui WhatsApp</a>.</p>
+                          @else
+                              <p class="text-danger">Status pemesanan tidak dikenali.</p>
+                          @endif
+                      @else
+                          <p class="text-danger">Tipe trip tidak dikenali.</p>
+                      @endif
+                  </div>
+              @if(session('error'))
+                  <div class="alert alert-danger">
+                      {{ session('error') }}
+                  </div>
+              @endif
+
+              @if(session('success'))
+                  <div class="alert alert-success">
+                      {{ session('success') }}
+                  </div>
+              @endif
             </div>
         </div>
     </div>
