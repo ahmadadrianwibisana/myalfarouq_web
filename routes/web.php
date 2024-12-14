@@ -155,8 +155,9 @@ Route::group(['middleware' => 'admin'], function () {
     Route::get('/admin/data-administrasi/{id}/edit', [DataAdministrasiController::class, 'edit'])->name('admin.data_administrasi.edit');
     Route::put('/admin/data-administrasi/{id}', [DataAdministrasiController::class, 'update'])->name('admin.data_administrasi.update');
     Route::delete('/admin/data-administrasi/{id}', [DataAdministrasiController::class, 'destroy'])->name('admin.data_administrasi.destroy');
-
-
+    Route::put('/admin/data-administrasi/edit-all/{pemesanan_id}', [DataAdministrasiController::class, 'editAll'])->name('admin.data_administrasi.editAll');
+    Route::delete('admin/data-administrasi/destroy-all/{pemesanan_id}', [DataAdministrasiController::class, 'destroyAll'])->name('admin.data_administrasi.destroyAll');
+    
     Route::post('/admin/logout', [AuthController::class, 'admin_logout'])->name('admin.logout'); // Logout admin
 });
 
@@ -250,6 +251,9 @@ Route::group(['middleware' => 'web'], function () {
     Route::get('/open-trips/{id}', [UserController::class, 'getOpenTripQuota']);
     Route::post('/tripsaya/{id}/upload-bukti', [UserController::class, 'uploadBuktiPembayaran'])->name('user.uploadBuktiPembayaran');
     Route::get('/pemesanan/{id}/upload-bukti-pembayaran', [UserController::class, 'showUploadBuktiPembayaran'])->name('user.showUploadBuktiPembayaran');
+    Route::get('/user/upload-data-administrasi/{id}', [UserController::class, 'showUploadDataAdministrasi'])->name('user.showUploadDataAdministrasi');
+    Route::post('/user/data-administrasi', [UserController::class, 'storeDataAdministrasi'])->name('user.storeDataAdministrasi');
+    Route::post('/user/data-administrasi/update', [UserController::class, 'updateDataAdministrasi'])->name('user.updateDataAdministrasi');
 
     Route::post('/user/logout', [AuthController::class, 'user_logout'])->name('user.logout');
 

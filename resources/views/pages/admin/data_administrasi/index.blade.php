@@ -35,52 +35,76 @@
                         </thead>
                         <tbody>
                             @php $no = 0; @endphp
-                            @forelse ($data_administrasis as $item)
+                            @foreach ($data_administrasis as $pemesanan_id => $items)
+                                @php $firstItem = $items->first(); @endphp
                                 <tr>
                                     <td>{{ ++$no }}</td>
-                                    <td>{{ $item->pemesanan->user ? $item->pemesanan->user->name : 'User  tidak ditemukan' }}</td>
-                                    <td>{{ ucfirst(str_replace('_', ' ', $item->pemesanan->trip_type)) }}</td>
+                                    <td>{{ $firstItem->pemesanan->user ? $firstItem->pemesanan->user->name : 'User  tidak ditemukan' }}</td>
+                                    <td>{{ ucfirst(str_replace('_', ' ', $firstItem->pemesanan->trip_type)) }}</td>
                                     <td>
-                                        @if ($item->pemesanan)
-                                            {{ \Carbon\Carbon::parse($item->pemesanan->tanggal_pemesanan)->format('d-m-Y') ?? 'Tanggal tidak ditemukan' }}
+                                        @if ($firstItem->pemesanan)
+                                            {{ \Carbon\Carbon::parse($firstItem->pemesanan->tanggal_pemesanan)->format('d-m-Y') ?? 'Tanggal tidak ditemukan' }}
                                         @else
                                             Tanggal tidak ditemukan
                                         @endif
                                     </td>
                                     <td>
-                                        @if ($item->pemesanan)
-                                            @if ($item->pemesanan->trip_type == 'open_trip')
-                                                {{ $item->pemesanan->openTrip->nama_paket ?? 'Nama Trip tidak ditemukan' }}
-                                            @elseif ($item->pemesanan->trip_type == 'private_trip')
-                                                {{ $item->pemesanan->privateTrip->nama_trip ?? 'Nama Trip tidak ditemukan' }}
+                                        @if ($firstItem->pemesanan)
+                                            @if ($firstItem->pemesanan->trip_type == 'open_trip')
+                                                {{ $firstItem->pemesanan->openTrip->nama_paket ?? 'Nama Trip tidak ditemukan' }}
+                                            @elseif ($firstItem->pemesanan->trip_type == 'private_trip')
+                                                {{ $firstItem->pemesanan->privateTrip->nama_trip ?? 'Nama Trip tidak ditemukan' }}
                                             @endif
                                         @else
                                             Pemesanan tidak ditemukan
                                         @endif
                                     </td>
                                     <td>
-                                        <a href="{{ asset('storage/'.$item->file_dokumen) }}" target="_blank" class="badge badge-primary">Lihat Dokumen                                        </a>
+                                        <div class="d-flex flex-column">
+                                            @foreach ($items as $item)
+                                                <div class="mb-1 d-flex justify-content-between align-items-center" style="min-height: 50px;">
+                                                    <div>
+                                                        <a href="{{ asset('storage/'.$item->file_dokumen) }}" target="_blank" class="badge badge-primary">{{ basename($item->file_dokumen) }}</a>
+                                                    </div>
+                                                    <div class="d-flex" style="gap: 5px;"> <!-- Menggunakan gap untuk jarak antar badge -->
+                                                        <a href="{{ route('admin.data_administrasi.show', $item->id) }}" class="badge badge-info">Detail</a>
+                                                        <a href="{{ route('admin.data_administrasi.edit', $item->id) }}" class="badge badge-warning">Edit</a>
+                                                        <a href="{{ route('admin.data_administrasi.destroy', $item->id) }}" class="badge badge-danger" data-confirm-delete="true">Hapus</a>
+                                                    </div>
+                                                </div>
+                                            @endforeach
+                                        </div>
                                     </td>
                                     <td>
                                         <span class="badge 
-                                            @if($item->status == 'pending') badge-warning
-                                            @elseif($item->status == 'approved') badge-success
-                                            @elseif($item->status == 'rejected') badge-danger
+                                            @if($firstItem->status == 'pending') badge-warning
+                                            @elseif($firstItem->status == 'approved') badge-success
+                                            @elseif($firstItem->status == 'rejected') badge-danger
                                             @endif">
-                                            {{ ucfirst($item->status) }}
+                                            {{ ucfirst($firstItem->status) }}
                                         </span>
                                     </td>
                                     <td>
-                                        <a href="{{ route('admin.data_administrasi.show', $item->id) }}" class="badge badge-info">Detail</a>
-                                        <a href="{{ route('admin.data_administrasi.edit', $item->id) }}" class="badge badge-warning">Edit</a>
-                                        <a href="{{ route('admin.data_administrasi.destroy', $item->id) }}" class="badge badge-danger" data-confirm-delete="true">Hapus</a> 
+                                        <div class="d-flex align-items-center">
+                                            <form action="{{ route('admin.data_administrasi.editAll', $firstItem->pemesanan_id) }}" method="POST" style="margin-right: 10px; display: flex; align-items: center;">
+                                                @csrf
+                                                @method('PUT')
+                                                <select name="status" required class="form-select" style="width: auto; margin-right: 5px;">
+                                                    <option value="pending">Pending</option>
+                                                    <option value="approved">Approved</option>
+                                                    <option value="rejected">Rejected</option>
+                                                </select>
+                                                <button type="submit" class="badge badge-warning">Edit Semua</button>
+                                            </form>
+                                            <form action="{{ route('admin.data_administrasi.destroyAll', $firstItem->pemesanan_id) }}" method="POST">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="badge badge-danger" data-confirm-delete="true">Hapus Semua</button>
+                                            </form>
+                                        </div>
                                     </td>
                                 </tr>
-                            @empty
-                                <tr>
-                                    <td colspan="8" class="text-center">Data Administrasi Kosong</td>
-                                </tr>
-                            @endforelse
+                            @endforeach
                         </tbody>
                     </table>
                 </div>
@@ -88,4 +112,29 @@
         </div>
     </section>
 </div>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const deleteForms = document.querySelectorAll('form[data-confirm-delete="true"]');
+        deleteForms.forEach(form => {
+            form.addEventListener('submit', function (e) {
+                if (!confirm('Apakah Anda yakin ingin menghapus semua data ini?')) {
+                    e.preventDefault(); // Prevent form submission if user cancels
+                }
+            });
+        });
+    });
+</script>
+<style>
+    .table td {
+    vertical-align: middle; /* Menjaga semua elemen dalam sel tabel sejajar secara vertikal */
+}
+
+.form-select {
+    margin-right: 5px; /* Menambahkan sedikit jarak antara dropdown dan tombol */
+}
+
+.badge {
+    margin-left: 5px; /* Menambahkan sedikit jarak antara badge */
+}
+</style>
 @endsection

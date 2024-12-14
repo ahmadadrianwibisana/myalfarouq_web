@@ -164,8 +164,8 @@ body {
     </div>
     <!-- End Page Title -->
 
-    <section>
-    <div class="container mt-4">
+    <section id="get-a-quote" class="get-a-quote section">
+        <div class="container mt-4">
         @if($pemesanans->isEmpty())
             <div class="alert alert-info text-center">
                 Anda belum melakukan pemesanan.

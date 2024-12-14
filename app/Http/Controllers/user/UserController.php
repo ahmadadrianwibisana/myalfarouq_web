@@ -12,6 +12,7 @@ use RealRashid\SweetAlert\Facades\Alert;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Pemesanan;
 use App\Models\Pembayaran;
+use App\Models\DataAdministrasi;
 
 
 class UserController extends Controller
@@ -267,10 +268,13 @@ class UserController extends Controller
      // Method for detail pemesanan
     public function detailPemesanan($id)
     {
-        // Temukan pemesanan berdasarkan ID
-        $pemesanan = Pemesanan::with(['openTrip', 'privateTrip', 'user'])->findOrFail($id);
+         // Temukan pemesanan berdasarkan ID
+        $pemesanan = Pemesanan::with(['openTrip', 'privateTrip', 'user', 'pembayaran', 'dataAdministrasi'])->findOrFail($id);
         
-        return view('user.detail-pemesanan', compact('pemesanan'));
+         // Get the payment information
+         $pembayaran = $pemesanan->pembayaran; // This will retrieve the related payment record
+    
+        return view('user.detail-pemesanan', compact('pemesanan', 'pembayaran'));
     }
 
     public function editPemesanan($id)
@@ -374,6 +378,11 @@ class UserController extends Controller
         // Check if a payment proof already exists
         $pembayaran = Pembayaran::where('pemesanan_id', $pemesanan->id)->first();
     
+        // If payment proof exists, check its status
+        if ($pembayaran && $pembayaran->status_pembayaran === 'success') {
+            return back()->withErrors(['status' => 'Pembayaran telah berhasil dilakukan. Anda tidak dapat mengupload bukti pembayaran lagi.'])->withInput();
+        }
+    
         // Save the payment proof file
         $file = $request->file('bukti_pembayaran');
         $fileName = time() . '_' . $file->getClientOriginalName();
@@ -400,4 +409,109 @@ class UserController extends Controller
             return redirect()->route('user.detailPemesanan', $pemesanan->id)->with('success', 'Bukti pembayaran berhasil diupload!');
         }
     }
+
+    public function showUploadDataAdministrasi($id)
+    {
+        // Temukan pemesanan berdasarkan ID
+        $pemesanan = Pemesanan::with(['openTrip', 'privateTrip'])->findOrFail($id);
+    
+        // Pastikan pemesanan sudah terkonfirmasi
+        if ($pemesanan->status !== 'terkonfirmasi') {
+            return redirect()->route('user.tripsaya')->with('error', 'Hanya pemesanan terkonfirmasi yang dapat mengupload data administrasi.');
+        }
+    
+        // Ambil data administrasi yang sudah ada
+        $dataAdministrasi = DataAdministrasi::where('pemesanan_id', $pemesanan->id)->get();
+    
+        // Kirim variabel ke view
+        return view('user.upload-data-administrasi', compact('pemesanan', 'dataAdministrasi'));
+    }
+
+    public function storeDataAdministrasi(Request $request)
+    {
+        // Validasi input
+        $validated = $request->validate([
+            'pemesanan_id' => 'required|exists:pemesanans,id',
+            'file_dokumen.*' => 'required|file|mimes:pdf,jpg,png,jpeg|max:10240', // Validasi untuk setiap file
+        ]);
+    
+        // Cek status pemesanan
+        $pemesanan = Pemesanan::find($validated['pemesanan_id']);
+        if ($pemesanan->status !== 'terkonfirmasi') {
+            return back()->withErrors(['pemesanan_id' => 'Pemesanan harus terkonfirmasi untuk menambah data administrasi.'])->withInput();
+        }
+    
+        // Loop melalui setiap file yang diupload
+        foreach ($request->file('file_dokumen') as $file) {
+            // Ambil nama file asli
+            $originalFileName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+            $extension = $file->getClientOriginalExtension();
+            
+            // Tambahkan timestamp untuk menghindari konflik nama
+            $newFileName = $originalFileName . '_' . time() . '.' . $extension;
+    
+            // Simpan file dengan nama baru
+            $filePath = $file->storeAs('documents', $newFileName, 'public');
+    
+            // Buat entri baru di DataAdministrasi
+            DataAdministrasi::create([
+                'pemesanan_id' => $validated['pemesanan_id'],
+                'file_dokumen' => $filePath,
+                'status' => 'pending', // Initial status
+                'user_id' => $pemesanan->user_id, // Get user_id from pemesanan
+            ]);
+        }
+    
+      
+    
+        return redirect()->route('user.tripsaya')->with('success', 'Data Administrasi berhasil ditambahkan');
+    }
+
+    public function updateDataAdministrasi(Request $request)
+    {
+        // Validate input
+        $validated = $request->validate([
+            'pemesanan_id' => 'required|exists:pemesanans,id',
+            'selected_documents' => 'array',
+            'selected_documents.*' => 'exists:data_administrasi,id',
+            'file_dokumen.*' => 'file|mimes:pdf,jpg,png,jpeg|max:10240', // Optional: for new uploads
+        ]);
+    
+        // Check the status of the booking
+        $pemesanan = Pemesanan::find($validated['pemesanan_id']);
+        if ($pemesanan->status !== 'terkonfirmasi') {
+            return back()->withErrors(['pemesanan_id' => 'Pemesanan harus terkonfirmasi untuk memperbarui data administrasi.'])->withInput();
+        }
+    
+        // Update selected documents
+        if (!empty($validated['selected_documents'])) {
+            foreach ($validated['selected_documents'] as $documentId) {
+                $dataAdministrasi = DataAdministrasi::find($documentId);
+                // Update logic here, e.g., changing status or other fields
+                $dataAdministrasi->status = 'updated'; // Example update
+                $dataAdministrasi->save();
+            }
+        }
+    
+        // Handle new file uploads if any
+        if ($request->hasFile('file_dokumen')) {
+            foreach ($request->file('file_dokumen') as $file) {
+                $originalFileName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+                $extension = $file->getClientOriginalExtension();
+                $newFileName = $originalFileName . '_' . time() . '.' . $extension;
+                $filePath = $file->storeAs('documents', $newFileName, 'public');
+    
+                DataAdministrasi::create([
+                    'pemesanan_id' => $validated['pemesanan_id'],
+                    'file_dokumen' => $filePath,
+                    'status' => 'pending', // Initial status
+                    'user_id' => $pemesanan->user_id,
+                ]);
+            }
+        }
+    
+        return redirect()->route('user.tripsaya')->with('success', 'Data Administrasi berhasil diperbarui');
+    }
+
+
 }

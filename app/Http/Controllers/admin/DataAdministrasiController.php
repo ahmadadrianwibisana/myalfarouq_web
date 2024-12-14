@@ -13,13 +13,16 @@ use RealRashid\SweetAlert\Facades\Alert;
 use App\Models\Pembayaran;
 use App\Models\Riwayat;  
 
+
 class DataAdministrasiController extends Controller
 {
     // Menampilkan semua data administrasi
     public function index()
     {
         // Mengambil semua data administrasi beserta pemesanan dan pengguna
-        $data_administrasis = DataAdministrasi::with(['pemesanan.user', 'pemesanan.openTrip', 'pemesanan.privateTrip'])->get();
+        $data_administrasis = DataAdministrasi::with(['pemesanan.user', 'pemesanan.openTrip', 'pemesanan.privateTrip'])
+        ->get()
+        ->groupBy('pemesanan_id');
         confirmDelete('Hapus Data!', 'Apakah anda yakin ingin menghapus data ini?'); // Konfirmasi hapus
 
         return view('pages.admin.data_administrasi.index', compact('data_administrasis'));
@@ -173,5 +176,50 @@ public function update(Request $request, $id)
         return redirect()->route('admin.data_administrasi.index')->with('success', 'Data Administrasi berhasil dihapus');
     }
 
+    public function editAll(Request $request, $pemesanan_id)
+    {
+        // Validasi input
+        $validated = $request->validate([
+            'status' => 'required|in:pending,approved,rejected',
+        ]);
+    
+        // Mengambil semua data administrasi berdasarkan pemesanan_id
+        $dataAdministrasis = DataAdministrasi::where('pemesanan_id', $pemesanan_id)->get();
+    
+        foreach ($dataAdministrasis as $dataAdministrasi) {
+            $dataAdministrasi->status = $validated['status'];
+            $dataAdministrasi->save();
+        }
+    
+        // Redirect ke halaman index dengan pesan sukses
+        return redirect()->route('admin.data_administrasi.index')->with('success', 'Status semua data administrasi berhasil diperbarui');
+    }
+    
+    public function destroyAll($pemesanan_id)
+    {
+        // Retrieve all administrative data based on the pemesanan_id
+        $dataAdministrasis = DataAdministrasi::where('pemesanan_id', $pemesanan_id)->get();
+    
+        // Check if there are any records to delete
+        if ($dataAdministrasis->isEmpty()) {
+            return redirect()->route('admin.data_administrasi.index')->with('error', 'Tidak ada data untuk dihapus.');
+        }
+    
+        // Loop through each administrative data and delete
+        foreach ($dataAdministrasis as $dataAdministrasi) {
+            // Delete document file if it exists
+            if ($dataAdministrasi->file_dokumen) {
+                $filePath = public_path('storage/' . $dataAdministrasi->file_dokumen);
+                if (File::exists($filePath)) {
+                    File::delete($filePath);
+                }
+            }
+            // Delete the administrative data
+            $dataAdministrasi->delete();
+        }
+    
+        // Redirect to the index page with a success message
+        return redirect()->route('admin.data_administrasi.index')->with('success', 'Semua data administrasi berhasil dihapus');
+    }
     
 }

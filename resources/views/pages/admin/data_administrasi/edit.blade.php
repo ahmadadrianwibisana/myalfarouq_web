@@ -22,19 +22,10 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-6">
-                            <div class="form-group">
+                            <<div class="form-group">
                                 <label for="pemesanan_id">Pemesanan</label>
-                                <select id="pemesanan_id" class="form-control" name="pemesanan_id" required>
-                                    <option value="">Pilih Pemesanan</option>
-                                    @foreach($pemesanan as $item)
-                                        <option value="{{ $item->id }}" {{ $item->id == $dataAdministrasi->pemesanan_id ? 'selected' : '' }}>
-                                            {{ $item->id }} - {{ $item->user->name }} ({{ $item->status }})
-                                        </option>
-                                    @endforeach
-                                </select>
-                                <div class="invalid-feedback">
-                                    Kolom ini harus diisi!
-                                </div>
+                                <input type="text" class="form-control" value="{{ $dataAdministrasi->pemesanan_id }} - {{ $dataAdministrasi->pemesanan->user->name }} ({{ $dataAdministrasi->pemesanan->status }})" readonly>
+                                <input type="hidden" name="pemesanan_id" value="{{ $dataAdministrasi->pemesanan_id }}">
                             </div>
                             <div class="form-group">
                                 <label for="file_dokumen">File Dokumen</label>

@@ -231,7 +231,8 @@
             <div class="card-body">
                 <p>{{ session('success') }}</p>
                 <div class="flex justify-center mt-4">
-                    <button id="closeSuccessModal" class="btn btn-order">Tutup</button>
+                    <button id="closeSuccessModal" class="btn btn-order mr-2">Tutup</button>
+                    <a href="{{ route('user.tripsaya') }}" class="btn btn-success">Lihat Trip Saya</a>
                 </div>
             </div>
         </div>

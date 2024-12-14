@@ -135,22 +135,24 @@
             </nav>
         </div>
     </div>
-    <!-- End Page Title -->
+    
 
+    <!-- Detail pemesanan -->
+  <section id="get-a-quote" class="get-a-quote section">
     <div class="max-w-5xl mx-auto p-4">
-        <div class="flex flex-col md:flex-row">
-            <div class="md:w-1/2">
-                @if($pemesanan->trip_type === 'open_trip' && $pemesanan->openTrip && $pemesanan->openTrip->image)
-                    <img alt="{{ $pemesanan->openTrip->nama_paket }}" class="rounded-lg shadow-md" height="400" src="{{ asset('open_trip_images/' . $pemesanan->openTrip->image) }}" width="600" />
-                @elseif($pemesanan->trip_type === 'private_trip' && $pemesanan->privateTrip && $pemesanan->privateTrip->image)
-                    <img alt="{{ $pemesanan->privateTrip->nama_trip }}" class="rounded-lg shadow-md" height="400" src="{{ asset('private_trip_images/' . $pemesanan->privateTrip->image) }}" width="600" />
-                @else
-                    <img alt="Default Image" class="rounded-lg shadow-md" height="400" src="{{ asset('default_image_url.jpg') }}" width="600" />
-                @endif
-            </div>
-            <div class="md:w-1/2 md:pl-8 mt-8 md:mt-0">
-            <h1 class="text-2xl font-semibold text-green-700">{{ ucwords($pemesanan->openTrip->nama_paket ?? $pemesanan->privateTrip->nama_trip) }}</h1>
-            <p class="text-lg font-semibold text-green-700"><span>Type : </span>{{ ucfirst($pemesanan->trip_type) }}</>
+    <div class="flex flex-col md:flex-row">
+        <div class="md:w-1/2">
+            @if($pemesanan->trip_type === 'open_trip' && $pemesanan->openTrip && $pemesanan->openTrip->image)
+                <img alt="{{ $pemesanan->openTrip->nama_paket }}" class="rounded-lg shadow-md" height="400" src="{{ asset('open_trip_images/' . $pemesanan->openTrip->image) }}" width="600" />
+            @elseif($pemesanan->trip_type === 'private_trip' && $pemesanan->privateTrip && $pemesanan->privateTrip->image)
+                <img alt="{{ $pemesanan->privateTrip->nama_trip }}" class="rounded-lg shadow-md" height="400" src="{{ asset('private_trip_images/' . $pemesanan->privateTrip->image) }}" width="600" />
+            @else
+                <img alt="Default Image" class="rounded-lg shadow-md" height="400" src="{{ asset('default_image_url.jpg') }}" width="600" />
+            @endif
+        </div>
+        <div class="md:w-1/2 md:pl-8 mt-8 md:mt-0">
+        <h1 class="text-2xl font-semibold text-green-700">{{ ucwords($pemesanan->openTrip->nama_paket ?? $pemesanan->privateTrip->nama_trip) }}</h1>
+            <p class="text-lg font-semibold text-green-700"><span>Type : </span>{{ ucfirst($pemesanan->trip_type) }}</p>
 
             <div class="mt-4">
                 @if ($pemesanan->trip_type == 'open_trip')
@@ -178,7 +180,7 @@
                         </span>
                     </div>
                 @endif
-           
+
                 <div class="flex items-center text-sm text-gray-600 mt-2">
                     <i class="fas fa-user mr-2 text-[#276f5f]"></i>
                     <span>{{ $pemesanan->jumlah_peserta }} Peserta</span>
@@ -211,7 +213,7 @@
                         <p><strong>Lama Keberangkatan:</strong> {{ $pemesanan->openTrip->lama_keberangkatan ?? 'N/A' }}</p>
                         <p><strong>Kuota:</strong> {{ $pemesanan->openTrip->kuota ?? 'N/A' }}</p>
                     @elseif ($pemesanan->trip_type == 'private_trip')
-                        <p><strong>Star Point:</strong> {{ $pemesanan->privateTrip->star_point ?? 'N/A' }}</p>
+                    <p><strong>Star Point:</strong> {{ $pemesanan->privateTrip->star_point ?? 'N/A' }}</p>
                         <p><strong>Harga:</strong> Rp. {{ number_format($pemesanan->privateTrip->harga, 0, ',', '.') }}</p>
                     @endif
                 </div>
@@ -224,57 +226,142 @@
                 @elseif($pemesanan->status == 'terkonfirmasi')
                     <div class="alert alert-success mt-3" role="alert">
                         <strong>Pemesanan telah disetujui!</strong> Tanggal disetujui: {{ \Carbon\Carbon::parse($pemesanan->tanggal_disetujui)->format('d M Y') }}.
-                    </div>
+                    </div>                 
                 @elseif($pemesanan->status == 'dibatalkan' && !empty($pemesanan->alasan_batal))
                     <div class="alert alert-danger mt-3" role="alert">
                         <strong>Pemesanan Dibatalkan!</strong> {{ $pemesanan->alasan_batal }}
                     </div>
                 @endif
-                <div class="mt-4">
-                      @if($pemesanan->trip_type === 'open_trip')
-                          @if($pemesanan->status === 'pending')
-                              <a href="{{ route('user.editPemesanan', $pemesanan->id) }}" class="btn btn-primary">Edit Pemesanan</a>
-                          @elseif($pemesanan->status === 'terkonfirmasi')
-                              <p class="text-danger">Pemesanan Anda untuk open trip telah terkonfirmasi. Jika Anda ingin membatalkan, harap <a href="https://wa.me/6282269497774" target="_blank" class="text-primary">hubungi admin melalui WhatsApp</a>.</p>
-                              <!-- Button to confirm payment -->
-                <a href="{{ route('user.showUploadBuktiPembayaran', $pemesanan->id) }}" class="btn btn-success mt-2">Konfirmasi Pembayaran</a>
-                          @elseif($pemesanan->status === 'dibatalkan')
-                              <p class="text-danger">Pemesanan Anda untuk open trip telah dibatalkan/ditolak. Jika Anda ingin mengajukan pertanyaan lebih lanjut, silakan <a href="https://wa.me/6282269497774" target="_blank" class="text-primary">hubungi admin melalui WhatsApp</a>.</p>
-                          @else
-                              <p class="text-danger">Status pemesanan tidak dikenali.</p>
-                          @endif
-                      @elseif($pemesanan->trip_type === 'private_trip')
-                          @if($pemesanan->status === 'terkonfirmasi')
-                              <p class="text-danger">Pemesanan Anda untuk private trip telah terkonfirmasi. Jika Anda ingin membatalkan, harap <a href="https://wa.me/6282269497774" target="_blank" class="text-primary">hubungi admin melalui WhatsApp</a>.</p>
-                              <!-- Button to confirm payment -->
-                              <a href="{{ route('user.showUploadBuktiPembayaran', $pemesanan->id) }}" class="btn btn-success mt-2">Konfirmasi Pembayaran</a>
-                          @elseif($pemesanan->status === 'dibatalkan')
-                              <p class="text-danger">Pemesanan Anda untuk private trip telah dibatalkan/ditolak. Jika Anda ingin mengajukan pertanyaan lebih lanjut, silakan <a href="https://wa.me/6282269497774" target="_blank" class="text-primary">hubungi admin melalui WhatsApp</a>.</p>
-                          @else
-                              <p class="text-danger">Status pemesanan tidak dikenali.</p>
-                          @endif
-                      @else
-                          <p class="text-danger">Tipe trip tidak dikenali.</p>
-                      @endif
-                  </div>
-              @if(session('error'))
-                  <div class="alert alert-danger">
-                      {{ session('error') }}
-                  </div>
-              @endif
 
-              @if(session('success'))
-                  <div class="alert alert-success">
-                      {{ session('success') }}
-                  </div>
-              @endif
+                <div class="mt-4">
+                    @if($pemesanan->trip_type === 'open_trip')
+                        @if($pemesanan->status === 'pending')
+                            <a href="{{ route('user.editPemesanan', $pemesanan->id) }}" class="btn btn-primary">Edit Pemesanan</a>
+                        @elseif($pemesanan->status === 'terkonfirmasi')
+                            <p class="text-danger">Pemesanan Anda untuk open trip telah terkonfirmasi. Jika Anda ingin membatalkan, harap <a href="https://wa.me/6282269497774" target="_blank" class="text-primary">hubungi admin melalui WhatsApp</a>.</p>
+                        @elseif($pemesanan->status === 'dibatalkan')
+                            <p class="text-danger">Pemesanan Anda untuk open trip telah dibatalkan/ditolak. Jika Anda ingin mengajukan pertanyaan lebih lanjut, silakan <a href="https://wa.me/6282269497774" target="_blank" class="text-primary">hubungi admin melalui WhatsApp</a>.</p>
+                        @else
+                            <p class="text-danger">Status pemesanan tidak dikenali.</p>
+                        @endif
+                    @elseif($pemesanan->trip_type === 'private_trip')
+                        @if($pemesanan->status === 'terkonfirmasi')
+                            <p class="text-danger">Pemesanan Anda untuk private trip telah terkonfirmasi. Jika Anda ingin membatalkan, harap <a href="https://wa.me/6282269497774" target="_blank" class="text-primary">hubungi admin melalui WhatsApp</a>.</p>
+                            <a href="{{ route('user.showUploadBuktiPembayaran', $pemesanan->id) }}" class="btn btn-success mt-2">Konfirmasi Pembayaran</a>
+                        @elseif($pemesanan->status === 'dibatalkan')
+                            <p class="text-danger">Pemesanan Anda untuk private trip telah dibatalkan/ditolak. Jika Anda ingin mengajukan pertanyaan lebih lanjut, silakan <a href="https://wa.me/6282269497774" target="_blank" class="text-primary">hubungi admin melalui WhatsApp</a>.</p>
+                        @else
+                            <p class="text-danger">Status pemesanan tidak dikenali.</p>
+                        @endif
+                    @else
+                        <p class="text-danger">Tipe trip tidak dikenali.</p>
+                    @endif
+                </div>
             </div>
         </div>
     </div>
-</main>
+</div>              
 
+<!-- Halaman detail pembayaran dan data administrasi -->
+<div class="max-w-5xl mx-auto p-4">
+    <div class="flex flex-col md:flex-row">
+        <div class="md:w-1/2">
+            <!-- Payment Details Section -->
+            <div class="mt-4">
+                <h2 class="text-lg font-semibold text-green-700">Detail Pembayaran</h2>
+                @if($pemesanan->status === 'terkonfirmasi')
+                    @if($pembayaran)
+                        <p>
+                            <strong>Total Pembayaran:</strong> 
+                            <span class="text-secondary"> Rp.{{ number_format($pembayaran->pemesanan->total_pembayaran, 0, ',', '.') }}</span>
+                        </p>
+                        <p>
+                            <strong>Tanggal Pembayaran:</strong> 
+                            <span class="text-secondary">{{ \Carbon\Carbon::parse($pembayaran->tanggal_pembayaran)->format('d-m-Y') }}</span>
+                        </p>
+                        <p>
+                            <strong>Jumlah Pembayaran:</strong> 
+                            <span class="text-secondary"> Rp.{{ number_format($pembayaran->jumlah_pembayaran, 0, ',', '.') }}</span>
+                        </p>
+                        <div class="mt-4">
+                            <h2 class="text-lg font-semibold text-green-700">Status Pembayaran</h2> 
+                            <span class="text-secondary">
+                                @if ($pembayaran->status_pembayaran == 'pending')
+                                    <p class="text-sm text-gray-700">Pembayaran belum dikonfirmasi. Silakan tunggu konfirmasi dari admin.</p>
+                                @elseif ($pembayaran->status_pembayaran == 'success')
+                                    <p class="text-success">Selamat pembayaran anda telah berhasil dilakukan.</p>
+                                @elseif ($pembayaran->status_pembayaran == 'failed')
+                                    <p class="text-sm text-gray-700">Pembayaran gagal, upload ulang bukti pembayaran.</p>
+                                    <p class="text-sm text-gray-700">Alasan: {{ $pembayaran->alasan_gagal }}</p>
+                                @else
+                                    <p class="text-sm text-gray-700">Status pembayaran tidak dapat diidentifikasi.</p>
+                                @endif
+                            </span>
+                        </div>
+                        <div class="mt-4">
+                            <strong>Bukti Pembayaran:</strong> 
+                            <a href="{{ asset($pembayaran->bukti_pembayaran) }}" target="_blank" class="btn btn-info">
+                                <i class="fas fa-file-download"></i> Lihat Bukti Pembayaran
+                            </a>
+                        </div>
+                    @else
+                        <p class="text-gray-700">Tidak ada detail pembayaran yang tersedia.</p>
+                    @endif
+                @else
+                    <p class="text-danger">Status pemesanan belum terkonfirmasi. Anda tidak dapat melihat detail pembayaran.</p>
+                @endif
+            </div>
+            <div class="mt-4">
+                @if($pemesanan->status === 'terkonfirmasi')
+                    <a href="{{ route('user.showUploadBuktiPembayaran', $pemesanan->id) }}" class="btn btn-success">Upload Bukti Pembayaran</a>
+                @endif
+            </div>
+            @if(session('error'))
+                    <div class="alert alert-danger">
+                        {{ session('error') }}
+                    </div>
+                @endif
 
-  <footer id="footer" class="footer dark-background">
+                @if(session('success'))
+                    <div class="alert alert-success">
+                        {{ session('success') }}
+                    </div>
+                @endif
+        </div>
+
+        <div class="md:w-1/2 md:pl-8 mt-8 md:mt-0">
+            <div class="mt-4">
+                <h2 class="text-lg font-semibold text-green-700">Data Administrasi</h2>
+                @if($pemesanan->dataAdministrasi->isNotEmpty())
+                    <ul class="list-disc pl-5">
+                        @foreach($pemesanan->dataAdministrasi as $data)
+                            <li>
+                                <strong>File Dokumen:</strong> 
+                                <a href="{{ asset('storage/' . $data->file_dokumen) }}" target="_blank" class="text-blue-500 underline">
+                                    Lihat Dokumen
+                                </a>
+                                <br>
+                                <strong>Status:</strong> {{ ucfirst($data->status) }}
+                            </li>
+                        @endforeach
+                    </ul>
+                @else
+                    <p class="text-gray-700">Tidak ada data administrasi yang tersedia.</p>
+                @endif
+            </div>
+            
+            <div class="mt-4">
+                @if($pemesanan->status === 'terkonfirmasi')
+                    <a href="{{ route('user.showUploadDataAdministrasi', $pemesanan->id) }}" class="btn btn-primary">Upload Data Administrasi</a>
+                @endif
+            </div>
+        </div>
+    </div>
+</div> 
+  </section>    
+</main>                
+
+<footer id="footer" class="footer dark-background">
       <div class="container footer-top">
         <div class="row gy-4">
         <div class="col-lg-5 col-md-12 footer-about">
