@@ -229,7 +229,8 @@ Route::group(['middleware' => 'web'], function () {
 
     // Privat Trip
     Route::get('/user/privatetrip', [UserController::class, 'privatetrip'])->name('user.privatetrip');
-    Route::post('/user/private_trip/store', [UserController::class, 'storePrivateTrip'])->name('user.private_trip.store');
+    Route::post('/private-trip/store', [UserController::class, 'storePrivateTrip'])->name('user.private_trip.store');
+    Route::post('/private-trip/create', [UserController::class, 'createPrivateTrip'])->name('user.private_trip.create');
 
     // Profil Kami
     Route::get('/user/profil-kami', [UserController::class, 'profilKami'])->name('user.profil-kami');

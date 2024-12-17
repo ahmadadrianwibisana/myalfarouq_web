@@ -77,7 +77,13 @@ class UserController extends Controller
         try {
             // Temukan open trip berdasarkan ID
             $openTrip = OpenTrip::findOrFail($id);
-    
+
+             // Cek apakah kuota masih tersedia
+            if ($openTrip->kuota < $request->jumlah_peserta) {
+                Alert::error('Gagal!', 'Kuota open trip sudah habis. Silakan pilih trip lain.');
+                return redirect()->back();
+            }
+        
             // Hitung total pembayaran
             $totalPembayaran = $openTrip->harga * $request->jumlah_peserta;
     
@@ -91,7 +97,12 @@ class UserController extends Controller
                 'total_pembayaran' => $totalPembayaran,
                 'status' => 'pending',
             ]);
-    
+
+
+            // Kurangi kuota open trip
+            $openTrip->kuota -= $request->jumlah_peserta;
+            $openTrip->save();
+        
             Alert::success('Sukses!', 'Pemesanan berhasil dilakukan!');
             return redirect()->route('user.detailopen', ['id' => $openTrip->id])->with('success', 'Pemesanan berhasil! Anda akan segera dihubungi admin.');
         } catch (\Exception $e) {
@@ -139,12 +150,15 @@ class UserController extends Controller
 
     public function storePrivateTrip(Request $request)
     {
-        // Pastikan user sudah login
+        \Log::info('Store Private Trip method called'); // Log method call
+    
+        // Ensure the user is logged in
         if (!auth()->check()) {
             Alert::error('Gagal!', 'Anda harus login terlebih dahulu');
             return redirect()->route('login');
         }
-
+    
+        // Validate the input data
         $validator = Validator::make($request->all(), [
             'no_telepon' => 'required|string|max:15',
             'nama_trip' => 'required|string|max:255',
@@ -154,26 +168,26 @@ class UserController extends Controller
             'star_point' => 'required|string|max:255',
             'jumlah_peserta' => 'required|integer|min:1',
             'deskripsi_trip' => 'required|string',
+            // Add any additional fields you want to validate
         ]);
-
+    
         if ($validator->fails()) {
-            // Tambahkan debug
             \Log::error('Validation Failed', [
                 'errors' => $validator->errors(),
                 'input' => $request->all()
             ]);
-
             Alert::error('Gagal!', 'Pastikan semua terisi dengan benar!');
             return redirect()->back()->withErrors($validator)->withInput();
         }
-
+    
         try {
-            // Tambahkan debug sebelum create
+            // Log the attempt to create a private trip
             \Log::info('Attempting to create Private Trip', [
                 'user_id' => auth()->id(),
                 'data' => $request->all()
             ]);
-
+    
+            // Create the private trip record
             $privateTrip = PrivateTrip::create([
                 'user_id' => auth()->id(), 
                 'no_telepon' => $request->no_telepon,
@@ -184,29 +198,76 @@ class UserController extends Controller
                 'star_point' => $request->star_point,
                 'jumlah_peserta' => $request->jumlah_peserta,
                 'deskripsi_trip' => $request->deskripsi_trip,
-                'status' => 'pending',
+                'status' => 'pending', // Set initial status
                 'tanggal_pengajuan' => now(),
+                // Add any additional fields you want to set to null or default
             ]);
-
-            // Tambahkan debug setelah create
+    
             \Log::info('Private Trip Created', [
                 'id' => $privateTrip->id
             ]);
-
+    
             Alert::success('Sukses!', 'Private Trip telah berhasil ditambahkan!');
             return redirect()->route('user.privatetrip');
         } catch (\Exception $e) {
-            // Tambahkan error logging
             \Log::error('Private Trip Creation Failed', [
                 'message' => $e->getMessage(),
                 'trace' => $e->getTraceAsString()
             ]);
-
+    
             Alert::error('Gagal!', 'Private Trip gagal ditambahkan: ' . $e->getMessage());
             return redirect()->back();
         }
     }
 
+    public function createPrivateTrip(Request $request)
+    {
+        // Ensure the user is logged in
+        if (!auth()->check()) {
+            Alert::error('Gagal!', 'Anda harus login terlebih dahulu');
+            return redirect()->route('login');
+        }
+    
+        // Validate the input data
+        $validator = Validator::make($request->all(), [
+            'no_telepon' => 'required|string|max:15',
+            'nama_trip' => 'required|string|max:255',
+            'destinasi' => 'required|string|max:255',
+            'tanggal_pergi' => 'required|date',
+            'tanggal_kembali' => 'required|date|after_or_equal:tanggal_pergi',
+            'star_point' => 'required|string|max:255',
+            'jumlah_peserta' => 'required|integer|min:1',
+            'deskripsi_trip' => 'required|string',
+        ]);
+    
+        if ($validator->fails()) {
+            Alert::error('Gagal!', 'Pastikan semua terisi dengan benar!');
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
+    
+        try {
+            // Create the private trip record
+            $privateTrip = PrivateTrip::create([
+                'user_id' => auth()->id(),
+                'no_telepon' => $request->no_telepon,
+                'nama_trip' => $request->nama_trip,
+                'destinasi' => $request->destinasi,
+                'tanggal_pergi' => $request->tanggal_pergi,
+                'tanggal_kembali' => $request->tanggal_kembali,
+                'star_point' => $request->star_point,
+                'jumlah_peserta' => $request->jumlah_peserta,
+                'deskripsi_trip' => $request->deskripsi_trip,
+                'status' => 'pending', // Set initial status
+                'tanggal_pengajuan' => now(),
+            ]);
+    
+            Alert::success('Sukses!', 'Private Trip telah berhasil ditambahkan!');
+            return redirect()->route('user.privatetrip');
+        } catch (\Exception $e) {
+            Alert::error('Gagal!', 'Private Trip gagal ditambahkan: ' . $e->getMessage());
+            return redirect()->back();
+        }
+    }
 
 
     // Halaman Profil Kami
@@ -254,9 +315,16 @@ class UserController extends Controller
                 return response()->json(['error' => 'Unauthorized action.'], 403);
             }
     
+            // Jika pemesanan adalah open trip, kembalikan kuota
+            if ($pemesanan->trip_type === 'open_trip') {
+                $openTrip = OpenTrip::findOrFail($pemesanan->open_trip_id);
+                $openTrip->kuota += $pemesanan->jumlah_peserta; // Kembalikan kuota
+                $openTrip->save(); // Simpan perubahan
+            }
+    
             // Delete the booking
             $pemesanan->delete();
-    
+        
             // Return a JSON response
             return response()->json(['success' => true, 'message' => 'Pemesanan berhasil dibatalkan!']);
         } catch (\Exception $e) {
@@ -305,27 +373,34 @@ class UserController extends Controller
         if ($pemesanan->status !== 'pending') {
             return redirect()->route('user.tripsaya')->with('error', 'Pemesanan tidak dapat diperbarui karena statusnya sudah ' . ucfirst($pemesanan->status) . '.');
         }
-    
+        
         // Validate input
         $validator = Validator::make($request->all(), [
             'jumlah_peserta' => 'required|integer|min:1',
             'open_trip_id' => 'required|exists:open_trips,id', // Ensure the trip ID is valid
         ]);
-    
+        
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->withInput();
         }
+        
+        // Get the old and new open trips
+        $oldOpenTrip = OpenTrip::findOrFail($pemesanan->open_trip_id);
+        $newOpenTrip = OpenTrip::findOrFail($request->open_trip_id);
     
-        // Get the open trip to check the quota
-        $openTrip = OpenTrip::findOrFail($request->open_trip_id);
-    
-        // Check if the number of participants exceeds the quota
-        if ($request->jumlah_peserta > $openTrip->kuota) {
-            return redirect()->back()->withErrors(['jumlah_peserta' => 'Jumlah peserta tidak boleh lebih dari kuota yang tersedia (' . $openTrip->kuota . ').'])->withInput();
+        // Kembalikan kuota open trip yang lama
+        if ($pemesanan->trip_type === 'open_trip') {
+            $oldOpenTrip->kuota += $pemesanan->jumlah_peserta; // Kembalikan kuota
+            $oldOpenTrip->save(); // Simpan perubahan
         }
     
-        // Calculate total payment
-        $totalPembayaran = $openTrip->harga * $request->jumlah_peserta;
+        // Check if the number of participants exceeds the new open trip's quota
+        if ($request->jumlah_peserta > $newOpenTrip->kuota) {
+            return redirect()->back()->withErrors(['jumlah_peserta' => 'Jumlah peserta tidak boleh lebih dari kuota yang tersedia (' . $newOpenTrip->kuota . ').'])->withInput();
+        }
+    
+        // Hitung total pembayaran
+        $totalPembayaran = $newOpenTrip->harga * $request->jumlah_peserta;
     
         // Update the booking
         $pemesanan->update([
@@ -334,8 +409,13 @@ class UserController extends Controller
             'total_pembayaran' => $totalPembayaran,
         ]);
     
+        // Kurangi kuota open trip yang baru
+        $newOpenTrip->kuota -= $request->jumlah_peserta; // Kurangi kuota
+        $newOpenTrip->save(); // Simpan perubahan
+    
         return redirect()->route('user.detailPemesanan', $pemesanan->id)->with('success', 'Pemesanan berhasil diperbarui!');
     }
+    
 
     public function getOpenTripQuota($id)
     {

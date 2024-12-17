@@ -131,8 +131,8 @@ class PemesananController extends Controller
             'tanggal_pemesanan' => $request->tanggal_pemesanan,
             'status' => $status,
             'total_pembayaran' => $totalPembayaran,
-                    'tour_gate' => null, // Set tour_gate to null by default
-        'jumlah_peserta' => $request->trip_type === 'open_trip' ? $request->jumlah_peserta : null, // Simpan jumlah peserta jika trip_type adalah open_trip
+            'tour_gate' => null, // Set tour_gate to null by default
+            'jumlah_peserta' => $request->trip_type === 'open_trip' ? $request->jumlah_peserta : null, // Simpan jumlah peserta jika trip_type adalah open_trip
     ]);
 
     // Jika trip_type adalah private_trip, ambil jumlah peserta dari private trip
@@ -140,6 +140,19 @@ class PemesananController extends Controller
         $privateTrip = PrivateTrip::findOrFail($request->trip_id);
         $pemesanans->jumlah_peserta = $privateTrip->jumlah_peserta; // Ambil jumlah peserta dari private trip
         $pemesanans->save(); // Simpan perubahan
+    }
+
+
+    // Update kuota open trip
+    if ($request->trip_type === 'open_trip') {
+        $openTrip = OpenTrip::findOrFail($request->trip_id);
+        if ($openTrip->kuota >= $request->jumlah_peserta) {
+            $openTrip->kuota -= $request->jumlah_peserta; // Kurangi kuota
+            $openTrip->save(); // Simpan perubahan
+        } else {
+            Alert::error('Gagal!', 'Kuota open trip tidak cukup.');
+            return redirect()->back();
+        }
     }
 
     // Cek apakah pemesanan berhasil disimpan
@@ -198,7 +211,7 @@ public function show($id)
                 },
             ],
             'tanggal_pemesanan' => 'required|date',
-            'status' => 'required|in:terkonfirmasi,dibatalkan',
+            'status' => 'required|in:pending,terkonfirmasi,dibatalkan',
             'alasan_batal' => 'nullable|string|max:255',
             'tour_gate' => 'nullable|string|max:255',
             'jumlah_peserta' => 'required_if:trip_type,open_trip|integer|min:1', // Validasi jumlah peserta
@@ -220,8 +233,23 @@ public function show($id)
             $privateTrip = PrivateTrip::findOrFail($request->trip_id);
             $totalPembayaran = $privateTrip->harga;
         }
+
+            // Kembalikan kuota open trip yang lama jika trip_type adalah open_trip
+    if ($pemesanan->trip_type === 'open_trip') {
+        $oldOpenTrip = OpenTrip::findOrFail($pemesanan->open_trip_id);
+        $oldOpenTrip->kuota += $pemesanan->jumlah_peserta; // Kembalikan kuota
+        $oldOpenTrip->save(); // Simpan perubahan
+    }
     
-        // Update booking with new data (update trip_id and other details)
+        // Jika status diubah menjadi dibatalkan
+        if ($request->status === 'dibatalkan') {
+            if ($pemesanan->trip_type === 'open_trip') {
+                $openTrip = OpenTrip::findOrFail($pemesanan->open_trip_id);
+                $openTrip->kuota += $pemesanan->jumlah_peserta; // Kembalikan kuota
+                $openTrip->save(); // Simpan perubahan
+            }
+        }
+            // Update booking with new data (update trip_id and other details)
         $pemesanan->update([
             'total_pembayaran' => $totalPembayaran, // Update total pembayaran
             'open_trip_id' => $request->trip_type === 'open_trip' ? $request->trip_id : $pemesanan->open_trip_id,
@@ -232,6 +260,17 @@ public function show($id)
             'tour_gate' => $request->tour_gate, // Update tour_gate
             'jumlah_peserta' => $request->trip_type === 'open_trip' ? $request->jumlah_peserta : null, // Update jumlah peserta
         ]);
+
+
+        // Kurangi kuota open trip yang baru jika trip_type adalah open_trip
+        if ($request->trip_type === 'open_trip') {
+            $newOpenTrip = OpenTrip::findOrFail($request->trip_id);
+            if ($request->jumlah_peserta > $newOpenTrip->kuota) {
+                return redirect()->back()->withErrors(['jumlah_peserta' => 'Jumlah peserta tidak boleh lebih dari kuota yang tersedia (' . $newOpenTrip->kuota . ').'])->withInput();
+            }
+            $newOpenTrip->kuota -= $request->jumlah_peserta; // Kurangi kuota
+            $newOpenTrip->save(); // Simpan perubahan
+        }
     
         // Cek apakah pemesanan berhasil diperbarui
         if ($pemesanan) {
@@ -279,6 +318,13 @@ public function show($id)
     {
         // Find the booking by ID
         $pemesanan = Pemesanan::findOrFail($id);
+
+        // Jika pemesanan adalah open trip, kembalikan kuota
+        if ($pemesanan->trip_type === 'open_trip') {
+            $openTrip = OpenTrip::findOrFail($pemesanan->open_trip_id);
+            $openTrip->kuota += $pemesanan->jumlah_peserta; // Kembalikan kuota
+            $openTrip->save(); // Simpan perubahan
+        }
 
         // Delete the booking
         $pemesanan->delete();

@@ -180,6 +180,7 @@
                 <div class="mt-4">
                     <h2 class="text-lg font-semibold text-green-700">Satuan</h2>
                     <p class="text-xl font-bold text-gray-800">Rp {{ number_format($open_trips->harga, 0, ',', '.') }}</p>
+                    <p class="text-sm text-gray-700">Ada penyesuain garga selain dari provinsi riau</p>
                 </div>
 
                 <!-- Form Pemesanan -->
