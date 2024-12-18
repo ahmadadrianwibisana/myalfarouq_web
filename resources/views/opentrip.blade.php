@@ -51,7 +51,6 @@
           <li><a href="{{ url('/opentrip') }}">Open Trip</a></li>
           <li><a href="{{ url('/privatetrip') }}">Private Trip</a></li>
           <li><a href="{{ url('/dokumen') }}">Artikel</a></li>
-          <!-- <li><a href="{{ url('/opentrip') }}">Trip Saya</a></li> -->
           <li class="dropdown">
             <a href="#">
               <span>Profil</span>
@@ -70,12 +69,12 @@
     </div>
   </header>
 
-    <main class="main">
+  <main class="main">
       <!-- Page Title -->
       <div
         class="page-title dark-background"
         data-aos="fade"
-        style="background-image: url(assets/img/background.png)">
+        style="background-image: url('{{ asset('assets/img/background.png') }}')">
         <div class="container position-relative">
           <h1>PAKET OPEN TRIP</h1>
           <h2>Alfarouq Travel</h2>
@@ -89,158 +88,90 @@
       </div>
       <!-- End Page Title -->
 
-      <section
-        id="featured-services"
-        class="featured-services section"
-        style="background-color: #f8f9fa; padding: 50px 0">
-        <div class="container">
-          <form
-            action="#"
-            method="GET"
-            class="form-search d-flex align-items-center justify-content-center mb-3 p-4"
-            style="
-              background-color: white;
-              border-radius: 10px;
-              box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            ">
+      <section id="featured-services" class="featured-services section" style="background-color: #f8f9fa; padding: 50px 0">
+    <div class="container">
+        <form action="{{ route('opentrip') }}" method="GET" class="form-search d-flex align-items-center justify-content-center mb-3 p-4" style="background-color: white; border-radius: 10px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
             <ul class="search-options d-flex gap-3 list-unstyled">
-              <!-- Input untuk Search -->
-              <li>
-                <input
-                  type="text"
-                  name="search"
-                  class="form-control search-input"
-                  placeholder="Cari Open Trip...."
-                  required />
-              </li>
-
-              <!-- Dropdown untuk Destinasi -->
-              <li class="form-group">
-                <select id="destination" name="destination" class="form-select">
-                  <option value="*">Semua Destinasi</option>
-                  <option value="malaysia">Malaysia</option>
-                  <option value="singapura">Singapura</option>
-                  <option value="thailand">Thailand</option>
-                </select>
-              </li>
-
-              <!-- Dropdown untuk Durasi -->
-              <li class="form-group">
-                <select id="duration" name="duration" class="form-select">
-                  <option value="*">Semua Durasi</option>
-                  <option value="short-duration">3 Hari</option>
-                  <option value="medium-duration">5 Hari</option>
-                  <option value="long-duration">7 Hari</option>
-                </select>
-              </li>
-
-              <!-- Tombol Pencarian -->
-              <li>
-                <button type="submit" class="btn btn-success btn-search">
-                  <i class="fas fa-search"></i> Search
-                </button>
-              </li>
+                <li>
+                    <input type="text" name="search" class="form-control search-input" placeholder="Cari Open Trip...." required />
+                </li>
+                <li class="form-group">
+                    <select id="destination" name="destination" class="form-select">
+                        <option value="*">Semua Destinasi</option>
+                        <option value="malaysia">Malaysia</option>
+                        <option value="singapura">Singapura</option>
+                        <option value="thailand">Thailand</option>
+                    </select>
+                </li>
+                <li class="form-group">
+                    <select id="duration" name="duration" class="form-select">
+                        <option value="*">Semua Durasi</option>
+                        <option value="short-duration">3 Hari</option>
+                        <option value="medium-duration">5 Hari</option>
+                        <option value="long-duration">7 Hari</option>
+                    </select>
+                </li>
+                <li>
+                    <button type="submit" class="btn btn-success btn-search">
+                        <i class="fas fa-search"></i> Search
+                    </button>
+                </li>
             </ul>
-          </form>
-        </div>
-      </section>
+        </form>
+    </div>
+</section>
+    
 
-      <!-- Services Section -->
-      <section id="services" class="services section">
-        <div
-          class="isotope-layout"
-          data-default-filter="*"
-          data-layout="masonry"
-          data-sort="original-order">
-          <!-- Section Filter -->
-          <ul
-            class="portfolio-filters isotope-filters"
-            data-aos="fade-up"
-            data-aos-delay="100">
-            <li data-filter="*" class="filter-active">Semua Paket</li>
-            <li data-filter=".filter-satu-negara">Satu Negara</li>
-            <li data-filter=".filter-dua-negara">Dua Negara</li>
-            <li data-filter=".filter-tiga-negara">Tiga Negara</li>
-          </ul>
+    <!-- Opentrip -->
+<section id="services" class="services section">
+    <div
+      class="isotope-layout"
+      data-default-filter="*"
+      data-layout="masonry"
+      data-sort="original-order">
+      <!-- Section Filter -->
+      <ul
+        class="portfolio-filters isotope-filters"
+        data-aos="fade-up"
+        data-aos-delay="100">
+        <li data-filter="*" class="filter-active">Semua Paket</li>
+        <li data-filter=".filter-satu-negara">Satu Negara</li>
+        <li data-filter=".filter-dua-negara">Dua Negara</li>
+        <li data-filter=".filter-tiga-negara">Tiga Negara</li>
+      </ul>
 
-          <!-- Card Items -->
-          <div class="container">
-            <div class="row gy-4 isotope-container">
-              <!-- Card 1 - Satu Negara -->
-              <div
-                class="col-lg-4 col-md-6 filter-satu-negara malaysia short-duration"
-                data-aos="fade-up"
-                data-aos-delay="100">
-                <div class="card">
-                  <div class="card-img">
-                    <img
-                      src="assets/img/open1.jpg"
-                      alt="Tour Image"
-                      class="img-fluid" />
-                  </div>
-                  <h3>Tour 1 Negara</h3>
-                  <p>
-                    <i class="bi bi-clock icon-clock"></i> 17 - 19 Juli<br /><i
-                      class="bi bi-geo-alt icon-location"></i>
-                    Malaysia
-                  </p>
-                  <a href="{{ url('/detailopen') }}" class="btn-detail"
-                    ><span>Detail</span></a
-                  >
+      <!-- Card Items -->
+      <div class="container">
+        <div class="row gy-4 isotope-container">
+          @foreach($open_trips as $open_trip)
+            <div
+              class="col-lg-4 col-md-6 filter-{{ $open_trip->destinasi }} {{ $open_trip->lama_keberangkatan }}"
+              data-aos="fade-up"
+              data-aos-delay="100">
+              <div class="card">
+                <div class="card-img">
+                  <img
+                    src="{{ asset('open_trip_images/' . $open_trip->image) }}"
+                    alt="Tour Image"
+                    class="img-fluid" />
                 </div>
-              </div>
-              <!-- Card 2 - Dua Negara -->
-              <div
-                class="col-lg-4 col-md-6 filter-dua-negara malaysia singapura medium-duration"
-                data-aos="fade-up"
-                data-aos-delay="100">
-                <div class="card">
-                  <div class="card-img">
-                    <img
-                      src="assets/img/0.jpg"
-                      alt="Tour Image"
-                      class="img-fluid" />
-                  </div>
-                  <h3>Tour 2 Negara</h3>
-                  <p>
-                    <i class="bi bi-clock icon-clock"></i> 18 - 22 Agustus<br /><i
-                      class="bi bi-geo-alt icon-location"></i>
-                    Malaysia, Singapura
-                  </p>
-                  <a href="{{ url('/detailopen') }}" class="btn-detail"
-                    ><span>Detail</span></a
-                  >
-                </div>
-              </div>
-              <!-- Card 3 - Tiga Negara -->
-              <div
-                class="col-lg-4 col-md-6 filter-tiga-negara malaysia singapura thailand long-duration"
-                data-aos="fade-up"
-                data-aos-delay="100">
-                <div class="card">
-                  <div class="card-img">
-                    <img
-                      src="assets/img/open3.jpg"
-                      alt="Tour Image"
-                      class="img-fluid" />
-                  </div>
-                  <h3>Tour 3 Negara</h3>
-                  <p>
-                    <i class="bi bi-clock icon-clock"></i> 23 - 28 November<br /><i
-                      class="bi bi-geo-alt icon-location"></i>
-                    Malaysia, Singapura, Thailand
-                  </p>
-                  <a href="{{ url('/detailopen') }}" class="btn-detail"
-                    ><span>Detail</span></a
-                  >
-                </div>
+                <h3>{{ $open_trip->nama_paket }}</h3>
+                <p>
+                  <i class="bi bi-clock icon-clock"></i> {{ $open_trip->tanggal_berangkat }} - {{ $open_trip->tanggal_pulang }}<br />
+                  <i class="bi bi-geo-alt icon-location"></i> {{ $open_trip->destinasi }}
+                </p>
+                <a href="{{ route('detailopen', $open_trip->id) }}" class="btn-detail">
+                  <span>Detail</span>
+                </a>
               </div>
             </div>
-          </div>
+          @endforeach
         </div>
-      </section>
-    </main>
+      </div>
+    </div>
+  </section>
 
+    </main>
     <footer id="footer" class="footer dark-background">
       <div class="container footer-top">
         <div class="row gy-4">

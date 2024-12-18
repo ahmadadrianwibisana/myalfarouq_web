@@ -94,25 +94,24 @@
         <form action="{{ route('user.opentrip') }}" method="GET" class="form-search d-flex align-items-center justify-content-center mb-3 p-4" style="background-color: white; border-radius: 10px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
             <ul class="search-options d-flex gap-3 list-unstyled">
                 <li>
-                    <input type="text" name="search" class="form-control search-input" placeholder="Cari Open Trip...." required />
+                    <input type="text" name="search" class="form-control search-input" placeholder="Cari Open Trip...." />
                 </li>
                 <li class="form-group">
                     <select id="destination" name="destination" class="form-select">
                         <option value="*">Semua Destinasi</option>
-                        <option value="malaysia">Malaysia</option>
-                        <option value="singapura">Singapura</option>
-                        <option value="thailand">Thailand</option>
+                        @foreach($destinations as $destination)
+                            <option value="{{ $destination }}">{{ $destination }}</option>
+                        @endforeach
                     </select>
                 </li>
                 <li class="form-group">
                     <select id="duration" name="duration" class="form-select">
                         <option value="*">Semua Durasi</option>
-                        <option value="short-duration">3 Hari</option>
-                        <option value="medium-duration">5 Hari</option>
-                        <option value="long-duration">7 Hari</option>
+                        @foreach($durations as $duration)
+                            <option value="{{ $duration }}">{{ $duration }}</option>
+                        @endforeach
                     </select>
                 </li>
-                <li>
                     <button type="submit" class="btn btn-success btn-search">
                         <i class="fas fa-search"></i> Search
                     </button>
@@ -121,56 +120,42 @@
         </form>
     </div>
 </section>
-    
 
-    <!-- Opentrip -->
+<!-- Opentrip -->
 <section id="services" class="services section">
-    <div
-      class="isotope-layout"
-      data-default-filter="*"
-      data-layout="masonry"
-      data-sort="original-order">
-      <!-- Section Filter -->
-      <ul
-        class="portfolio-filters isotope-filters"
-        data-aos="fade-up"
-        data-aos-delay="100">
-        <li data-filter="*" class="filter-active">Semua Paket</li>
-        <li data-filter=".filter-satu-negara">Satu Negara</li>
-        <li data-filter=".filter-dua-negara">Dua Negara</li>
-        <li data-filter=".filter-tiga-negara">Tiga Negara</li>
-      </ul>
+    <div class="isotope-layout" data-default-filter="*" data-layout="masonry" data-sort="original-order">
+        <!-- Section Filter -->
+        <ul class="portfolio-filters isotope-filters" data-aos="fade-up" data-aos-delay="100">
+            <li data-filter="*" class="filter-active">Semua Paket</li>
+            @foreach($destinations as $destination)
+                <li data-filter=".filter-{{ strtolower(str_replace(' ', '-', $destination)) }}">{{ $destination }}</li>
+            @endforeach
+        </ul>
 
-      <!-- Card Items -->
-      <div class="container">
-        <div class="row gy-4 isotope-container">
-          @foreach($open_trips as $open_trip)
-            <div
-              class="col-lg-4 col-md-6 filter-{{ $open_trip->destinasi }} {{ $open_trip->lama_keberangkatan }}"
-              data-aos="fade-up"
-              data-aos-delay="100">
-              <div class="card">
-                <div class="card-img">
-                  <img
-                    src="{{ asset('open_trip_images/' . $open_trip->image) }}"
-                    alt="Tour Image"
-                    class="img-fluid" />
-                </div>
-                <h3>{{ $open_trip->nama_paket }}</h3>
-                <p>
-                  <i class="bi bi-clock icon-clock"></i> {{ $open_trip->tanggal_berangkat }} - {{ $open_trip->tanggal_pulang }}<br />
-                  <i class="bi bi-geo-alt icon-location"></i> {{ $open_trip->destinasi }}
-                </p>
-                <a href="{{ route('user.detailopen', $open_trip->id) }}" class="btn-detail">
-                  <span>Detail</span>
-                </a>
-              </div>
+        <!-- Card Items -->
+        <div class="container">
+            <div class="row gy-4 isotope-container">
+                @foreach($open_trips as $open_trip)
+                    <div class="col-lg-4 col-md-6 filter-{{ strtolower(str_replace(' ', '-', $open_trip->destinasi)) }} {{ strtolower(str_replace(' ', '-', $open_trip->lama_keberangkatan)) }}" data-aos="fade-up" data-aos-delay="100">
+                        <div class="card">
+                            <div class="card-img">
+                                <img src="{{ asset('open_trip_images/' . $open_trip->image) }}" alt="Tour Image" class="img-fluid" />
+                            </div>
+                            <h3>{{ $open_trip->nama_paket }}</h3>
+                            <p>
+                                <i class="bi bi-clock icon-clock"></i> {{ $open_trip->tanggal_berangkat }} - {{ $open_trip->tanggal_pulang }}<br />
+                                <i class="bi bi-geo-alt icon-location"></i> {{ $open_trip->destinasi }}
+                            </p>
+                            <a href="{{ route('user.detailopen', $open_trip->id) }}" class="btn-detail">
+                                <span>Detail</span>
+                            </a>
+                        </div>
+                    </div>
+                @endforeach
             </div>
-          @endforeach
         </div>
-      </div>
     </div>
-  </section>
+</section>
 
     </main>
 

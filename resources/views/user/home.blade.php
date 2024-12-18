@@ -244,8 +244,8 @@
                     <h3>{{ $open_trip->nama_paket }}</h3>
                     <p>
                         <i class="bi bi-clock icon-clock"></i> 
-                        {{ \Carbon\Carbon::parse($open_trip->tanggal_berangkat)->format('d F Y') }} - 
-                        {{ \Carbon\Carbon::parse($open_trip->tanggal_pulang)->format('d F Y') }}<br />
+                        {{ \Carbon\Carbon::parse($open_trip->tanggal_berangkat)->format('d/F/Y') }} --
+                        {{ \Carbon\Carbon::parse($open_trip->tanggal_pulang)->format('d/F/Y') }}<br />
                         <i class="bi bi-geo-alt icon-location"></i> {{ $open_trip->destinasi }}
                     </p>
                     <a href="{{ route('user.detailopen', $open_trip->id) }}" class="btn-detail">

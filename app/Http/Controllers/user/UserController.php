@@ -27,32 +27,36 @@ class UserController extends Controller
     }
 
 
-    // Halaman Open Trip
-    public function opentrip(Request $request)
-    {
-        $open_trips = OpenTrip::all(); 
-        $query = OpenTrip::query();
-    
-        // Search by package name
-        if ($request->filled('search')) {
-            $query->where('nama_paket', 'like', '%' . $request->search . '%');
-        }
-    
-        // Filter by destination
-        if ($request->filled('destination') && $request->destination != '*') {
-            $query->where('destinasi', $request->destination);
-        }
-    
-        // Filter by duration
-        if ($request->filled('duration') && $request->duration != '*') {
-            $query->where('lama_keberangkatan', $request->duration);
-        }
-    
-        $open_trips = $query->get();
-    
-        return view('user.opentrip', compact('open_trips'));
+// Halaman Open Trip
+public function opentrip(Request $request)
+{
+    $query = OpenTrip::query();
+
+    // Search by package name (optional)
+    if ($request->filled('search')) {
+        $query->where('nama_paket', 'like', '%' . $request->search . '%');
     }
-    
+
+    // Filter by destination (optional)
+    if ($request->filled('destination') && $request->destination != '*') {
+        $query->where('destinasi', $request->destination);
+    }
+
+    // Filter by duration (optional)
+    if ($request->filled('duration') && $request->duration != '*') {
+        $query->where('lama_keberangkatan', $request->duration);
+    }
+
+    // Get the filtered open trips
+    $open_trips = $query->get();
+
+    // Get unique destinations and durations
+    $destinations = OpenTrip::distinct()->pluck('destinasi');
+    $durations = OpenTrip::distinct()->pluck('lama_keberangkatan');
+
+    return view('user.opentrip', compact('open_trips', 'destinations', 'durations'));
+}
+        
     public function bookOpenTrip(Request $request, $id)
     {
         \Log::info('Request Method: ' . $request->method());

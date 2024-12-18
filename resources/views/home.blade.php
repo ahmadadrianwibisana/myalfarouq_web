@@ -148,10 +148,10 @@
         </div>
         </section>
 
-      <section
+        <section
         id="call-to-action"
         class="call-to-action section dark-background">
-        <img src="assets/img/background.png" alt="" />
+        <img src="assets/user/img/background.png" alt="" />
 
         <div class="container">
           <div
@@ -168,159 +168,90 @@
         </div>
       </section>
 
-      <section
-        id="featured-services"
-        class="featured-services section"
-        style="background-color: #f8f9fa; padding: 50px 0">
-        <div class="container">
-          <form
-            action="#"
-            method="GET"
-            class="form-search d-flex align-items-center justify-content-center mb-3 p-4"
-            style="
-              background-color: white;
-              border-radius: 10px;
-              box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            ">
+      <section id="featured-services" class="featured-services section" style="background-color: #f8f9fa; padding: 50px 0">
+    <div class="container">
+        <form action="{{ route('opentrip') }}" method="GET" class="form-search d-flex align-items-center justify-content-center mb-3 p-4" style="background-color: white; border-radius: 10px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
             <ul class="search-options d-flex gap-3 list-unstyled">
-              <!-- Input untuk Search -->
-              <li>
-                <input
-                  type="text"
-                  name="search"
-                  class="form-control search-input"
-                  placeholder="Cari Open Trip...."
-                  required />
-              </li>
-
-              <!-- Dropdown untuk Destinasi -->
-              <li class="form-group">
-                <select id="destination" name="destination" class="form-select">
-                  <option value="*">Semua Destinasi</option>
-                  <option value="malaysia">Malaysia</option>
-                  <option value="singapura">Singapura</option>
-                  <option value="thailand">Thailand</option>
-                </select>
-              </li>
-
-              <!-- Dropdown untuk Durasi -->
-              <li class="form-group">
-                <select id="duration" name="duration" class="form-select">
-                  <option value="*">Semua Durasi</option>
-                  <option value="short-duration">3 Hari</option>
-                  <option value="medium-duration">5 Hari</option>
-                  <option value="long-duration">7 Hari</option>
-                </select>
-              </li>
-
-              <!-- Tombol Pencarian -->
-              <li>
-                <button type="submit" class="btn btn-success btn-search">
-                  <i class="fas fa-search"></i> Search
-                </button>
-              </li>
+                <li>
+                    <input type="text" name="search" class="form-control search-input" placeholder="Cari Open Trip...." required />
+                </li>
+                <li class="form-group">
+                    <select id="destination" name="destination" class="form-select">
+                        <option value="*">Semua Destinasi</option>
+                        <option value="malaysia">Malaysia</option>
+                        <option value="singapura">Singapura</option>
+                        <option value="thailand">Thailand</option>
+                    </select>
+                </li>
+                <li class="form-group">
+                    <select id="duration" name="duration" class="form-select">
+                        <option value="*">Semua Durasi</option>
+                        <option value="short-duration">3 Hari</option>
+                        <option value="medium-duration">5 Hari</option>
+                        <option value="long-duration">7 Hari</option>
+                    </select>
+                </li>
+                <li>
+                    <button type="submit" class="btn btn-success btn-search">
+                        <i class="fas fa-search"></i> Search
+                    </button>
+                </li>
             </ul>
-          </form>
-        </div>
-      </section>
+        </form>
+    </div>
+</section>
+    
 
-      <!-- Opentrip -->
-      <section id="services" class="services section">
-        <div
-          class="isotope-layout"
-          data-default-filter="*"
-          data-layout="masonry"
-          data-sort="original-order">
-          <!-- Section Filter -->
-          <ul
-            class="portfolio-filters isotope-filters"
-            data-aos="fade-up"
-            data-aos-delay="100">
-            <li data-filter="*" class="filter-active">Semua Paket</li>
-            <li data-filter=".filter-satu-negara">Satu Negara</li>
-            <li data-filter=".filter-dua-negara">Dua Negara</li>
-            <li data-filter=".filter-tiga-negara">Tiga Negara</li>
-          </ul>
+    <!-- Opentrip -->
+<section id="services" class="services section">
+    <div
+      class="isotope-layout"
+      data-default-filter="*"
+      data-layout="masonry"
+      data-sort="original-order">
+      <!-- Section Filter -->
+      <ul
+        class="portfolio-filters isotope-filters"
+        data-aos="fade-up"
+        data-aos-delay="100">
+        <li data-filter="*" class="filter-active">Semua Paket</li>
+        <li data-filter=".filter-satu-negara">Satu Negara</li>
+        <li data-filter=".filter-dua-negara">Dua Negara</li>
+        <li data-filter=".filter-tiga-negara">Tiga Negara</li>
+      </ul>
 
-          <!-- Card Items -->
-          <div class="container">
-            <div class="row gy-4 isotope-container">
-              <!-- Card 1 - Satu Negara -->
-              <div
-                class="col-lg-4 col-md-6 filter-satu-negara malaysia short-duration"
+<!-- Card Items -->
+<div class="container">
+    <div class="row gy-4 isotope-container">
+        @foreach($open_trips as $open_trip)
+            <div
+                class="col-lg-4 col-md-6 filter-{{ $open_trip->destinasi }} {{ $open_trip->lama_keberangkatan }}"
                 data-aos="fade-up"
                 data-aos-delay="100">
                 <div class="card">
-                  <div class="card-img">
-                    <img
-                      src="assets/img/open1.jpg"
-                      alt="Tour Image"
-                      class="img-fluid" />
-                  </div>
-                  <h3>Tour 1 Negara</h3>
-                  <p>
-                    <i class="bi bi-clock icon-clock"></i> 17 - 19 Juli<br />
-                    <i class="bi bi-geo-alt icon-location"></i> Malaysia
-                  </p>
-                  <a href="service-details.html" class="btn-detail">
-                    <span>Detail</span>
-                  </a>
+                    <div class="card-img">
+                        <img
+                            src="{{ asset('open_trip_images/' . $open_trip->image) }}"
+                            alt="Tour Image"
+                            class="img-fluid" />
+                    </div>
+                    <h3>{{ $open_trip->nama_paket }}</h3>
+                    <p>
+                        <i class="bi bi-clock icon-clock"></i> 
+                        {{ \Carbon\Carbon::parse($open_trip->tanggal_berangkat)->format('d/F/Y') }} --
+                        {{ \Carbon\Carbon::parse($open_trip->tanggal_pulang)->format('d/F/Y') }}<br />
+                        <i class="bi bi-geo-alt icon-location"></i> {{ $open_trip->destinasi }}
+                    </p>
+                    <a href="{{ route('detailopen', $open_trip->id) }}" class="btn-detail">
+                        <span>Detail</span>
+                    </a>
                 </div>
-              </div>
-
-              <!-- Card 2 - Dua Negara -->
-              <div
-                class="col-lg-4 col-md-6 filter-dua-negara malaysia singapura medium-duration"
-                data-aos="fade-up"
-                data-aos-delay="100">
-                <div class="card">
-                  <div class="card-img">
-                    <img
-                      src="assets/img/0.jpg"
-                      alt="Tour Image"
-                      class="img-fluid" />
-                  </div>
-                  <h3>Tour 2 Negara</h3>
-                  <p>
-                    <i class="bi bi-clock icon-clock"></i> 18 - 22 Agustus<br />
-                    <i class="bi bi-geo-alt icon-location"></i> Malaysia,
-                    Singapura
-                  </p>
-                  <a href="service-details.html" class="btn-detail">
-                    <span>Detail</span>
-                  </a>
-                </div>
-              </div>
-
-              <!-- Card 3 - Tiga Negara -->
-              <div
-                class="col-lg-4 col-md-6 filter-tiga-negara malaysia singapura thailand long-duration"
-                data-aos="fade-up"
-                data-aos-delay="100">
-                <div class="card">
-                  <div class="card-img">
-                    <img
-                      src="assets/img/open3.jpg"
-                      alt="Tour Image"
-                      class="img-fluid" />
-                  </div>
-                  <h3>Tour 3 Negara</h3>
-                  <p>
-                    <i class="bi bi-clock icon-clock"></i> 23 - 28 November<br />
-                    <i class="bi bi-geo-alt icon-location"></i> Malaysia,
-                    Singapura, Thailand
-                  </p>
-                  <a href="service-details.html" class="btn-detail">
-                    <span>Detail</span>
-                  </a>
-                </div>
-              </div>
             </div>
-          </div>
-        </div>
-      </section>
-      <section>
-      </section>
+        @endforeach
+    </div>
+</div>
+    </div>
+  </section>
 
       <!-- Call To Action Section -->
       <section
@@ -430,79 +361,40 @@
       </section>
 
       <!-- Dokumentasi -->
-      <section id="artikel" class="artikel section">
-        <div class="container section-title" data-aos="fade-up">
-          <span>Dokumentasi<br /></span>
-          <h2>Dokumentasi</h2>
+<section id="artikel" class="artikel section">
+    <div class="container section-title" data-aos="fade-up">
+        <span>Dokumentasi<br /></span>
+        <h2>Dokumentasi</h2>
+    </div>
+    <div class="container">
+        <div class="row gy-4">
+            @foreach($artikels as $artikelItem) <!-- Loop through each article -->
+                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="200">
+                    <div class="card">
+                        <div class="card-img">
+                            @if($artikelItem->images->isNotEmpty()) <!-- Check if images exist -->
+                                <img src="{{ asset('storage/' . $artikelItem->images->first()->image_path) }}" alt="" class="img-fluid" />
+                            @else
+                                <img src="assets/user/img/default.jpg" alt="Default Image" class="img-fluid" /> <!-- Default image if no image exists -->
+                            @endif
+                        </div>
+                        <p class="card-info">
+                            <i class="bi bi-calendar-event"></i> 
+                            {{ date('d M Y', strtotime($artikelItem->tanggal_publish)) }}<br />
+                            <i class="bi bi-file-earmark-text"></i> Dokumentasi
+                        </p>
+                        <h3 class="card-title">
+                            <a href="{{ route('detail-artikel', $artikelItem->id) }}" class="stretched-link">
+                                {{ $artikelItem->judul_artikel }} <!-- Display the article title -->
+                            </a>
+                        </h3>
+                    </div>
+                </div>
+            @endforeach
         </div>
-        <div class="container">
-          <div class="row gy-4">
-            <div
-              class="col-lg-4 col-md-6"
-              data-aos="fade-up"
-              data-aos-delay="200">
-              <div class="card">
-                <div class="card-img">
-                  <img src="assets/img/open1.jpg" alt="" class="img-fluid" />
-                </div>
-                <p class="card-info">
-                  <i class="bi bi-calendar-event"></i> Agustus 23, 2024<br />
-                  <i class="bi bi-file-earmark-text"></i> Dokumentasi
-                </p>
-                <h3 class="card-title">
-                  <a href="detail.html" class="stretched-link">
-                    Dokumentasi Private Tour 2 Negara Tgl 18 – 22 Agustus 2024
-                    sebanyak 40 pax
-                  </a>
-                </h3>
-              </div>
-            </div>
-
-            <div
-              class="col-lg-4 col-md-6"
-              data-aos="fade-up"
-              data-aos-delay="200">
-              <div class="card">
-                <div class="card-img">
-                  <img src="assets/img/open2.jpg" alt="" class="img-fluid" />
-                </div>
-                <p class="card-info">
-                  <i class="bi bi-calendar-event"></i> Juli 20, 2024<br />
-                  <i class="bi bi-file-earmark-text"></i> Dokumentasi
-                </p>
-                <h3 class="card-title">
-                  <a href="#" class="stretched-link">
-                    Dokumentasi Private Tour Malaysia Tgl 18 – 22 Juli 2024
-                    sebanyak 20 pax
-                  </a>
-                </h3>
-              </div>
-            </div>
-
-            <div
-              class="col-lg-4 col-md-6"
-              data-aos="fade-up"
-              data-aos-delay="200">
-              <div class="card">
-                <div class="card-img">
-                  <img src="assets/img/open3.jpg" alt="" class="img-fluid" />
-                </div>
-                <p class="card-info">
-                  <i class="bi bi-calendar-event"></i> September 25, 2024<br />
-                  <i class="bi bi-file-earmark-text"></i> Dokumentasi
-                </p>
-                <h3 class="card-title">
-                  <a href="#" class="stretched-link">
-                    Dokumentasi Private Tour 3 Negara Tgl 23 – 24 September 2024
-                    sebanyak 15 pax
-                  </a>
-                </h3>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-      <!-- /Dokumentasi -->
+    </div>
+</section>
+<!-- /Dokumentasi -->
 
       <!-- Contact Section -->
       <section id="contact" class="contact section">
@@ -515,11 +407,14 @@
                 data-aos-delay="300">
                 <i class="bi bi-geo-alt flex-shrink-0"></i>
                 <div>
-                  <h3>Whatsapp:</h3>
-                  <a href="https://wa.me/6282269497774" target="_blank"
-                    >+62 822 6949 7774</a
-                  >
-                </div>
+                <h3>Whatsapp:</h3>
+                <p>
+                  <a href="https://wa.me/6282269497774" target="_blank">+62 822 6949 7774</a>
+                </p>
+                <p>
+                  <a href="https://wa.me/6281234567890" target="_blank">+62 812 3456 7890</a>
+                </p>
+              </div>
               </div>
               <div
                 class="info-item d-flex"

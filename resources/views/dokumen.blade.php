@@ -50,7 +50,6 @@
           <li><a href="{{ url('/opentrip') }}">Open Trip</a></li>
           <li><a href="{{ url('/privatetrip') }}">Private Trip</a></li>
           <li><a href="{{ url('/dokumen') }}">Artikel</a></li>
-          <!-- <li><a href="{{ url('/opentrip') }}">Trip Saya</a></li> -->
           <li class="dropdown">
             <a href="#">
               <span>Profil</span>
@@ -69,12 +68,12 @@
     </div>
   </header>
 
-    <main class="main">
+      <main class="main">
       <!-- Page Title -->
       <div
         class="page-title dark-background"
         data-aos="fade"
-        style="background-image: url(assets/img/background.png)">
+        style="background-image:  url('{{ asset('assets/img/background.png') }}')">
         <div class="container position-relative">
           <h1>Artikel</h1>
           <h2>Dokumentasi Trip</h2>
@@ -88,83 +87,41 @@
       </div>
       <!-- End Page Title -->
 
-      <!-- Services Section -->
-      <section id="artikel" class="artikel section">
-        <!-- Section Title -->
-        <div class="container section-title" data-aos="fade-up">
-          <span>Dokumentasi<br /></span>
-          <h2>Dokumentasi</h2>
+    <!-- Dokumentasi -->
+<section id="artikel" class="artikel section">
+    <div class="container section-title" data-aos="fade-up">
+        <span>Dokumentasi<br /></span>
+        <h2>Dokumentasi</h2>
+    </div>
+    <div class="container">
+        <div class="row gy-4">
+            @foreach($artikels as $artikelItem) <!-- Loop through each article -->
+                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="200">
+                    <div class="card">
+                        <div class="card-img">
+                            @if($artikelItem->images->isNotEmpty()) <!-- Check if images exist -->
+                                <img src="{{ asset('storage/' . $artikelItem->images->first()->image_path) }}" alt="" class="img-fluid" />
+                            @else
+                                <img src="assets/user/img/default.jpg" alt="Default Image" class="img-fluid" /> <!-- Default image if no image exists -->
+                            @endif
+                        </div>
+                        <p class="card-info">
+                            <i class="bi bi-calendar-event"></i> 
+                            {{ date('d M Y', strtotime($artikelItem->tanggal_publish)) }}<br />
+                            <i class="bi bi-file-earmark-text"></i> Dokumentasi
+                        </p>
+                        <h3 class="card-title">
+                            <a href="{{ route('detail-artikel', $artikelItem->id) }}" class="stretched-link">
+                                {{ $artikelItem->judul_artikel }} <!-- Display the article title -->
+                            </a>
+                        </h3>
+                    </div>
+                </div>
+            @endforeach
         </div>
-        <!-- End Section Title -->
-
-        <div class="container">
-          <div class="row gy-4">
-            <div
-              class="col-lg-4 col-md-6"
-              data-aos="fade-up"
-              data-aos-delay="200">
-              <div class="card">
-                <div class="card-img">
-                  <img src="assets/img/open1.jpg" alt="" class="img-fluid" />
-                </div>
-                <p class="card-info">
-                  <i class="bi bi-calendar-event"></i> Agustus 23, 2024<br />
-                  <i class="bi bi-file-earmark-text"></i> Dokumentasi
-                </p>
-                <h3 class="card-title">
-                <a href="{{ url('/detail') }}" class="stretched-link">
-                    Dokumentasi Private Tour 2 Negara Tgl 18 – 22 Agustus 2024
-                    sebanyak 40 pax
-                  </a>
-                </h3>
-              </div>
-            </div>
-
-            <div
-              class="col-lg-4 col-md-6"
-              data-aos="fade-up"
-              data-aos-delay="200">
-              <div class="card">
-                <div class="card-img">
-                  <img src="assets/img/open2.jpg" alt="" class="img-fluid" />
-                </div>
-                <p class="card-info">
-                  <i class="bi bi-calendar-event"></i> Juli 20, 2024<br />
-                  <i class="bi bi-file-earmark-text"></i> Dokumentasi
-                </p>
-                <h3 class="card-title">
-                  <a href="#" class="stretched-link">
-                    Dokumentasi Private Tour Malaysia Tgl 18 – 22 Juli 2024
-                    sebanyak 20 pax
-                  </a>
-                </h3>
-              </div>
-            </div>
-
-            <div
-              class="col-lg-4 col-md-6"
-              data-aos="fade-up"
-              data-aos-delay="200">
-              <div class="card">
-                <div class="card-img">
-                  <img src="assets/img/open3.jpg" alt="" class="img-fluid" />
-                </div>
-                <p class="card-info">
-                  <i class="bi bi-calendar-event"></i> September 25, 2024<br />
-                  <i class="bi bi-file-earmark-text"></i> Dokumentasi
-                </p>
-                <h3 class="card-title">
-                  <a href="#" class="stretched-link">
-                    Dokumentasi Private Tour 3 Negara Tgl 23 – 24 September 2024
-                    sebanyak 15 pax
-                  </a>
-                </h3>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
+    </div>
+</section>
+<!-- /Dokumentasi -->
       <!-- /Services Section -->
     </main>
 

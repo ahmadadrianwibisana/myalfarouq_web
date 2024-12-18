@@ -15,50 +15,39 @@ use App\Http\Controllers\AdminBesar\RiwayatController;
 use App\Http\Controllers\User\UserController;
 use App\Models\Riwayat;
 use Symfony\Component\VarDumper\Cloner\Data;
+use App\Http\Controllers\Pengunjung\PengunjungController;
 
 // Route untuk tamu (guest) -> login dan register
 Route::group(['middleware' => 'guest'], function () {
 
     // Halaman Home
-    Route::get('/', function () {
-        return view('home');  // pastikan Anda memiliki file resources/views/home.blade.php
-    })->name('home');
-    
+    Route::get('/', [PengunjungController::class, 'home'])->name('home');
+        
     // Halaman Open Trip
-    Route::get('/opentrip', function () {
-        return view('opentrip');  // pastikan Anda memiliki file resources/views/opentrip.blade.php
-    })->name('opentrip');
-    
-    // Halaman Private Trip
-    Route::get('/privatetrip', function () {
-        return view('privatetrip');  // pastikan Anda memiliki file resources/views/privatetrip.blade.php
-    })->name('privatetrip');
-    
+    Route::get('/opentrip', [PengunjungController::class, 'opentrip'])->name('opentrip');
+
+    // Halaman Detail Open Trip
+    Route::get('/detailopen/{id}', [PengunjungController::class, 'detailopen'])->name('detailopen');
+
     // Halaman Artikel
-    Route::get('/dokumen', function () {
-        return view('dokumen');  // pastikan Anda memiliki file resources/views/artikel.blade.php
-    })->name('dokumen');
-    
+    Route::get('/dokumen', [PengunjungController::class, 'dokumen'])->name('dokumen');
+
+    // Halaman Detail Artikel
+    Route::get('/artikel/{id}', [PengunjungController::class, 'detailArtikel'])->name('detail-artikel');
+
+    // Halaman Privat Trip
+    Route::get('/privatetrip', [PengunjungController::class, 'privatetrip'])->name('privatetrip');
+
     // Halaman Profil Kami
-    Route::get('/profil-kami', function () {
-        return view('profil-kami');  // pastikan Anda memiliki file resources/views/profil-kami.blade.php
-    })->name('profil.kami');
-    
+    Route::get('/profil-kami', [PengunjungController::class, 'profilKami'])->name('profil.kami');
+
     // Halaman Tentang Kami
-    Route::get('/tentang-kami', function () {
-        return view('tentang-kami');  // pastikan Anda memiliki file resources/views/tentang-kami.blade.php
-    })->name('tentang.kami');
+    Route::get('/tentang-kami', [PengunjungController::class, 'tentangKami'])->name('tentang.kami');
 
     // Halaman Detail
-    Route::get('/detail', function () {
-        return view('detail');  // pastikan Anda memiliki file resources/views/tentang-kami.blade.php
-    })->name('detail');
+    Route::get('/detail', [PengunjungController::class, 'detail'])->name('detail');
 
-    // Halaman Detail Open trip
-    Route::get('/detailopen', function () {
-        return view('detailopen');  
-    })->name('detailopen');
-    
+        
 
     
     
@@ -77,6 +66,7 @@ Route::group(['middleware' => 'guest'], function () {
     Route::get('/register', [AuthController::class, 'register'])->name('register');
     Route::post('/post-register', [AuthController::class, 'post_register'])->name('post.register');
 
+    
     Route::post('/post-login', [AuthController::class, 'login'])->name('post.login');
 });
 
@@ -231,6 +221,8 @@ Route::group(['middleware' => 'web'], function () {
     Route::get('/user/privatetrip', [UserController::class, 'privatetrip'])->name('user.privatetrip');
     Route::post('/private-trip/store', [UserController::class, 'storePrivateTrip'])->name('user.private_trip.store');
     Route::post('/private-trip/create', [UserController::class, 'createPrivateTrip'])->name('user.private_trip.create');
+    // Route untuk menyimpan data private trip
+Route::post('/private-trip/store', [UserController::class, 'createPrivateTrip'])->name('user.private_trip.store');
 
     // Profil Kami
     Route::get('/user/profil-kami', [UserController::class, 'profilKami'])->name('user.profil-kami');

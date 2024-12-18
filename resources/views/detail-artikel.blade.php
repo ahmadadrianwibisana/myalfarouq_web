@@ -26,13 +26,6 @@
 
     <!-- Main CSS File -->
     <link href="{{ asset('assets/user/css/main.css') }}" rel="stylesheet" />
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"></link>
-    <style>
-        body {
-            font-family: 'Roboto', sans-serif;
-        }
-    </style>
 </head>
 
 <body class="services-page">
@@ -65,124 +58,84 @@
       <a class="btn-getstarted" href="{{ url('/login') }}">Login</a>
     </div>
   </header>
-<main class="main">
+<main class="main detailartikel">
     <!-- Page Title -->
     <div class="page-title dark-background" data-aos="fade" style="background-image: url('{{ asset('assets/img/background.png') }}')">
         <div class="container position-relative">
-            <h1>Detail Open Trip</h1>
-            <h2>{{ $open_trip->nama_paket }}</h2>
+            <h1>Detail Artikel</h1>
+            <h2>{{ $artikel->judul_artikel }}</h2>
             <nav class="breadcrumbs">
                 <ol>
                     <li><a href="{{ route('home') }}">Home</a></li>
-                    <li><a href="{{ route('opentrip') }}">Open Trip</a></li>
-                    <li class="current">Detail Open Trip</li>
+                    <li><a href="{{ route('dokumen') }}">Artikel</a></li>
+                    <li class="current">Detail Artikel</li>
                 </ol>
             </nav>
         </div>
     </div>
     <!-- End Page Title -->
 
-    <div class="max-w-5xl mx-auto p-4">
-        <div class="flex flex-col md:flex-row">
-            <div class="md:w-1/2">
-                <img alt="{{ $open_trip->nama_paket }}" class="rounded-lg shadow-md" height="400" src="{{ asset('open_trip_images/' . $open_trip->image) }}" width="600" />
-                <div class="mt-4">
-                    <h2 class="text-lg font-semibold text-green-700">Include</h2>
-                    <ul class="list-disc list-inside text-sm text-gray-700 mt-2">
-                        <li>TIKET PESAWAT/KAPAL FERRY PULANG PERGI</li>
-                        <li>HOTEL BINTANG 3/4</li>
-                        <li>BUS PARIWISATA PREMIUM</li>
-                        <li>MAKAN 3X SEHARI & SARAPAN DIHOTEL</li>
-                        <li>DRIVER, MINYAK, TOL, dan PARKIR</li>
-                        <li>TOUR LEADER dan TOUR GUIDE PROFESIONAL</li>
-                        <li>PENGISIAN EAD MADC (Malaysia Digital Arrival Card)</li>
-                        <li>DIPANDU PENGISIAN MOBILE SINGAPURA</li>
-                        <li>FREE TIKET CABLE CAR GENTING HIGHLAND</li>
-                        <li>FREE MINERAL WATER SETIAP HARI</li>
-                        <li>FREE DOKUMENTASI FOTO dan VIDIO KONTEN</li>
-                    </ul>
-                </div>
-            </div>
-            <div class="md:w-1/2 md:pl-8 mt-8 md:mt-0">
-                <h1 class="text-2xl font-semibold text-green-700">{{ $open_trip->nama_paket }}</h1>
-                <div class="flex items-center text-sm text-gray-600 mt-2">
-                    <i class="fas fa-map-marker-alt mr-2 text-[#276f5f]"></i>
-                    <span>{{ $open_trip->destinasi }}</span>
-                </div>
-                <div class="flex items-center text-sm text-gray-600 mt-2">
-                    <i class="fas fa-calendar-alt mr-2 text-[#276f5f]"></i>
-                    <span>{{ \Carbon\Carbon::parse($open_trip->tanggal_berangkat)->format('d F Y') }} - {{ \Carbon\Carbon::parse($open_trip->tanggal_pulang)->format('d F Y') }}</span>
-                </div>
-                <div class="flex items-center text-sm text-gray-600 mt-2">
-                    <i class="fas fa-clock mr-2 text-[#276f5f]"></i>
-                    <span>{{ $open_trip->lama_keberangkatan }}</span>
-                </div>
+      <!-- detail-artikel.blade.php -->
+      <section id="detail" class="detail section">
+        <div class="container">
+            <div class="row gy-4">
+                <!-- Konten Utama -->
+                <div class="col-lg-8" data-aos="fade-up">
+                    <div class="detail-content">
+                        <!-- Teks Artikel -->
+                        <h2 style="text-align: justify">
+                            {{ $artikel->judul_artikel }}
+                        </h2>
+                        <p class="text-muted" style="text-align: justify">
+                            <i class="bi bi-calendar-event" style="color: #276f5f"></i>
+                            {{ date('d M Y', strtotime($artikel->tanggal_publish)) }} &nbsp;&nbsp;
+                            <i class="bi bi-file-earmark-text" style="color: #276f5f"></i>
+                            Dokumentasi
+                        </p>
+                        <p style="text-align: justify">
+                            {{ $artikel->deskripsi }}
+                        </p>
 
-                <div class="mt-4">
-                    <h2 class="text-lg font-semibold text-green-700">Kuota</h2>
-                    <p class="text-sm text-gray-700">{{ $open_trip->kuota }} Peserta</p>
-                </div>
-
-                <div class="mt-4">
-                    <h2 class="text-lg font-semibold text-green-700">Satuan</h2>
-                    <p class="text-xl font-bold text-gray-800">Rp {{ number_format($open_trip->harga, 0, ',', '.') }}</p>
-                    <p class="text-sm text-gray-700">Ada penyesuaian harga selain dari provinsi Riau</p>
-                </div>
-                <!-- Form Pemesanan -->
-                <div class="mt-4">
-                    <button id="confirmBooking" class="bg-black text-white px-4 py-2 rounded" onclick="showLoginModal()">Pesan Sekarang</button>
-                </div>
-
-                <div class="mt-4 flex items-center text-sm text-gray-600">
-                    <i class="fas fa-download mr-2"></i>
-                    <a class="text-green-700" href="#">Unduh ITENERY</a>
-                </div>
-                <div class="mt-4">
-                    <h2 class="text-lg font-semibold text-green-700">Exclude</h2>
-                    <ul class="list-disc list-inside text-sm text-gray-700 mt-2">
-                        <li>CHOP PASSPORT IMIGRASI</li>
-                        <li>JAJAN PRIBADI</li>
-                        <li>EXTRA BAGASI</li>
-                    </ul>
-                    <div class="mt-4">
-                        <h2 class="text-lg font-semibold text-green-700">Deskripsi</h2>
-                        <p class="text-sm text-gray-700">{{ $open_trip->deskripsi_trip }}</p>
+                        <!-- Galeri Tambahan -->
+                        <div class="additional-gallery mt-4">
+                            <h3>Galeri Tambahan</h3>
+                            <div class="row">
+                                @if ($artikel->images->isNotEmpty())
+                                    @foreach ($artikel->images as $image)
+                                        <div class="col-4">
+                                            <img src="{{ asset('storage/' . $image->image_path) }}" alt="Gallery Image" class="img-fluid rounded mb-3" />
+                                        </div>
+                                    @endforeach
+                                @else
+                                    <p>Tidak ada gambar untuk artikel ini.</p>
+                                @endif
+                            </div>
+                        </div>
+                        <!-- End Galeri Tambahan -->
                     </div>
                 </div>
+                <!-- End Konten Utama -->
+
+                <!-- Sidebar -->
+                <div class="col-lg-4" data-aos="fade-up">
+                    <div class="sidebar">
+                        <!-- Gambar Utama -->
+                        <div class="main-image mb-4">
+                            @if ($artikel->images->isNotEmpty())
+                                <img src="{{ asset('storage/' . $artikel->images->first()->image_path) }}" alt="Dokumentasi Artikel" class="img-fluid rounded" />
+                            @else
+                                <img src="{{ asset('assets/img/default.jpg') }}" alt="Default Image" class="img-fluid rounded" />
+                            @endif
+                        </div>
+                    </div>
+                </div>
+                <!-- End Sidebar -->
             </div>
         </div>
-    </div>
-
-    <!-- Login Modal -->
-    <div id="loginModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center" style="display: none;">
-        <div class="bg-[#a8ccc4] p-10 rounded-lg shadow-lg text-center">
-            <h1 class="text-xl font-bold mb-6">LOGIN DIPERLUKAN</h1>
-            <div class="bg-white p-4 rounded-lg mb-6">
-                <p class="text-gray-800">Silakan login terlebih dahulu untuk melanjutkan</p>
-            </div>
-            <button onclick="window.location.href='{{ url('/login') }}'" class="bg-[#276f5f] text-white font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-teal-700">
-                Login/Register
-            </button>
-            <!-- Close Modal Button -->
-            <button onclick="closeLoginModal()" class="mt-4 text-gray-700 hover:text-gray-900">Close</button>
-        </div>
-    </div>
-
-    <!-- JavaScript to Show/Close Modal -->
-    <script>
-        // Show modal when button is clicked
-        function showLoginModal() {
-            document.getElementById('loginModal').style.display = 'flex';
-        }
-
-        // Close modal when close button is clicked
-        function closeLoginModal() {
-            document.getElementById('loginModal').style.display = 'none';
-        }
-    </script>
-
+    </section>
+    <!-- End Detail Section -->
 </main>
-               
+
 <footer id="footer" class="footer dark-background">
     <div class="container footer-top">
         <div class="row gy-4">
@@ -247,17 +200,10 @@
             <span> Alfarouq Travel</span>
         </p>
         <div class="credits">
-            Designed by <a href="https://bootstrapmade.com/">MyAlfarouq_Travel</a>
+            Designed by <a href="{{ route('home') }}">MyAlfarouq_Travel</a>
         </div>
     </div>
 </footer>
-
-<div class="whatsapp-button">
-    <a href="https://wa.me/6282269497774?text=Halo,%20saya%20ingin%20bertanya." target="_blank" rel="noopener noreferrer" aria-label="Chat WhatsApp">
-        <i class="bi bi-whatsapp"></i>
-        <span>Chat Kami</span>
-    </a>
-</div>
 
 <!-- Scroll Top -->
 <a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center">
