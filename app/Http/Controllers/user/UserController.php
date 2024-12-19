@@ -206,69 +206,25 @@ public function opentrip(Request $request)
     // Halaman Privat Trip
     public function privatetrip()
     {
+        // Fetch the authenticated user's data
+        $user = auth()->user(); // Get the authenticated user
+    
+        // Fetch the user's bookings with related open trips and private trips
         $pemesanans = Pemesanan::with(['openTrip', 'privateTrip'])
             ->where('user_id', auth()->id())
             ->take(5) // Limit to 5 records
             ->get();
-
-        return view('user.privatetrip',compact('pemesanans')); // Return the view for the private trip form
+    
+        // Pass the user data to the view
+        return view('user.privatetrip', compact('pemesanans', 'user')); // Pass user data to the view
     }
 
-    // Store the newly created private trip
-    public function storePrivateTrip(Request $request)
+    public function createPrivateTrip()
     {
-        \Log::info('Store Private Trip method called');
+        // Fetch the authenticated user's data
+        $user = auth()->user(); // Get the authenticated user
 
-        // Validate input
-        $validator = Validator::make($request->all(), [
-            'no_telepon' => 'required|string|max:15',
-            'nama_trip' => 'required|string|max:255',
-            'destinasi' => 'required|string|max:255',
-            'tanggal_pergi' => 'required|date',
-            'tanggal_kembali' => 'required|date|after_or_equal:tanggal_pergi',
-            'star_point' => 'required|string|max:255',
-            'jumlah_peserta' => 'required|integer|min:1',
-            'deskripsi_trip' => 'required|string',
-        ]);
-
-        if ($validator->fails()) {
-            \Log::error('Validation Failed', [
-                'errors' => $validator->errors(),
-                'input' => $request->all()
-            ]);
-            Alert::error('Gagal!', 'Pastikan semua terisi dengan benar!');
-            return redirect()->back()->withErrors($validator)->withInput();
-        }
-
-        try {
-            // Create a new record in the database
-            $privateTrip = PrivateTrip::create([
-                'user_id' => auth()->id(),
-                'no_telepon' => $request->no_telepon,
-                'nama_trip' => $request->nama_trip,
-                'destinasi' => $request->destinasi,
-                'tanggal_pergi' => $request->tanggal_pergi,
-                'tanggal_kembali' => $request->tanggal_kembali,
-                'star_point' => $request->star_point,
-                'jumlah_peserta' => $request->jumlah_peserta,
-                'deskripsi_trip' => $request->deskripsi_trip,
-                'status' => 'pending',
-                'tanggal_pengajuan' => now(),
-            ]);
-
-            \Log::info('Private Trip Created', ['id' => $privateTrip->id]);
-
-            Alert::success('Sukses!', 'Private Trip telah berhasil ditambahkan!');
-            return redirect()->route('user.home'); // Redirect to the home page or any other page
-        } catch (\Exception $e) {
-            \Log::error('Private Trip Creation Failed', [
-                'message' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
-            ]);
-
-            Alert::error('Gagal!', 'Private Trip gagal ditambahkan: ' . $e->getMessage());
-            return redirect()->back()->withInput();
-        }
+        return view('user.create-private-trip', compact('user')); // Pass user data to the view
     }
 
     // Halaman Profil Kami

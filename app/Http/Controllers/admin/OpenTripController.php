@@ -47,12 +47,6 @@ class OpenTripController extends Controller
         return redirect()->back()->withErrors($validator)->withInput();
     }
 
-    // Upload gambar jika ada
-    // $imagePath = null;
-    // if ($request->hasFile('image')) {
-    //     $image = $request->file('image');
-    //     $imagePath = $image->store('open_trip_images', 'public');
-    // }
     if ($request->hasFile('image')) {
         $image = $request->file('image');
         $imageName = time() . '.' . $image->getClientOriginalExtension();

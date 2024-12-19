@@ -220,6 +220,13 @@ Route::group(['middleware' => 'web'], function () {
   // Privat Trip
     Route::get('/user/privatetrip', [UserController::class, 'privatetrip'])->name('user.privatetrip');
     Route::post('/private-trip/store', [UserController::class, 'storePrivateTrip'])->name('user.private_trip.store');
+    // Route to show the create private trip form
+Route::get('/user/private-trip/create', [UserController::class, 'createPrivateTrip'])->name('user.private_trip.create');
+
+// Route to store the private trip
+Route::post('/user/private-trip/store', [UserController::class, 'storePrivateTrip'])->name('user.private_trip.store');
+
+
 
     // Profil Kami
     Route::get('/user/profil-kami', [UserController::class, 'profilKami'])->name('user.profil-kami');

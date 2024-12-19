@@ -85,100 +85,100 @@
     </div>
     <!-- End Page Title -->
 
-    <section id="get-a-quote" class="get-a-quote section">
+   <!-- Get A Quote Section -->
+<!-- Get A Quote Section -->
+<section id="get-a-quote" class="get-a-quote section">
     <div class="container">
         <div class="row g-0">
             <div class="col-lg-5 quote-bg" style="background-image:url('{{ asset('assets/user/img/private.jpg') }}')"></div>
 
             <div class="col-lg-7">
-                <form action="{{ route('user.private_trip.store') }}" method="POST" enctype="multipart/form-data" class="php-email-form" id="privateTripForm">
-                    @csrf
-                    <h2 class="text-center mb-4">PENDAFTARAN PRIVATE TRIP</h2>
+                <form id="privateTripForm" class="php-email-form">
+                    <h2>PENDAFTARAN PRIVATE TRIP</h2>
+                    <input type="hidden" id="no_telepon" value="{{ $user->no_telepon }}" />
+                    <input type="hidden" id="nama_user" value="{{ $user->name }}" />
                     <div class="row gy-4">
                         <div class="col-12">
-                            <label for="no_telepon">No Telepon</label>
-                            <input type="text" name="no_telepon" class="form-control @error('no_telepon') is-invalid @enderror" placeholder="Masukkan No Telepon" required />
-                            @error('no_telepon')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
+                            <input type="text" id="nama_trip" class="form-control" value="Private Trip" readonly required />
                         </div>
                         <div class="col-12">
-                            <label for="nama_trip">Nama Trip</label>
-                            <input type="text" name="nama_trip" class="form-control @error('nama_trip') is-invalid @enderror" placeholder="Masukkan Nama Trip" required />
-                            @error('nama_trip')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
+                            <input type="text" id="destinasi" class="form-control" placeholder="Masukkan Destinasi" required />
                         </div>
                         <div class="col-12">
-                            <label for="destinasi">Destinasi</label>
-                            <input type="text" name="destinasi" class="form-control @error('destinasi') is-invalid @enderror" placeholder="Masukkan Destinasi" required />
-                            @error('destinasi')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
+                            <input type="date" id="tanggal_pergi" class="form-control" required />
                         </div>
                         <div class="col-12">
-                            <label for="tanggal_pergi">Tanggal Pergi</label>
-                            <input type="date" name="tanggal_pergi" class="form-control @error('tanggal_pergi') is-invalid @enderror" required />
-                            @error('tanggal_pergi')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
+                            <input type="date" id="tanggal_kembali" class="form-control" required />
                         </div>
                         <div class="col-12">
-                            <label for="tanggal_kembali">Tanggal Kembali</label>
-                            <input type="date" name="tanggal_kembali" class="form-control @error('tanggal_kembali') is-invalid @enderror" required />
-                            @error('tanggal_kembali')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
+                            <input type="text" id="star_point" class="form-control" placeholder="Masukkan Starting Point" required />
                         </div>
                         <div class="col-12">
-                            <label for="star_point">Starting Point</label>
-                            <input type="text" name="star_point" class="form-control @error('star_point') is-invalid @enderror" placeholder="Masukkan Starting Point" required />
-                            @error('star_point')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-                        <div class="col-12">
-                            <label for="jumlah_peserta">Jumlah Peserta</label>
-                            <input type="number" name="jumlah_peserta" class="form-control @error('jumlah_peserta') is-invalid @enderror" placeholder="Masukkan Jumlah Peserta" required />
-                            @error('jumlah_peserta')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-                        <div class="col-12">
-                            <label for="deskripsi_trip">Deskripsi Trip</label>
-                            <textarea name="deskripsi_trip" class="form-control @error('deskripsi_trip') is-invalid @enderror" placeholder="Masukkan Deskripsi Trip" rows="4" required></textarea>
-                            @error('deskripsi_trip')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
+                            <input type="number" id="jumlah_peserta" class="form-control" placeholder="Masukkan Jumlah Peserta" required />
                         </div>
                         <div class="col-12 text-center">
-                        <button type="submit" class="btn btn-primary" id="submitButton">
+                            <button type="button" class="btn btn-primary" onclick="sendWhatsAppMessage()">
                                 <i class="fas fa-paper-plane"></i> Simpan Data
                             </button>
                         </div>
                     </div>
-
-                    @if ($errors->any())
-                        <div class="alert alert-danger mt-3">
-                            <ul>
-                            @foreach ($errors->all() as $error)
-                                    <li>{{ $error }}</li>
-                                @endforeach
-                            </ul>
-                        </div>
-                    @endif
                 </form>
+                <!-- Success Message -->
+                <div id="successMessage" class="alert alert-success mt-3" style="display: none;">
+                    Data telah berhasil dikirim!
+                </div>
             </div>
         </div>
     </div>
 </section>
 
 <script>
-    document.getElementById('privateTripForm').addEventListener('submit', function() {
-        document.getElementById('submitButton').disabled = true; // Disable button
-        document.getElementById('submitButton').innerHTML = 'Processing...'; // Change button text
-    });
+    function sendWhatsAppMessage() {
+        // Get the values from the form
+        const namaUser    = document.getElementById('nama_user').value;
+        const noTelepon = document.getElementById('no_telepon').value;
+        const namaTrip = document.getElementById('nama_trip').value; // This will always be "Private Trip"
+        const destinasi = document.getElementById('destinasi').value;
+        const tanggalPergi = document.getElementById('tanggal_pergi').value;
+        const tanggalKembali = document.getElementById('tanggal_kembali').value;
+        const starPoint = document.getElementById('star_point').value;
+        const jumlahPeserta = document.getElementById('jumlah_peserta').value;
+
+        // Construct the WhatsApp message
+        const message = `*Pendaftaran Private Trip*\n\n` +
+                        `Nama User: ${namaUser   }\n` +
+                        `No Telepon: ${noTelepon}\n` +
+                        `Nama Trip: ${namaTrip}\n` +
+                        `Destinasi: ${destinasi}\n` +
+                        `Tanggal Pergi: ${tanggalPergi}\n` +
+                        `Tanggal Kembali: ${tanggalKembali}\n` +
+                        `Starting Point: ${starPoint}\n` +
+                        `Jumlah Peserta: ${jumlahPeserta}\n`;
+
+        // Encode the message for URL
+        const encodedMessage = encodeURIComponent(message);
+
+        // WhatsApp API URL
+        const phoneNumber = '+62081275037017'; // Replace with your WhatsApp number
+        const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
+
+        // Open WhatsApp
+        window.open(whatsappUrl, '_blank');
+
+        // Show success message
+        const successMessage = document.getElementById('successMessage');
+        successMessage.style.display = 'block';
+
+        // Optionally, you can hide the success message after a few seconds
+        setTimeout(() => {
+            successMessage.style.display = 'none';
+        }, 5000); // Hide after 5 seconds
+    }
 </script>
+
+
+    <!-- /Get A Quote Section -->
+</main>
 
     <footer id="footer" class="footer dark-background">
       <div class="container footer-top">
