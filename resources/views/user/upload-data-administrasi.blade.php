@@ -175,6 +175,7 @@
         </div>
     </div>
     <!-- End Page Title -->
+    <section>
     <div class="container mt-5">
     <div class="card">
         <div class="card-header">
@@ -186,20 +187,33 @@
                 <input type="hidden" name="pemesanan_id" value="{{ $pemesanan->id }}">
                 <div class="form-group">
                     <label for="file_dokumen">File Dokumen</label>
+                    <p>
+                    <small id="fileHelp" class="form-text text-muted">
+                       Upload Data Administrasi Anda Sesuai Dengan Jumlah Peserta Trip Anda
+                    </small>
+                    </p>
+                    
                     <input id="file_dokumen" type="file" class="form-control" name="file_dokumen[]" multiple required>
                         @error('file_dokumen')
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
                     <small id="fileHelp" class="form-text text-muted">
-                        Silakan unggah dokumen yang valid. Format yang diterima: <strong>PDF, JPG, PNG</strong> (maksimal 10MB).
+                        Silakan unggah dokumen yang valid. Sesuaikan nama file dengan nama peserta trip.
+                        <p>
+                        Format yang diterima: <strong>PDF, JPG, PNG</strong> (maksimal 10MB).
+                        </p>
                     </small>
+                    <p>
                     <small class="form-text text-muted">
                         Contoh dokumen: 
-                        <strong><a href="{{ asset('uploads/contoh_dokumen.pdf') }}" target="_blank">contoh_dokumen.pdf</a></strong>, 
-                        <strong><a href="{{ asset('uploads/gambar_dokumen.jpg') }}" target="_blank">gambar_dokumen.jpg</a></strong>. 
+                        <strong><a href="{{ asset('uploads/contoh_dokumen.pdf') }}" target="_blank">(nama_peserta).pdf</a></strong>, 
+                        <strong><a href="{{ asset('uploads/gambar_dokumen.jpg') }}" target="_blank">(nama_peserta).jpg</a></strong>. 
                     </small>
+                    </p>
+                  
                 </div>
-
+                
+                <section>
                 <!-- Menampilkan data administrasi yang sudah ada -->
                 <h5>Data Administrasi yang Sudah Diupload:</h5>
                     <div class="table-responsive">
@@ -232,6 +246,7 @@
                             </tbody>
                         </table>
                     </div>
+                    </section>
 
 
                 <div class="text-center">
@@ -258,6 +273,7 @@
         </div>
     </div>
 </div>
+</section>
 </main>
 
 <footer id="footer" class="footer dark-background">
@@ -306,15 +322,22 @@
             </div>
 
             <div class="col-lg-2 col-6 footer-links">
-                <h4>Trip Saya</h4>
-                <ul>
-                    <li><a href="#">2 Negara : Start Pekanbaru</a></li>
-                    <li><a href="#">2 Negara : Start Dumai</a></li>
-                    <li><a href="#">3 Negara : Start Jakarta</a></li>
-                    <li><a href="#">3 Negara : Start Pekanbaru</a></li>
-                    <li><a href="#">1 Negara : Start Pekanbaru</a></li>
-                </ul>
-            </div>
+                    <h4>Trip Saya</h4>
+                        <ul>
+                            @if($pemesanans->isEmpty())
+                                <li><a href="#">Anda belum melakukan pemesanan.</a></li>
+                            @else
+                                @foreach($pemesanans as $pemesanan)
+                                    <li>
+                                        <a href="{{ route('user.tripsaya.detail-pemesanan', $pemesanan->id) }}">
+                                        {{ $pemesanan->trip_type === 'open_trip' ? $pemesanan->openTrip->nama_paket : $pemesanan->privateTrip->nama_trip }} : Star
+                                        {{ $pemesanan->trip_type === 'open_trip' ? $pemesanan->openTrip->star_point : $pemesanan->privateTrip->star_point }}
+                                    </a>
+                                    </li>
+                                @endforeach
+                            @endif
+                        </ul>
+                </div>
         </div>
     </div>
 

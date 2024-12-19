@@ -247,7 +247,6 @@
                     @elseif($pemesanan->trip_type === 'private_trip')
                         @if($pemesanan->status === 'terkonfirmasi')
                             <p class="text-danger">Pemesanan Anda untuk private trip telah terkonfirmasi. Jika Anda ingin membatalkan, harap <a href="https://wa.me/6282269497774" target="_blank" class="text-primary">hubungi admin melalui WhatsApp</a>.</p>
-                            <a href="{{ route('user.showUploadBuktiPembayaran', $pemesanan->id) }}" class="btn btn-success mt-2">Konfirmasi Pembayaran</a>
                         @elseif($pemesanan->status === 'dibatalkan')
                             <p class="text-danger">Pemesanan Anda untuk private trip telah dibatalkan/ditolak. Jika Anda ingin mengajukan pertanyaan lebih lanjut, silakan <a href="https://wa.me/6282269497774" target="_blank" class="text-primary">hubungi admin melalui WhatsApp</a>.</p>
                         @else
@@ -415,15 +414,23 @@
                 </ul>
             </div>
 
-          <div class="col-lg-2 col-6 footer-links">
-            <h4>Trip Saya</h4>
-            <ul>
-              <li><a href="#">2 Negara : Start Pekanbaru</a></li>
-              <li><a href="#">2 Negara : Start Dumai</a></li>
-              <li><a href="#">3 Negara : Start Jakarta</a></li>
-              <li><a href="#">3 Negara : Start Pekanbaru</a></li>
-              <li><a href="#">1 Negara : Start Pekanbaru</a></li>
-            </ul>
+            <div class="col-lg-2 col-6 footer-links">
+                    <h4>Trip Saya</h4>
+                        <ul>
+                            @if($pemesanans->isEmpty())
+                                <li><a href="#">Anda belum melakukan pemesanan.</a></li>
+                            @else
+                                @foreach($pemesanans as $pemesanan)
+                                    <li>
+                                        <a href="{{ route('user.tripsaya.detail-pemesanan', $pemesanan->id) }}">
+                                        {{ $pemesanan->trip_type === 'open_trip' ? $pemesanan->openTrip->nama_paket : $pemesanan->privateTrip->nama_trip }} : Star
+                                        {{ $pemesanan->trip_type === 'open_trip' ? $pemesanan->openTrip->star_point : $pemesanan->privateTrip->star_point }}
+                                    </a>
+                                    </li>
+                                @endforeach
+                            @endif
+                        </ul>
+                </div>
           </div>
         </div>
       </div>

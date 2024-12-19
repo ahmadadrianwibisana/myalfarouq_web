@@ -17,38 +17,68 @@ use App\Models\DataAdministrasi;
 
 class PengunjungController extends Controller
 {
-    public function home()
+    public function home(Request $request)
     {
+        $query = OpenTrip::query();
+
+        // Search by package name (optional)
+        if ($request->filled('search')) {
+            $query->where('nama_paket', 'like', '%' . $request->search . '%');
+        }
+
+        // Filter by destination (optional)
+        if ($request->filled('destination') && $request->destination != '*') {
+            $query->where('destinasi', $request->destination);
+        }
+
+        // Filter by duration (optional)
+        if ($request->filled('duration') && $request->duration != '*') {
+            $query->where('lama_keberangkatan', $request->duration);
+        }
+
+        // Get the filtered open trips
+        $open_trips = $query->take(3)->get();  // Limit to 3 results for the home page
+
+        // Get unique destinations and durations for the search form
+        $destinations = OpenTrip::distinct()->pluck('destinasi');
+        $durations = OpenTrip::distinct()->pluck('lama_keberangkatan');
+
+        // Get the latest articles (if needed)
         $artikels = Artikel::with('images')->take(3)->get();
-        // Mengambil hanya 3 data open trip
-        $open_trips = OpenTrip::take(3)->get();  
-        return view('home', compact('artikels', 'open_trips'));
+
+        return view('home', compact('artikels', 'open_trips', 'destinations', 'durations'));
     }
+
 
         // Halaman Open Trip
         public function opentrip(Request $request)
         {
-            $open_trips = OpenTrip::all(); 
             $query = OpenTrip::query();
         
-            // Search by package name
+            // Search by package name (optional)
             if ($request->filled('search')) {
                 $query->where('nama_paket', 'like', '%' . $request->search . '%');
             }
         
-            // Filter by destination
+            // Filter by destination (optional)
             if ($request->filled('destination') && $request->destination != '*') {
                 $query->where('destinasi', $request->destination);
             }
         
-            // Filter by duration
+            // Filter by duration (optional)
             if ($request->filled('duration') && $request->duration != '*') {
                 $query->where('lama_keberangkatan', $request->duration);
             }
         
+            // Get the filtered open trips
             $open_trips = $query->get();
         
-            return view('opentrip', compact('open_trips'));
+            // Get unique destinations and durations
+            $destinations = OpenTrip::distinct()->pluck('destinasi');
+            $durations = OpenTrip::distinct()->pluck('lama_keberangkatan');
+            
+            // Pass the variables to the view
+            return view('opentrip', compact('open_trips', 'destinations', 'durations'));
         }
 
         // Method for detail open trip
@@ -90,9 +120,7 @@ class PengunjungController extends Controller
     {
         return view('profil-kami'); // Make sure this view exists
     }
-
-
-
+    
     // Halaman Tentang Kami
     public function tentangKami()
     {

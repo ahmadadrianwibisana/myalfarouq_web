@@ -398,13 +398,20 @@ body {
 
                 <div class="col-lg-2 col-6 footer-links">
                     <h4>Trip Saya</h4>
-                    <ul>
-                        <li><a href="#">2 Negara : Start Pekanbaru</a></li>
-                        <li><a href="#">2 Negara : Start Dumai</a></li>
-                        <li><a href="#">3 Negara : Start Jakarta</a></li>
-                        <li><a href="#">3 Negara : Start Pekanbaru</a></li>
-                        <li><a href="#">1 Negara : Start Pekanbaru</a></li>
-                    </ul>
+                        <ul>
+                            @if($pemesanans->isEmpty())
+                                <li><a href="#">Anda belum melakukan pemesanan.</a></li>
+                            @else
+                                @foreach($pemesanans as $pemesanan)
+                                    <li>
+                                        <a href="{{ route('user.tripsaya.detail-pemesanan', $pemesanan->id) }}">
+                                        {{ $pemesanan->trip_type === 'open_trip' ? $pemesanan->openTrip->nama_paket : $pemesanan->privateTrip->nama_trip }} : Star
+                                        {{ $pemesanan->trip_type === 'open_trip' ? $pemesanan->openTrip->star_point : $pemesanan->privateTrip->star_point }}
+                                    </a>
+                                    </li>
+                                @endforeach
+                            @endif
+                        </ul>
                 </div>
             </div>
         </div>

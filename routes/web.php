@@ -222,7 +222,7 @@ Route::group(['middleware' => 'web'], function () {
     Route::post('/private-trip/store', [UserController::class, 'storePrivateTrip'])->name('user.private_trip.store');
     Route::post('/private-trip/create', [UserController::class, 'createPrivateTrip'])->name('user.private_trip.create');
     // Route untuk menyimpan data private trip
-Route::post('/private-trip/store', [UserController::class, 'createPrivateTrip'])->name('user.private_trip.store');
+    Route::post('/private-trip/store', [UserController::class, 'createPrivateTrip'])->name('user.private_trip.store');
 
     // Profil Kami
     Route::get('/user/profil-kami', [UserController::class, 'profilKami'])->name('user.profil-kami');
@@ -247,6 +247,7 @@ Route::post('/private-trip/store', [UserController::class, 'createPrivateTrip'])
     Route::get('/user/upload-data-administrasi/{id}', [UserController::class, 'showUploadDataAdministrasi'])->name('user.showUploadDataAdministrasi');
     Route::post('/user/data-administrasi', [UserController::class, 'storeDataAdministrasi'])->name('user.storeDataAdministrasi');
     Route::post('/user/data-administrasi/update', [UserController::class, 'updateDataAdministrasi'])->name('user.updateDataAdministrasi');
+    Route::post('/user/data-administrasi/store', [UserController::class, 'storeDataAdministrasi'])->name('user.storeDataAdministrasi');
 
     Route::post('/user/logout', [AuthController::class, 'user_logout'])->name('user.logout');
 

@@ -88,30 +88,30 @@
       </div>
       <!-- End Page Title -->
 
+ 
       <section id="featured-services" class="featured-services section" style="background-color: #f8f9fa; padding: 50px 0">
     <div class="container">
         <form action="{{ route('opentrip') }}" method="GET" class="form-search d-flex align-items-center justify-content-center mb-3 p-4" style="background-color: white; border-radius: 10px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
             <ul class="search-options d-flex gap-3 list-unstyled">
                 <li>
-                    <input type="text" name="search" class="form-control search-input" placeholder="Cari Open Trip...." required />
+                    <input type="text" name="search" class="form-control search-input" placeholder="Cari Open Trip...." />
                 </li>
                 <li class="form-group">
                     <select id="destination" name="destination" class="form-select">
                         <option value="*">Semua Destinasi</option>
-                        <option value="malaysia">Malaysia</option>
-                        <option value="singapura">Singapura</option>
-                        <option value="thailand">Thailand</option>
+                        @foreach($destinations as $destination)
+                            <option value="{{ $destination }}">{{ $destination }}</option>
+                        @endforeach
                     </select>
                 </li>
                 <li class="form-group">
                     <select id="duration" name="duration" class="form-select">
                         <option value="*">Semua Durasi</option>
-                        <option value="short-duration">3 Hari</option>
-                        <option value="medium-duration">5 Hari</option>
-                        <option value="long-duration">7 Hari</option>
+                        @foreach($durations as $duration)
+                            <option value="{{ $duration }}">{{ $duration }}</option>
+                        @endforeach
                     </select>
                 </li>
-                <li>
                     <button type="submit" class="btn btn-success btn-search">
                         <i class="fas fa-search"></i> Search
                     </button>
@@ -120,27 +120,18 @@
         </form>
     </div>
 </section>
-    
 
-    <!-- Opentrip -->
+<!-- Opentrip -->
 <section id="services" class="services section">
-    <div
-      class="isotope-layout"
-      data-default-filter="*"
-      data-layout="masonry"
-      data-sort="original-order">
-      <!-- Section Filter -->
-      <ul
-        class="portfolio-filters isotope-filters"
-        data-aos="fade-up"
-        data-aos-delay="100">
-        <li data-filter="*" class="filter-active">Semua Paket</li>
-        <li data-filter=".filter-satu-negara">Satu Negara</li>
-        <li data-filter=".filter-dua-negara">Dua Negara</li>
-        <li data-filter=".filter-tiga-negara">Tiga Negara</li>
-      </ul>
+    <div class="isotope-layout" data-default-filter="*" data-layout="masonry" data-sort="original-order">
+        <!-- Section Filter -->
+        <ul class="portfolio-filters isotope-filters" data-aos="fade-up" data-aos-delay="100">
+            <li data-filter="*" class="filter-active">Semua Paket</li>
+            @foreach($destinations as $destination)
+                <li data-filter=".filter-{{ strtolower(str_replace(' ', '-', $destination)) }}">{{ $destination }}</li>
+            @endforeach
+        </ul>
 
-      <!-- Card Items -->
       <div class="container">
         <div class="row gy-4 isotope-container">
           @foreach($open_trips as $open_trip)
@@ -231,11 +222,7 @@
           <div class="col-lg-2 col-6 footer-links">
             <h4>Trip Saya</h4>
             <ul>
-              <li><a href="#">2 Negara : Start Pekanbaru</a></li>
-              <li><a href="#">2 Negara : Start Dumai</a></li>
-              <li><a href="#">3 Negara : Start Jakarta</a></li>
-              <li><a href="#">3 Negara : Start Pekanbaru</a></li>
-              <li><a href="#">1 Negara : Start Pekanbaru</a></li>
+            <li><a href="{{ url('/login') }}">Login Terlebih Dahulu Untuk Melihat Trip Saya</a></li>
             </ul>
           </div>
         </div>

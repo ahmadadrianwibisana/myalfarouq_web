@@ -17,14 +17,47 @@ use App\Models\DataAdministrasi;
 
 class UserController extends Controller
 {
-    // Halaman Home
-    public function home()
-    {
-        $artikels = Artikel::with('images')->take(3)->get();
-        // Mengambil hanya 3 data open trip
-        $open_trips = OpenTrip::take(3)->get();  
-        return view('user.home', compact('artikels', 'open_trips'));
+
+// Halaman Home
+public function home(Request $request)
+{
+    $query = OpenTrip::query();
+
+    // Search by package name (optional)
+    if ($request->filled('search')) {
+        $query->where('nama_paket', 'like', '%' . $request->search . '%');
     }
+
+    // Filter by destination (optional)
+    if ($request->filled('destination') && $request->destination != '*') {
+        $query->where('destinasi', $request->destination);
+    }
+
+    // Filter by duration (optional)
+    if ($request->filled('duration') && $request->duration != '*') {
+        $query->where('lama_keberangkatan', $request->duration);
+    }
+
+    // Get the filtered open trips
+    $open_trips = $query->take(3)->get();  // Limit to 3 results for the home page
+
+    // Get unique destinations and durations for the search form
+    $destinations = OpenTrip::distinct()->pluck('destinasi');
+    $durations = OpenTrip::distinct()->pluck('lama_keberangkatan');
+
+    // Get the latest articles (if needed)
+    $artikels = Artikel::with('images')->take(3)->get();
+
+    // Fetch the authenticated user's bookings with related open trips and private trips, limited to 4
+    $pemesanans = Pemesanan::with(['openTrip', 'privateTrip'])
+        ->where('user_id', auth()->id())
+        ->take(5) // Limit to 5 records
+        ->get();
+
+
+    return view('user.home', compact('artikels', 'open_trips', 'destinations', 'durations','pemesanans'));
+}
+
 
 
 // Halaman Open Trip
@@ -54,7 +87,14 @@ public function opentrip(Request $request)
     $destinations = OpenTrip::distinct()->pluck('destinasi');
     $durations = OpenTrip::distinct()->pluck('lama_keberangkatan');
 
-    return view('user.opentrip', compact('open_trips', 'destinations', 'durations'));
+    // Fetch the authenticated user's bookings with related open trips and private trips, limited to 4
+    $pemesanans = Pemesanan::with(['openTrip', 'privateTrip'])
+        ->where('user_id', auth()->id())
+        ->take(5) // Limit to 5 records
+        ->get();
+
+    // Corrected variable name here
+    return view('user.opentrip', compact('open_trips', 'destinations', 'durations', 'pemesanans'));
 }
         
     public function bookOpenTrip(Request $request, $id)
@@ -120,7 +160,13 @@ public function opentrip(Request $request)
     public function detailopen($id)
     {
         $open_trips = OpenTrip::find($id);
-        return view('user.detailopen', compact('open_trips'));
+        // Fetch the authenticated user's bookings with related open trips and private trips, limited to 4
+        $pemesanans = Pemesanan::with(['openTrip', 'privateTrip'])
+            ->where('user_id', auth()->id())
+            ->take(5) // Limit to 5 records
+            ->get();
+
+        return view('user.detailopen', compact('open_trips','pemesanans'));
     }
 
 
@@ -129,17 +175,28 @@ public function opentrip(Request $request)
     public function dokumen()
     {
         $artikels = Artikel::with('images')->get(); 
-        return view('user.dokumen',compact('artikels'));
+             // Fetch the authenticated user's bookings with related open trips and private trips
+        $pemesanans = Pemesanan::with(['openTrip', 'privateTrip'])
+        ->where('user_id', auth()->id())
+        ->get();
+        return view('user.dokumen',compact('artikels','pemesanans'));
     }
     public function detailArtikel($id)
     {
         $artikel = Artikel::with('images')->find($id);
-        return view('user.detail-artikel', compact('artikel'));
+        // Fetch the authenticated user's bookings with related open trips and private trips, limited to 4
+        $pemesanans = Pemesanan::with(['openTrip', 'privateTrip'])
+            ->where('user_id', auth()->id())
+            ->take(5) // Limit to 5 records
+            ->get();
+
+        return view('user.detail-artikel', compact('artikel','pemesanans'));
     }
 
      // Method for Detail page
     public function detail()
     {
+        
          return view('user.detail');  // The view you want to show for the detail page
     }
 
@@ -148,8 +205,14 @@ public function opentrip(Request $request)
     // Halaman Privat Trip
     public function privatetrip()
     {
-        // Optional: You can pass any additional data to the view if needed
-        return view('user.privatetrip');
+        // Fetch the authenticated user's bookings with related open trips and private trips, limited to 4
+        $pemesanans = Pemesanan::with(['openTrip', 'privateTrip'])
+            ->where('user_id', auth()->id())
+            ->take(5) // Limit to 5 records
+            ->get();
+
+        // Pass pemesanans as an associative array
+        return view('user.privatetrip', compact('pemesanans'));
     }
 
     public function storePrivateTrip(Request $request)
@@ -277,7 +340,14 @@ public function opentrip(Request $request)
     // Halaman Profil Kami
     public function profilKami()
     {
-        return view('user.profil-kami'); // Make sure this view exists
+        // Fetch the authenticated user's bookings with related open trips and private trips, limited to 4
+        $pemesanans = Pemesanan::with(['openTrip', 'privateTrip'])
+            ->where('user_id', auth()->id())
+            ->take(5) // Limit to 5 records
+            ->get();
+
+    
+        return view('user.profil-kami', compact('pemesanans')); // Pass pemesanans to the view
     }
 
 
@@ -285,7 +355,14 @@ public function opentrip(Request $request)
     // Halaman Tentang Kami
     public function tentangKami()
     {
-        return view('user.tentang-kami'); // Make sure this view exists
+        // Fetch the authenticated user's bookings with related open trips and private trips, limited to 4
+        $pemesanans = Pemesanan::with(['openTrip', 'privateTrip'])
+            ->where('user_id', auth()->id())
+            ->take(5) // Limit to 5 records
+            ->get();
+
+    
+        return view('user.tentang-kami', compact('pemesanans')); // Pass pemesanans to the view
     }
 
 
@@ -299,10 +376,12 @@ public function opentrip(Request $request)
             return redirect()->route('login');
         }
     
-        // Fetch the authenticated user's bookings with related open trips and private trips
-        $pemesanans = Pemesanan::with(['openTrip', 'privateTrip','pembayaran'])
+        // Fetch the authenticated user's bookings with related open trips and private trips, limited to 4
+        $pemesanans = Pemesanan::with(['openTrip', 'privateTrip'])
             ->where('user_id', auth()->id())
+            ->take(5) // Limit to 5 records
             ->get();
+
     
         return view('user.tripsaya', compact('pemesanans'));
     }
@@ -345,8 +424,15 @@ public function opentrip(Request $request)
         
          // Get the payment information
          $pembayaran = $pemesanan->pembayaran; // This will retrieve the related payment record
-    
-        return view('user.detail-pemesanan', compact('pemesanan', 'pembayaran'));
+
+        // Fetch the authenticated user's bookings with related open trips and private trips, limited to 4
+        $pemesanans = Pemesanan::with(['openTrip', 'privateTrip'])
+            ->where('user_id', auth()->id())
+            ->take(5) // Limit to 5 records
+            ->get();
+
+        
+        return view('user.detail-pemesanan', compact('pemesanan', 'pembayaran','pemesanans'));
     }
 
     public function editPemesanan($id)
@@ -365,8 +451,15 @@ public function opentrip(Request $request)
     
         // Ambil semua open trips untuk dropdown
         $openTrips = OpenTrip::all();
+
+        // Fetch the authenticated user's bookings with related open trips and private trips, limited to 4
+        $pemesanans = Pemesanan::with(['openTrip', 'privateTrip'])
+            ->where('user_id', auth()->id())
+            ->take(5) // Limit to 5 records
+            ->get();
+
     
-        return view('user.edit-pemesanan', compact('pemesanan', 'openTrips'));
+        return view('user.edit-pemesanan', compact('pemesanan', 'openTrips','pemesanans'));
     }
 
     public function updatePemesanan(Request $request, $id)
@@ -416,6 +509,7 @@ public function opentrip(Request $request)
         // Kurangi kuota open trip yang baru
         $newOpenTrip->kuota -= $request->jumlah_peserta; // Kurangi kuota
         $newOpenTrip->save(); // Simpan perubahan
+
     
         return redirect()->route('user.detailPemesanan', $pemesanan->id)->with('success', 'Pemesanan berhasil diperbarui!');
     }
@@ -435,9 +529,16 @@ public function opentrip(Request $request)
         
         // Check if a payment proof already exists
         $pembayaran = Pembayaran::where('pemesanan_id', $pemesanan->id)->first();
+
+        // Fetch the authenticated user's bookings with related open trips and private trips, limited to 4
+        $pemesanans = Pemesanan::with(['openTrip', 'privateTrip'])
+            ->where('user_id', auth()->id())
+            ->take(5) // Limit to 5 records
+            ->get();
+
     
         // Return the view with the pemesanan and pembayaran data
-        return view('user.pembayaran', compact('pemesanan', 'pembayaran'));
+        return view('user.pembayaran', compact('pemesanan', 'pembayaran','pemesanans'));
     }
     
     public function uploadBuktiPembayaran(Request $request, $id)
@@ -506,9 +607,15 @@ public function opentrip(Request $request)
     
         // Ambil data administrasi yang sudah ada
         $dataAdministrasi = DataAdministrasi::where('pemesanan_id', $pemesanan->id)->get();
-    
+        
+        // Fetch the authenticated user's bookings with related open trips and private trips, limited to 4
+        $pemesanans = Pemesanan::with(['openTrip', 'privateTrip'])
+            ->where('user_id', auth()->id())
+            ->take(5) // Limit to 5 records
+            ->get();
+
         // Kirim variabel ke view
-        return view('user.upload-data-administrasi', compact('pemesanan', 'dataAdministrasi'));
+        return view('user.upload-data-administrasi', compact('pemesanan', 'dataAdministrasi','pemesanans'));
     }
 
     public function storeDataAdministrasi(Request $request)
@@ -595,6 +702,17 @@ public function opentrip(Request $request)
         }
     
         return redirect()->route('user.tripsaya')->with('success', 'Data Administrasi berhasil diperbarui');
+    }
+
+    public function someOtherMethod()
+    {
+        // Fetch the authenticated user's bookings with related open trips and private trips, limited to 4
+        $pemesanans = Pemesanan::with(['openTrip', 'privateTrip'])
+            ->where('user_id', auth()->id())
+            ->take(5) // Limit to 5 records
+            ->get();
+
+        return view('some.view', compact('pemesanans'));
     }
 
 

@@ -283,11 +283,7 @@
           <div class="col-lg-2 col-6 footer-links">
             <h4>Trip Saya</h4>
             <ul>
-              <li><a href="#">2 Negara : Start Pekanbaru</a></li>
-              <li><a href="#">2 Negara : Start Dumai</a></li>
-              <li><a href="#">3 Negara : Start Jakarta</a></li>
-              <li><a href="#">3 Negara : Start Pekanbaru</a></li>
-              <li><a href="#">1 Negara : Start Pekanbaru</a></li>
+            <li><a href="{{ url('/login') }}">Login Terlebih Dahulu Untuk Melihat Trip Saya</a></li>
             </ul>
           </div>
         </div>
