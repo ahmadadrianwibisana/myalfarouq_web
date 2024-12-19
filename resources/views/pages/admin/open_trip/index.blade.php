@@ -63,7 +63,33 @@
                                 </tr>
                             @endforelse 
                         </tbody>
-                    </table> 
+                    </table>
+                    
+                     <!-- Pagination -->
+                     <div class="mt-3 d-flex justify-content-center">
+                        <!-- Previous Page Link -->
+                        @if ($open_trips->onFirstPage())
+                            <span class="page-link disabled box">Sebelumnya</span>
+                        @else
+                            <a href="{{ $open_trips->previousPageUrl() }}" class="page-link prev-next box">Sebelumnya</a>
+                        @endif
+
+                        <!-- Pagination Links -->
+                        <ul class="pagination">
+                            @foreach ($open_trips->getUrlRange(1, $open_trips->lastPage()) as $page => $url)
+                                <li class="page-item {{ $page == $open_trips->currentPage() ? 'active' : '' }}">
+                                    <a class="page-link" href="{{ $url }}">{{ $page }}</a>
+                                </li>
+                            @endforeach
+                        </ul>
+
+                        <!-- Next Page Link -->
+                        @if ($open_trips->hasMorePages())
+                            <a href="{{ $open_trips->nextPageUrl() }}" class="page-link prev-next box">Selanjutnya</a>
+                        @else
+                            <span class="page-link disabled box">Selanjutnya</span>
+                        @endif
+                    </div>
                 </div> 
             </div> 
         </div>

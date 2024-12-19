@@ -12,7 +12,7 @@ class RiwayatController extends Controller
     public function index()
     {
         // Mengambil semua pemesanan dengan relasi yang diperlukan
-        $pemesanan = Pemesanan::with(['user', 'openTrip', 'privateTrip', 'dataAdministrasi', 'pembayaran'])->get();
+        $pemesanan = Pemesanan::with(['user', 'openTrip', 'privateTrip', 'dataAdministrasi', 'pembayaran'])->paginate(10);
 
         return view('pages.adminbesar.riwayat.index', compact('pemesanan'));
     }

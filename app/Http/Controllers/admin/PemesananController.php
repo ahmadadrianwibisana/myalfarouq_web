@@ -25,7 +25,7 @@ class PemesananController extends Controller
                 'openTrip:id,nama_paket',
                 'privateTrip:id,nama_trip',
             ])
-            ->get();
+            ->paginate(10); // Tambahkan pagination
 
             confirmDelete('Hapus Data!', 'Apakah anda yakin ingin menghapus data ini?'); // Konfirmasi hapus
 

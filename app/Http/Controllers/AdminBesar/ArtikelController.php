@@ -12,7 +12,7 @@ class ArtikelController extends Controller
 {
     public function index()
     {
-        $artikels = Artikel::all();
+        $artikels = Artikel::paginate(10);
         return view('pages.adminbesar.artikel.index', compact('artikels'));
     }
 

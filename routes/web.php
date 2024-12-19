@@ -217,12 +217,9 @@ Route::group(['middleware' => 'web'], function () {
     Route::get('/open-trip/{id}', [UserController::class, 'detailopen'])->name('user.detailopen');
     Route::post('opentrip/{id}/book', [UserController::class, 'bookOpenTrip'])->name('user.bookOpenTrip');
 
-    // Privat Trip
+  // Privat Trip
     Route::get('/user/privatetrip', [UserController::class, 'privatetrip'])->name('user.privatetrip');
     Route::post('/private-trip/store', [UserController::class, 'storePrivateTrip'])->name('user.private_trip.store');
-    Route::post('/private-trip/create', [UserController::class, 'createPrivateTrip'])->name('user.private_trip.create');
-    // Route untuk menyimpan data private trip
-    Route::post('/private-trip/store', [UserController::class, 'createPrivateTrip'])->name('user.private_trip.store');
 
     // Profil Kami
     Route::get('/user/profil-kami', [UserController::class, 'profilKami'])->name('user.profil-kami');

@@ -30,27 +30,27 @@
                                         {{ $item->name }} 
                                     </option> 
                                 @endforeach 
-    </select> 
-</div>
+                            </select> 
+                        </div>
 
-<div class="form-group">
-    <label for="no_telepon">No Telepon</label>
-    <input id="no_telepon" type="text" class="form-control @error('no_telepon') is-invalid @enderror" name="no_telepon" value="{{ old('no_telepon') }}" required readonly>
-    @error('no_telepon')
-        <div class="invalid-feedback">{{ $message }}</div>
-    @enderror
-</div>
+                        <div class="form-group">
+                            <label for="no_telepon">No Telepon</label>
+                            <input id="no_telepon" type="text" class="form-control @error('no_telepon') is-invalid @enderror" name="no_telepon" value="{{ old('no_telepon') }}" required readonly>
+                            @error('no_telepon')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
 
-<script>
-    function updatePhoneNumber() {
-        var select = document.getElementById('user_id');
-        var selectedOption = select.options[select.selectedIndex];
-        var phoneNumber = selectedOption.getAttribute('data-no-telepon');
+                        <script>
+                            function updatePhoneNumber() {
+                                var select = document.getElementById('user_id');
+                                var selectedOption = select.options[select.selectedIndex];
+                                var phoneNumber = selectedOption.getAttribute('data-no-telepon');
 
-        // Set the phone number input value
-        document.getElementById('no_telepon').value = phoneNumber;
-    }
-</script>
+                                // Set the phone number input value
+                                document.getElementById('no_telepon').value = phoneNumber;
+                            }
+                        </script>
                             <div class="form-group">
                                 <label for="nama_trip">Nama Trip</label>
                                 <input id="nama_trip" type="text" class="form-control @error('nama_trip') is-invalid @enderror" name="nama_trip" value="{{ old('nama_trip') }}" required>

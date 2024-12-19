@@ -85,88 +85,100 @@
     </div>
     <!-- End Page Title -->
 
-    <!-- Get A Quote Section -->
     <section id="get-a-quote" class="get-a-quote section">
-        <div class="container">
-            <div class="row g-0">
-                <div class="col-lg-5 quote-bg" style="background-image:url('{{ asset('assets/user/img/private.jpg') }}')"></div>
+    <div class="container">
+        <div class="row g-0">
+            <div class="col-lg-5 quote-bg" style="background-image:url('{{ asset('assets/user/img/private.jpg') }}')"></div>
 
-                <div class="col-lg-7">
-                <form action="{{ route('user.private_trip.store') }}" method="POST" enctype="multipart/form-data" class="php-email-form">
-                        @csrf
-                        <h2>PENDAFTARAN PRIVATE TRIP</h2>
-                        <div class="row gy-4">
-                            <div class="col-12">
-                                <input type="text" name="no_telepon" class="form-control @error('no_telepon') is-invalid @enderror" placeholder="Masukkan No Telepon" required />
-                                @error('no_telepon')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-                            <div class="col-12">
-                                <input type="text" name="nama_trip" class="form-control @error('nama_trip') is-invalid @enderror" placeholder="Masukkan Nama Trip" required />
-                                @error('nama_trip')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-                            <div class="col-12">
-                                <input type="text" name="destinasi" class="form-control @error('destinasi') is-invalid @enderror" placeholder="Masukkan Destinasi" required />
-                                @error('destinasi')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-                            <div class="col-12">
-                                <input type="date" name="tanggal_pergi" class="form-control @error('tanggal_pergi') is-invalid @enderror" required />
-                                @error('tanggal_pergi')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-                            <div class="col-12">
-                                <input type="date" name="tanggal_kembali" class="form-control @error('tanggal_kembali') is-invalid @enderror" required />
-                                @error('tanggal_kembali')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-                            <div class="col-12">
-                                <input type="text" name="star_point" class="form-control @error('star_point') is-invalid @enderror" placeholder="Masukkan Starting Point" required />
-                                @error('star_point')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-                            <div class="col-12">
-                                <input type="number" name="jumlah_peserta" class="form-control @error('jumlah_peserta') is-invalid @enderror" placeholder="Masukkan Jumlah Peserta" required />
-                                @error('jumlah_peserta')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                            </div>
-                            <div class="col-12">
-                                <textarea name="deskripsi_trip" class="form-control @error('deskripsi_trip') is-invalid @enderror" placeholder="Masukkan Deskripsi Trip" rows="4" required></textarea>
-                                @error('deskripsi_trip')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-                            <div class="col-12 text-center">
-                                <button type="submit" class="btn btn-primary">
-                                    <i class="fas fa-paper-plane"></i> Simpan Data
-                                </button>
-                            </div>
+            <div class="col-lg-7">
+                <form action="{{ route('user.private_trip.store') }}" method="POST" enctype="multipart/form-data" class="php-email-form" id="privateTripForm">
+                    @csrf
+                    <h2 class="text-center mb-4">PENDAFTARAN PRIVATE TRIP</h2>
+                    <div class="row gy-4">
+                        <div class="col-12">
+                            <label for="no_telepon">No Telepon</label>
+                            <input type="text" name="no_telepon" class="form-control @error('no_telepon') is-invalid @enderror" placeholder="Masukkan No Telepon" required />
+                            @error('no_telepon')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
+                        <div class="col-12">
+                            <label for="nama_trip">Nama Trip</label>
+                            <input type="text" name="nama_trip" class="form-control @error('nama_trip') is-invalid @enderror" placeholder="Masukkan Nama Trip" required />
+                            @error('nama_trip')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        <div class="col-12">
+                            <label for="destinasi">Destinasi</label>
+                            <input type="text" name="destinasi" class="form-control @error('destinasi') is-invalid @enderror" placeholder="Masukkan Destinasi" required />
+                            @error('destinasi')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        <div class="col-12">
+                            <label for="tanggal_pergi">Tanggal Pergi</label>
+                            <input type="date" name="tanggal_pergi" class="form-control @error('tanggal_pergi') is-invalid @enderror" required />
+                            @error('tanggal_pergi')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        <div class="col-12">
+                            <label for="tanggal_kembali">Tanggal Kembali</label>
+                            <input type="date" name="tanggal_kembali" class="form-control @error('tanggal_kembali') is-invalid @enderror" required />
+                            @error('tanggal_kembali')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        <div class="col-12">
+                            <label for="star_point">Starting Point</label>
+                            <input type="text" name="star_point" class="form-control @error('star_point') is-invalid @enderror" placeholder="Masukkan Starting Point" required />
+                            @error('star_point')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        <div class="col-12">
+                            <label for="jumlah_peserta">Jumlah Peserta</label>
+                            <input type="number" name="jumlah_peserta" class="form-control @error('jumlah_peserta') is-invalid @enderror" placeholder="Masukkan Jumlah Peserta" required />
+                            @error('jumlah_peserta')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        <div class="col-12">
+                            <label for="deskripsi_trip">Deskripsi Trip</label>
+                            <textarea name="deskripsi_trip" class="form-control @error('deskripsi_trip') is-invalid @enderror" placeholder="Masukkan Deskripsi Trip" rows="4" required></textarea>
+                            @error('deskripsi_trip')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        <div class="col-12 text-center">
+                        <button type="submit" class="btn btn-primary" id="submitButton">
+                                <i class="fas fa-paper-plane"></i> Simpan Data
+                            </button>
+                        </div>
+                    </div>
 
-                        @if ($errors->any())
-                            <div class="alert alert-danger mt-3">
-                                <ul>
-                                    @foreach ($errors->all() as $error)
-                                        <li>{{ $error }}</li>
-                                    @endforeach
-                                </ul>
-                            </div>
-                        @endif
-                    </form>
-                </div>
+                    @if ($errors->any())
+                        <div class="alert alert-danger mt-3">
+                            <ul>
+                            @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
+                </form>
             </div>
         </div>
-    </section>
-    <!-- /Get A Quote Section -->
-</main>
+    </div>
+</section>
+
+<script>
+    document.getElementById('privateTripForm').addEventListener('submit', function() {
+        document.getElementById('submitButton').disabled = true; // Disable button
+        document.getElementById('submitButton').innerHTML = 'Processing...'; // Change button text
+    });
+</script>
 
     <footer id="footer" class="footer dark-background">
       <div class="container footer-top">

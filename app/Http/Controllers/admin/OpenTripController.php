@@ -14,8 +14,8 @@ class OpenTripController extends Controller
 {
     public function index()
     {
-        $open_trips = OpenTrip::all();
-                confirmDelete('Hapus Data!', 'Apakah anda yakin ingin menghapus data ini?'); // Konfirmasi hapus product
+        $open_trips = OpenTrip::paginate(10);
+        confirmDelete('Hapus Data!', 'Apakah anda yakin ingin menghapus data ini?'); // Konfirmasi hapus product
 
 
         return view('pages.admin.open_trip.index', compact('open_trips'));

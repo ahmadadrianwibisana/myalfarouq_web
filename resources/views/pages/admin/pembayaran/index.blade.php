@@ -70,6 +70,31 @@
                             @endforelse
                         </tbody>
                     </table>
+                     <!-- Pagination -->
+                     <div class="mt-3 d-flex justify-content-center">
+                        <!-- Previous Page Link -->
+                        @if ($pembayarans->onFirstPage())
+                            <span class="page-link disabled box">Sebelumnya</span>
+                        @else
+                            <a href="{{ $pembayarans->previousPageUrl() }}" class="page-link prev-next box">Sebelumnya</a>
+                        @endif
+
+                        <!-- Pagination Links -->
+                        <ul class="pagination">
+                            @foreach ($pembayarans->getUrlRange(1, $pembayarans->lastPage()) as $page => $url)
+                                <li class="page-item {{ $page == $pembayarans->currentPage() ? 'active' : '' }}">
+                                    <a class="page-link" href="{{ $url }}">{{ $page }}</a>
+                                </li>
+                            @endforeach
+                        </ul>
+
+                        <!-- Next Page Link -->
+                        @if ($pembayarans->hasMorePages())
+                            <a href="{{ $pembayarans->nextPageUrl() }}" class="page-link prev-next box">Selanjutnya</a>
+                        @else
+                            <span class="page-link disabled box">Selanjutnya</span>
+                        @endif
+                    </div>
                 </div>
             </div>
         </div>

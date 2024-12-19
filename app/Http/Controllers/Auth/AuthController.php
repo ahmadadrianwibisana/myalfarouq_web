@@ -65,7 +65,7 @@ class AuthController extends Controller
     {
         Auth::guard('admin')->logout();
         toast('Berhasil logout!', 'success');
-        return redirect('/');
+        return redirect('/login-admin');
     }
 
     // Admin besar logout function
@@ -73,7 +73,7 @@ class AuthController extends Controller
     {
         Auth::guard('adminbesar')->logout();
         toast('Berhasil logout!', 'success');
-        return redirect('/');
+        return redirect('/login-admin');
     }
 
     // User logout function
@@ -114,7 +114,7 @@ class AuthController extends Controller
     
         if ($user) {
             Alert::success('Berhasil!', 'Akun baru berhasil dibuat, silahkan login!');
-            return redirect('/');
+            return redirect('/login');
         } else {
             Alert::error('Gagal!', 'Akun gagal dibuat, silahkan coba lagi!');
             return redirect()->back();

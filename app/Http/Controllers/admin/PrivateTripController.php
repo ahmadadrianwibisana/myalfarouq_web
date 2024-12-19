@@ -19,7 +19,7 @@ class PrivateTripController extends Controller
         $private_trips = DB::table('private_trips')
             ->join('users', 'private_trips.user_id', '=', 'users.id')
             ->select('private_trips.*', 'users.name as user_name') // Ambil nama pengguna
-            ->get();
+            ->paginate(10); // Tambahkan pagination
         
             confirmDelete('Hapus Data!', 'Apakah anda yakin ingin menghapus data ini?'); // Konfirmasi hapus
     

@@ -14,7 +14,8 @@ class PembayaranController extends Controller
 {
     public function index()
     {
-        $pembayarans = Pembayaran::with('pemesanan')->get();
+        $pembayarans = Pembayaran::with('pemesanan')  ->paginate(10); // Tambahkan pagination
+
 
         confirmDelete('Hapus Data!', 'Apakah anda yakin ingin menghapus data ini?'); // Konfirmasi hapus
 
