@@ -118,7 +118,7 @@
                         </div>
                         <div class="col-12 text-center">
                             <button type="button" class="btn btn-primary" onclick="sendWhatsAppMessage()">
-                                <i class="fas fa-paper-plane"></i> Simpan Data
+                                <i class="fas fa-paper-plane"></i> Kirim Pengajuan
                             </button>
                         </div>
                     </div>

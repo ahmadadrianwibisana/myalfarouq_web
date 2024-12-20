@@ -126,7 +126,7 @@
                 <div class="mt-4">
                     <h2 class="text-lg font-semibold text-green-700">Satuan</h2>
                     <p class="text-xl font-bold text-gray-800">Rp {{ number_format($open_trip->harga, 0, ',', '.') }}</p>
-                    <p class="text-sm text-gray-700">Ada penyesuaian harga selain dari provinsi Riau</p>
+                    <p class="text-sm text-gray-700">Ada ada penyesuaian harga selain dari wilayah Riau, Medan, Kepri, dan Jambi.</p>
                 </div>
                 <!-- Form Pemesanan -->
                 <div class="mt-4">

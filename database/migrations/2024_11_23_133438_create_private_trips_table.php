@@ -27,6 +27,7 @@ return new class extends Migration
             $table->enum('status', ['pending', 'disetujui', 'ditolak'])->default('pending');
             $table->string('image')->nullable();
             $table->text('keterangan_ditolak')->nullable();
+            $table->integer('jumlah_peserta')->nullable()->change(); // Ubah tipe data menjadi integer
             $table->timestamps();
         });
     }

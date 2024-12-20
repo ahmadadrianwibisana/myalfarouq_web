@@ -51,8 +51,8 @@ Route::group(['middleware' => 'guest'], function () {
 
     
     
-    // Halama Login Admin
-    Route::get('/login-admin', function () {
+     // Halama Login Admin
+     Route::get('/login-admin', function () {
         return view('welcome'); // Halaman utama
     })->name('welcome');
 
@@ -66,7 +66,6 @@ Route::group(['middleware' => 'guest'], function () {
     Route::get('/register', [AuthController::class, 'register'])->name('register');
     Route::post('/post-register', [AuthController::class, 'post_register'])->name('post.register');
 
-    
     Route::post('/post-login', [AuthController::class, 'login'])->name('post.login');
 });
 
