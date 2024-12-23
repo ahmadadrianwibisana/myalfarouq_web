@@ -26,7 +26,7 @@
                     <table class="table table-bordered table-md">
                         <thead>
                             <tr>
-                                <th>#</th>
+                                <th>No</th>
                                 <th>User</th>
                                 <th>Trip</th>
                                 <th>Bukti Pembayaran</th>

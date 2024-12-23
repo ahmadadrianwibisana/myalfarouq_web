@@ -51,23 +51,24 @@ Route::group(['middleware' => 'guest'], function () {
 
     
     
-     // Halama Login Admin
-     Route::get('/login-admin', function () {
-        return view('welcome'); // Halaman utama
-    })->name('welcome');
+ // Halama Login Admin
+ Route::get('/login-admin', function () {
+    return view('welcome'); // Halaman utama
+})->name('welcome');
 
-    // Login Route
-    Route::get('/login', function () {
-        return view('login');  // pastikan Anda memiliki file resources/views/login.blade.php
-    })->name('login');
-    
+// Login Route
+Route::get('/login', function () {
+    return view('login');  // pastikan Anda memiliki file resources/views/login.blade.php
+})->name('login');
 
-    // register user
-    Route::get('/register', [AuthController::class, 'register'])->name('register');
-    Route::post('/post-register', [AuthController::class, 'post_register'])->name('post.register');
 
-    Route::post('/post-login', [AuthController::class, 'login'])->name('post.login');
+// register user
+Route::get('/register', [AuthController::class, 'register'])->name('register');
+Route::post('/post-register', [AuthController::class, 'post_register'])->name('post.register');
+
+Route::post('/post-login', [AuthController::class, 'login'])->name('post.login');
 });
+
 
 
 // Grouping admin routes

@@ -23,7 +23,7 @@
                     <table class="table table-bordered table-md">
                         <thead>
                             <tr>
-                                <th>#</th>
+                                <th>No</th>
                                 <th>Nama Pengguna</th>
                                 <th>Jenis Trip</th>
                                 <th>Tanggal Pemesanan</th>

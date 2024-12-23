@@ -53,7 +53,7 @@
                     <table class="table table-bordered">
                         <thead style="background-color: #fff; color: #fff;">
                             <tr>
-                                <th>NO</th>
+                                <th>No</th>
                                 <th>User</th>
                                 <th>Trip Type</th>
                                 <th>Status</th>

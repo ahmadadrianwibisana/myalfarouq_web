@@ -14,10 +14,12 @@ class OpenTripController extends Controller
 {
     public function index()
     {
-        $open_trips = OpenTrip::paginate(10);
+        $open_trips = OpenTrip::orderBy('tanggal_berangkat', 'desc') // Mengurutkan berdasarkan tanggal berangkat terbaru
+            ->orderBy('tanggal_pulang', 'desc') // Mengurutkan berdasarkan tanggal pulang terbaru
+            ->paginate(10); // Tambahkan pagination
+    
         confirmDelete('Hapus Data!', 'Apakah anda yakin ingin menghapus data ini?'); // Konfirmasi hapus product
-
-
+    
         return view('pages.admin.open_trip.index', compact('open_trips'));
     }
 

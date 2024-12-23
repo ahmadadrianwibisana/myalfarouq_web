@@ -12,7 +12,9 @@ class ArtikelController extends Controller
 {
     public function index()
     {
-        $artikels = Artikel::paginate(10);
+        // Mengambil artikel dan mengurutkannya berdasarkan tanggal_publish terbaru
+        $artikels = Artikel::orderBy('tanggal_publish', 'desc')->paginate(10); // Tambahkan pagination
+    
         return view('pages.adminbesar.artikel.index', compact('artikels'));
     }
 

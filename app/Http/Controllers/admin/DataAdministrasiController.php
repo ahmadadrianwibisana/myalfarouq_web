@@ -21,10 +21,14 @@ class DataAdministrasiController extends Controller
     {
         // Mengambil semua data administrasi beserta pemesanan dan pengguna
         $data_administrasis = DataAdministrasi::with(['pemesanan.user', 'pemesanan.openTrip', 'pemesanan.privateTrip'])
-        ->get()
-        ->groupBy('pemesanan_id');
+            ->join('pemesanans', 'data_administrasis.pemesanan_id', '=', 'pemesanans.id') // Bergabung dengan tabel pemesanan
+            ->orderBy('pemesanans.tanggal_pemesanan', 'desc') // Mengurutkan berdasarkan tanggal pemesanan terbaru
+            ->select('data_administrasis.*') // Memilih kolom dari data_administrasi
+            ->get()
+            ->groupBy('pemesanan_id');
+    
         confirmDelete('Hapus Data!', 'Apakah anda yakin ingin menghapus data ini?'); // Konfirmasi hapus
-
+    
         return view('pages.admin.data_administrasi.index', compact('data_administrasis'));
     }
 

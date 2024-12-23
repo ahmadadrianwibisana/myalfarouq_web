@@ -14,14 +14,15 @@ class PembayaranController extends Controller
 {
     public function index()
     {
-        $pembayarans = Pembayaran::with('pemesanan')  ->paginate(10); // Tambahkan pagination
-
-
+        $pembayarans = Pembayaran::with('pemesanan')
+            ->orderBy('tanggal_pembayaran', 'desc') // Mengurutkan berdasarkan tanggal pembayaran terbaru
+            ->paginate(10); // Tambahkan pagination
+    
         confirmDelete('Hapus Data!', 'Apakah anda yakin ingin menghapus data ini?'); // Konfirmasi hapus
-
-
+    
         return view('pages.admin.pembayaran.index', compact('pembayarans'));
     }
+    
     public function create()
     {
         // Get only pemesanan that are confirmed

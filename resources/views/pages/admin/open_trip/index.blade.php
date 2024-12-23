@@ -26,7 +26,7 @@
                     <table class="table table-bordered table-md"> 
                         <thead>
                             <tr> 
-                                <th>#</th> 
+                                <th>No</th> 
                                 <th>Nama Paket</th> 
                                 <th>Destinasi</th> 
                                 <th>Tanggal Berangkat</th> 

@@ -11,7 +11,7 @@ class LaporanController extends Controller
 {
     public function index()
     {
-        // Mengambil semua pemesanan dengan relasi yang diperlukan dan filter sesuai kriteria
+        // Mengambil semua pemesanan dengan relasi yang diperlukan dan mengurutkannya berdasarkan tanggal_pemesanan terbaru
         $pemesanan = Pemesanan::with(['user', 'openTrip', 'privateTrip', 'dataAdministrasi', 'pembayaran'])
             ->where('status', 'terkonfirmasi')
             ->whereHas('dataAdministrasi', function($query) {
@@ -20,7 +20,8 @@ class LaporanController extends Controller
             ->whereHas('pembayaran', function($query) {
                 $query->where('status_pembayaran', 'success');
             })
-            ->get();
+            ->orderBy('tanggal_pemesanan', 'desc') // Mengurutkan berdasarkan tanggal pemesanan terbaru
+            ->paginate(10); // Tambahkan pagination
     
         // Menghitung total pendapatan
         $totalPendapatan = $this->hitungTotalPendapatan($pemesanan);

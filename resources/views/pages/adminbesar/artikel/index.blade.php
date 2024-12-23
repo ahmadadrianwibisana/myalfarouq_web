@@ -32,7 +32,7 @@
                     <table class="table table-bordered table-md"> 
                         <thead>
                             <tr> 
-                                <th>#</th> 
+                                <th>No</th> 
                                 <th>Judul Artikel</th> 
                                 <th>Deskripsi</th> 
                                 <th>Tanggal Publish</th> 

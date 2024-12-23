@@ -187,15 +187,27 @@ body {
                             @endif
                         </div>
                         <div class="col-md-8">
-                            <h5 class="text-white">
-                                {{ ucwords($pemesanan->openTrip->nama_paket ?? $pemesanan->privateTrip->nama_trip) }}
-                                <span class="text-white">({{ ucfirst($pemesanan->trip_type) }})</span>
-                            </h5>
+                            <div class="row">
+                                <div class="col-6"> 
+                                    <h5 class="text-white">
+                                        {{ ucwords($pemesanan->openTrip->nama_paket ?? $pemesanan->privateTrip->nama_trip) }}
+                                        <span class="text-white">({{ ucfirst($pemesanan->trip_type) }})</span>
+                                    </h5>
+                                </div>
+                                <div class="col-6"> 
+                                        <p>
+                                            <strong>Tanggal Pemesanan</strong><br/>
+                                            {{ \Carbon\Carbon::parse($pemesanan->tanggal_pemesanan)->format('d F Y') }}
+                                        </p>
+                                    </div>
+                                </div>
                             <div class="row"> 
-                                <div class="col-6">         
+                                <div class="col-6"> 
+                                    <strong>Nama</strong><br/>        
                                     <p class="text-white">{{ ucwords($pemesanan->user->name) }}</p>
                                 </div>
-                                <div class="col-6">          
+                                <div class="col-6">
+                                    <strong>No Telepon</strong><br/>          
                                     <p class="text-white">{{ $pemesanan->user->no_telepon }}</p>
                                 </div>
                             </div>

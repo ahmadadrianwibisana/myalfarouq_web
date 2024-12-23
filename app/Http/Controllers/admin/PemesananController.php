@@ -25,11 +25,11 @@ class PemesananController extends Controller
                 'openTrip:id,nama_paket',
                 'privateTrip:id,nama_trip',
             ])
+            ->orderBy('tanggal_pemesanan', 'desc') // Mengurutkan berdasarkan tanggal pemesanan terbaru
             ->paginate(10); // Tambahkan pagination
-
-            confirmDelete('Hapus Data!', 'Apakah anda yakin ingin menghapus data ini?'); // Konfirmasi hapus
-
-
+    
+        confirmDelete('Hapus Data!', 'Apakah anda yakin ingin menghapus data ini?'); // Konfirmasi hapus
+    
         return view('pages.admin.pemesanan.index', compact('pemesanans'));
     }
 

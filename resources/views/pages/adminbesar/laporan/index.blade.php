@@ -44,7 +44,7 @@
                     <table class="table table-bordered table-hover"> 
                         <thead class="thead-dark">
                             <tr> 
-                                <th>#</th> 
+                                <th>No</th> 
                                 <th>User</th> 
                                 <th>Trip Type</th> 
                                 <th>Status</th> 

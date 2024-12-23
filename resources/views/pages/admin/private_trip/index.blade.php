@@ -25,8 +25,8 @@
                     <table class="table table-bordered table-md"> 
                         <thead>
                             <tr> 
-                                <th>#</th> 
-                                <th>Nama User</th> <!-- Ubah dari Nama Trip menjadi Nama User -->
+                                <th>No</th> 
+                                <th>Nama User</th> 
                                 <th>Destinasi</th> 
                                 <th>Tanggal Pergi</th> 
                                 <th>Tanggal Kembali</th> 
