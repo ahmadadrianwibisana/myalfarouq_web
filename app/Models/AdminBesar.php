@@ -15,6 +15,7 @@ class AdminBesar extends Authenticatable
         'username',
         'email',
         'password',
+        'foto',
     ];
 
     // Menyembunyikan password saat serialisasi

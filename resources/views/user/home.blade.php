@@ -36,6 +36,72 @@
 
     <!-- Main CSS File -->
     <link href="assets/user/css/main.css" rel="stylesheet" />
+    <style>
+        /* Sembunyikan tampilan mobile secara default */
+        .mobile-view {
+            display: none;
+        }
+
+        /* Tampilan responsif */
+        @media (max-width: 768px) {
+            .desktop-view {
+                display: none; /* Sembunyikan tampilan desktop pada mobile */
+            }
+            .mobile-view {
+                display: block; /* Tampilkan tampilan mobile */
+            }
+        }
+
+        /* Gaya umum */
+        .about {
+            margin: 20px 0;
+        }
+
+        .user-dropdown {
+    position: relative;
+    display: inline-block;
+    margin-left: 15px; /* Add some space between the dropdown and the toggle icon */
+}
+
+.user-dropdown a {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: black; /* Adjust color as needed */
+}
+
+.user-image {
+    width: 40px; /* Adjust size as needed */
+    height: 40px;
+    border-radius: 50%; /* Make image circular */
+    margin-right: 10px; /* Space between image and name */
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: white;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+}
+
+.user-dropdown:hover .dropdown-content {
+    display: block; /* Show dropdown on hover */
+}
+
+.dropdown-content a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: flex; /* Use flexbox for icon and text alignment */
+    align-items: center; /* Center items vertically */
+}
+
+.dropdown-content a:hover {
+    background-color: #f1f1f1; /* Background color on hover */
+}
+    </style>
   </head>
 
   <body class="index-page">
@@ -66,9 +132,18 @@
 
         <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
       </nav>
-        <a class="btn-getstarted" href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-            Logout
-        </a>
+      
+              <div class="user-dropdown dropdown">
+            <a class="btn-getstarted"> 
+            <img src="{{ asset('images/' . $user->image) }}" alt="User  Image" class="user-image" />
+                <span class="user-name">{{ $user->name }}</span>
+            
+            </a>
+            <div class="dropdown-content">
+                <a href="{{ route('user.profile') }}">Profil User</a>
+                <a href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Logout</a>
+            </div>
+        </div>
 
         <form id="logout-form" action="{{ route('user.logout') }}" method="POST" style="display: none;">
             @csrf
@@ -273,89 +348,145 @@
       </section>
       <!-- /Call To Action Section -->
 
-      <!-- About Section pertama -->
-      <section id="about" class="about section">
-        <div class="container">
-          <div class="row gy-4 align-items-center">
-            <!-- Kolom Teks  -->
-            <div
-              class="col-lg-6 content"
-              data-aos="fade-up"
-              data-aos-delay="100">
-              <h2>WELCOME TO</h2>
-              <h3><span class="green-text">ALFAROUQ TRAVEL</span></h3>
-              <h6>Emang Beda Wak</h6>
-              <p>
-                Alfaraouq Travel menawarkan paket perjalanan tur tiga negara,
-                yaitu Malaysia, Singapura, dan Thailand dengan harga spesial
-                yang cocok untuk per-orangan, keluarga, dan rombongan. Paket ini
-                juga sudah mencakup berbagai fasilitas, sehingga Anda hanya
-                perlu duduk santai dan menikmati liburan Anda di ketiga negara
-                tersebut.
-              </p>
+   <!-- About Section untuk Desktop -->
+<section id="about" class="about section desktop-view">
+    <div class="container">
+        <div class="row gy-4 align-items-center">
+            <!-- Kolom Teks -->
+            <div class="col-lg-6 content" data-aos="fade-up" data-aos-delay="100">
+                <h2>WELCOME TO</h2>
+                <h3><span class="green-text">ALFAROUQ TRAVEL</span></h3>
+                <h6>Emang Beda Wak</h6>
+                <p>
+                    Alfaraouq Travel menawarkan paket perjalanan tur tiga negara,
+                    yaitu Malaysia, Singapura, dan Thailand dengan harga spesial
+                    yang cocok untuk per-orangan, keluarga, dan rombongan. Paket ini
+                    juga sudah mencakup berbagai fasilitas, sehingga Anda hanya
+                    perlu duduk santai dan menikmati liburan Anda di ketiga negara
+                    tersebut.
+                </p>
             </div>
 
-            <!-- Kolom Gambar  -->
-            <div
-              class="col-lg-6 d-flex justify-content-center order-lg-last"
-              data-aos="fade-up"
-              data-aos-delay="200">
-              <div class="position-relative">
-                <img
-                  src="assets/img/profil1.png"
-                  class="img-fluid"
-                  alt="Profil Image" />
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- About Section kedua -->
-      <section id="about" class="about section">
-        <div class="container">
-          <div class="row gy-4 align-items-center">
             <!-- Kolom Gambar -->
-            <div
-              class="col-lg-6 d-flex justify-content-center"
-              data-aos="fade-up"
-              data-aos-delay="200">
-              <div class="position-relative">
-                <img
-                  src="assets/img/zz.png"
-                  class="img-fluid"
-                  alt="Profil Image" />
-              </div>
+            <div class="col-lg-6 d-flex justify-content-center order-lg-last" data-aos="fade-up" data-aos-delay="200">
+                <div class="position-relative">
+                    <img src="assets/img/profil1.png" class="img-fluid" alt="Profil Image" />
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- About Section kedua untuk Desktop -->
+<section id="about" class="about section desktop-view">
+    <div class="container">
+        <div class="row gy-4 align-items-center">
+            <!-- Kolom Gambar -->
+            <div class="col-lg-6 d-flex justify-content-center" data-aos="fade-up" data-aos-delay="200">
+                <div class="position-relative">
+                    <img src="assets/img/zz.png" class="img-fluid" alt="Profil Image" />
+                </div>
             </div>
 
             <!-- Kolom Teks -->
-            <div
-              class="col-lg-6 content"
-              data-aos="fade-up"
-              data-aos-delay="100">
-              <h2>CV. Alfarouq Tour and Travel</h2>
-              <h3>
-                <span class="green-text"
-                  >Penawaran Jasa dan Tiket Perjalanan</span
-                >
-              </h3>
-              <h6>Adapun Penawaran Jasa yang Kami Tawarkan:</h6>
-              <ol>
-                <li>Paket Wisata Terima Bersih dalam dan luar negeri</li>
-                <li>Tiket Pesawat + Bagasi</li>
-                <li>Tiket Kapal Ferry</li>
-                <li>
-                  Penyewaan Transportasi (Mobil Pribadi atau Bus Premium
-                  Pariwisata VAN/HIACE)
-                </li>
-                <li>Bookingan Hotel mulai dari *2-*5</li>
-                <li>Jasa Tour Get & Tour Leader</li>
-                <li>Pembelian Tiket Wisata semua negara</li>
+            <div class="col-lg-6 content" data-aos="fade-up" data-aos-delay="100">
+                <h2>CV. Alfarouq Tour and Travel</h2>
+                <h3>
+                    <span class="green-text">Penawaran Jasa dan Tiket Perjalanan</span>
+                </h3>
+                <h6>Adapun Penawaran Jasa yang Kami Tawarkan:</h6>
+                <p>Temukan pengalaman perjalanan yang tak terlupakan bersama kami! Pilih salah satu penawaran jasa di bawah ini dan nikmati kemudahan dalam merencanakan perjalanan Anda. Kami siap membantu Anda mewujudkan liburan impian!</p>
+                <ol id="service-list">
+                  <li><a href="#" onclick="orderService('Paket Wisata Terima Bersih dalam dan luar negeri')">Paket Wisata Terima Bersih dalam dan luar negeri</a></li>
+                  <li><a href="#" onclick="orderService('Tiket Pesawat + Bagasi')">Tiket Pesawat + Bagasi</a></li>
+                  <li><a href="#" onclick="orderService('Tiket Kapal Ferry')">Tiket Kapal Ferry</a></li>
+                  <li><a href="#" onclick="orderService('Penyewaan Transportasi (Mobil Pribadi atau Bus Premium Pariwisata VAN/HIACE)')">Penyewaan Transportasi (Mobil Pribadi atau Bus Premium Pariwisata VAN/HIACE)</a></li>
+                  <li><a href="#" onclick="orderService('Bookingan Hotel mulai dari *2-*5')">Bookingan Hotel mulai dari *2-*5</a></li>
+                  <li><a href="#" onclick="orderService('Jasa Tour Get & Tour Leader')">Jasa Tour Get & Tour Leader</a></li>
+                  <li><a href="#" onclick="orderService('Pembelian Tiket Wisata semua negara')">Pembelian Tiket Wisata semua negara</a></li>
               </ol>
             </div>
-          </div>
         </div>
-      </section>
+    </div>
+</section>
+
+<!-- About Section untuk Mobile -->
+<section id="about" class="about section mobile-view">
+    <div class="container">
+        <div class="row gy-4 align-items-center">
+            <!-- Kolom Gambar untuk Mobile -->
+            <div class="col-12 d-flex justify-content-center" data-aos="fade-up" data-aos-delay="200">
+                <div class="position-relative">
+                    <img src="assets/img/profil1.png" class="img-fluid" alt="Profil Image" />
+                </div>
+            </div>
+
+            <!-- Kolom Teks untuk Mobile -->
+            <div class="col-12 content" data-aos="fade-up" data-aos-delay="100">
+                <h2>WELCOME TO</h2>
+                <h3><span class="green-text">ALFAROUQ TRAVEL</span></h3>
+                <h6>Emang Beda Wak</h6>
+                <p>
+                    Alfaraouq Travel menawarkan paket perjalanan tur tiga negara,
+                    yaitu Malaysia, Singapura, dan Thailand dengan harga spesial
+                    yang cocok untuk per-orangan, keluarga, dan rombongan. Paket ini
+                    juga sudah mencakup berbagai fasilitas, sehingga Anda hanya
+                    perlu duduk santai dan menikmati liburan Anda di ketiga negara
+                    tersebut.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- About Section kedua untuk Mobile -->
+<section id="about" class="about section mobile-view">
+    <div class="container">
+        <div class="row gy-4 align-items-center">
+            <!-- Kolom Gambar untuk Mobile -->
+            <div class="col-12 d-flex justify-content-center" data-aos="fade-up" data-aos-delay="200">
+                <div class="position-relative">
+                    <img src="assets/img/zz.png" class="img-fluid" alt="Profil Image" />
+                </div>
+            </div>
+
+            <!-- Kolom Teks untuk Mobile -->
+            <div class="col-12 content" data-aos="fade-up" data-aos-delay="100">
+                <h2>CV. Alfarouq Tour and Travel</h2>
+                <h3>
+                    <span class="green-text">Penawaran Jasa dan Tiket Perjalanan</span>
+                </h3>
+                <h6>Adapun Penawaran Jasa yang Kami Tawarkan:</h6>
+                <p>Temukan pengalaman perjalanan yang tak terlupakan bersama kami! Pilih salah satu penawaran jasa di bawah ini dan nikmati kemudahan dalam merencanakan perjalanan Anda. Kami siap membantu Anda mewujudkan liburan impian!</p>
+                <ol id="service-list">
+                <ol id="service-list">
+                    <li><a href="#" onclick="orderService('Paket Wisata Terima Bersih dalam dan luar negeri')">Paket Wisata Terima Bersih dalam dan luar negeri</a></li>
+                    <li><a href="#" onclick="orderService('Tiket Pesawat + Bagasi')">Tiket Pesawat + Bagasi</a></li>
+                    <li><a href="#" onclick="orderService('Tiket Kapal Ferry')">Tiket Kapal Ferry</a></li>
+                    <li><a href="#" onclick="orderService('Penyewaan Transportasi (Mobil Pribadi atau Bus Premium Pariwisata VAN/HIACE)')">Penyewaan Transportasi (Mobil Pribadi atau Bus Premium Pariwisata VAN/HIACE)</a></li>
+                    <li><a href="#" onclick="orderService('Bookingan Hotel mulai dari *2-*5')">Bookingan Hotel mulai dari *2-*5</a></li>
+                    <li><a href="#" onclick="orderService('Jasa Tour Get & Tour Leader')">Jasa Tour Get & Tour Leader</a></li>
+                    <li><a href="#" onclick="orderService('Pembelian Tiket Wisata semua negara')">Pembelian Tiket Wisata semua negara</a></li>
+                </ol>
+                </ol>
+            </div>
+        </div>
+    </div>
+</section>
+<script>
+    // Pass user data from Laravel to JavaScript
+    const user = {
+        name: @json($user->name) // Only include the user's name
+    };
+
+    function orderService(service) {
+        const message = `Saya ${user.name}, mau pesan: ${service}`;
+        const phoneNumber = '+6281275037017'; // Fixed phone number for WhatsApp Admin
+        const url = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+        window.open(url, '_blank');
+    }
+</script>
+
 
 <!-- Dokumentasi -->
 <section id="artikel" class="artikel section">

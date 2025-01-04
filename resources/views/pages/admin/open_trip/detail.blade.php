@@ -3,7 +3,6 @@
 @section('content') 
 <div class="main-content"> 
     <section class="section"> 
-        <!-- Header Section -->
         <div class="section-header"> 
             <h1>Detail Open Trip</h1> 
             <div class="section-header-breadcrumb"> 
@@ -11,18 +10,16 @@
                     <a href="{{ route('admin.dashboard') }}">Dashboard</a>
                 </div> 
                 <div class="breadcrumb-item active">
-                    <a href="{{ route('admin.open_trip') }}">Open Trip</a>
+                    <a href="{{ route('admin.open_trip.index') }}">Open Trip</a>
                 </div> 
                 <div class="breadcrumb-item">Detail Open Trip</div> 
             </div> 
         </div>
         
-        <!-- Back Button -->
-        <a href="{{ route('admin.open_trip') }}" class="btn btn-icon icon-left btn-warning">
+        <a href="{{ route('admin.open_trip.index') }}" class="btn btn-icon icon-left btn-warning">
             <i class="fas fa-arrow-left"></i> Kembali
         </a> 
         
-        <!-- Open Trip Detail -->
         <div class="row mt-4"> 
             <div class="col-12 col-md-8 col-lg-6 m-auto"> 
                 <article class="article article-style-c"> 
@@ -48,7 +45,19 @@
                             <li><strong>Kuota:</strong> {{ $open_trips->kuota }}</li>
                         </ul>
                         <hr> 
-                        <p>{{ $open_trips->deskripsi_trip }}</p> 
+                        <p><strong>Deskripsi Trip:</strong> {{ $open_trips->deskripsi_trip }}</p>
+                        <p><strong>Include:</strong></p>
+                        <ul>
+                            @foreach(explode(',', $open_trips->include) as $item)
+                                <li>{{ trim($item) }}</li>
+                            @endforeach
+                        </ul>
+                        <p><strong>Exclude:</strong></p>
+                        <ul>
+                            @foreach(explode(',', $open_trips->exclude) as $item)
+                                <li>{{ trim($item) }}</li>
+                            @endforeach
+                        </ul>
                     </div> 
                 </article> 
             </div> 

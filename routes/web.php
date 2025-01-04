@@ -8,10 +8,12 @@ use App\Http\Controllers\Admin\OpenTripController;
 use App\Http\Controllers\Admin\PrivateTripController;
 use App\Http\Controllers\Admin\PembayaranController;
 use App\Http\Controllers\Admin\PemesananController;
+use App\Http\Controllers\Admin\profilController;
 use App\Http\Controllers\AdminBesar\AdminBesarController;
 use App\Http\Controllers\AdminBesar\ArtikelController;
 use App\Http\Controllers\AdminBesar\LaporanController;
 use App\Http\Controllers\AdminBesar\RiwayatController;
+
 use App\Http\Controllers\User\UserController;
 use App\Models\Riwayat;
 use Symfony\Component\VarDumper\Cloner\Data;
@@ -148,6 +150,10 @@ Route::group(['middleware' => 'admin'], function () {
     Route::put('/admin/data-administrasi/edit-all/{pemesanan_id}', [DataAdministrasiController::class, 'editAll'])->name('admin.data_administrasi.editAll');
     Route::delete('admin/data-administrasi/destroy-all/{pemesanan_id}', [DataAdministrasiController::class, 'destroyAll'])->name('admin.data_administrasi.destroyAll');
     
+    Route::get('/admin/profile', [profilController::class, 'show'])->name('admin.profile');
+    Route::get('/admin/profile/edit', [profilController::class, 'edit'])->name('admin.profile.edit');
+    Route::put('/admin/profile/update', [profilController::class, 'update'])->name('admin.profile.update');
+
     Route::post('/admin/logout', [AuthController::class, 'admin_logout'])->name('admin.logout'); // Logout admin
 });
 
@@ -195,6 +201,10 @@ Route::group(['middleware' => 'adminbesar'], function () {
     Route::get('/riwayat', [RiwayatController::class,'index'])->name('adminbesar.riwayat');
     Route::get('adminbesar/riwayat/{id}', [RiwayatController::class, 'show'])->name('adminbesar.riwayat.show');
 
+
+    Route::get('/adminbesar/profile', [ProfilController::class, 'show'])->name('adminbesar.profile');
+    Route::get('/adminbesar/profile/edit', [ProfilController::class, 'edit'])->name('adminbesar.profile.edit');
+    Route::put('/adminbesar/profile/update', [ProfilController::class, 'update'])->name('adminbesar.profile.update');
 
     Route::post('/adminbesar/logout', [AuthController::class, 'admin_logout'])->name('adminbesar.logout'); // Logout admin
 });
@@ -252,6 +262,10 @@ Route::post('/user/private-trip/store', [UserController::class, 'storePrivateTri
     Route::post('/user/data-administrasi', [UserController::class, 'storeDataAdministrasi'])->name('user.storeDataAdministrasi');
     Route::post('/user/data-administrasi/update', [UserController::class, 'updateDataAdministrasi'])->name('user.updateDataAdministrasi');
     Route::post('/user/data-administrasi/store', [UserController::class, 'storeDataAdministrasi'])->name('user.storeDataAdministrasi');
+
+    Route::get('/profile', [UserController::class, 'showProfile'])->name('user.profile');
+    Route::get('/profile/edit', [UserController::class, 'editProfile'])->name('user.editProfile');
+    Route::post('/profile/update', [UserController::class, 'updateProfile'])->name('user.updateProfile');
 
     Route::post('/user/logout', [AuthController::class, 'user_logout'])->name('user.logout');
 

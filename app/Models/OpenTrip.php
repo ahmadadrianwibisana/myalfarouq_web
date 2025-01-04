@@ -18,7 +18,10 @@ class OpenTrip extends Model
         'kuota',
         'deskripsi_trip',
         'image',
-        'star_point'
+        'star_point',
+        'file',
+        'include',
+        'exclude'
     ];
 
     

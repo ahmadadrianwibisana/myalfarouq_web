@@ -25,30 +25,32 @@ class ArtikelController extends Controller
 
     public function store(Request $request)
     {
-        // Validate the request data
+        // Validasi data permintaan
         $request->validate([
             'judul_artikel' => 'required|string|max:255',
             'deskripsi' => 'required|string',
             'tanggal_publish' => 'required|date',
-            'image' => 'nullable|image|mimes:jpg,png,jpeg|max:2048',
+            'image.*' => 'nullable|image|mimes:jpg,png,jpeg|max:2048', // Ubah validasi untuk array
         ]);
-
-        // Create a new article
+    
+        // Buat artikel baru
         $artikel = Artikel::create([
             'judul_artikel' => $request->judul_artikel,
             'deskripsi' => $request->deskripsi,
             'tanggal_publish' => $request->tanggal_publish,
         ]);
-
-        // Handle image upload if exists
+    
+        // Tangani upload gambar jika ada
         if ($request->hasFile('image')) {
-            $imagePath = $request->file('image')->store('images', 'public'); // Store in 'public/images'
-            Image::create([
-                'artikel_id' => $artikel->id,
-                'image_path' => $imagePath,
-            ]);
+            foreach ($request->file('image') as $image) {
+                $imagePath = $image->store('images', 'public'); // Simpan di 'public/images'
+                Image::create([
+                    'artikel_id' => $artikel->id,
+                    'image_path' => $imagePath,
+                ]);
+            }
         }
-
+    
         return redirect()->route('adminbesar.artikel.index')->with('success', 'Artikel berhasil ditambahkan.');
     }
 
@@ -66,37 +68,41 @@ class ArtikelController extends Controller
 
     public function update(Request $request, $id)
     {
-        // Validate the request data
+        // Validasi data permintaan
         $request->validate([
             'judul_artikel' => 'required|string|max:255',
             'deskripsi' => 'required|string',
             'tanggal_publish' => 'required|date',
-            'image' => 'nullable|image|mimes:jpg,png,jpeg|max:2048',
+            'image.*' => 'nullable|image|mimes:jpg,png,jpeg|max:2048', // Ubah validasi untuk array
         ]);
-
-        // Find the article
+    
+        // Temukan artikel
         $artikel = Artikel::findOrFail($id);
         $artikel->update([
             'judul_artikel' => $request->judul_artikel,
             'deskripsi' => $request->deskripsi,
             'tanggal_publish' => $request->tanggal_publish,
         ]);
-
-        // Handle image upload if exists
+    
+        // Tangani upload gambar jika ada
         if ($request->hasFile('image')) {
-            // Delete old image if exists
+            // Hapus gambar lama jika ada
             if ($artikel->images()->exists()) {
-                Storage::disk('public')->delete($artikel->images->first()->image_path);
+                foreach ($artikel->images as $oldImage) {
+                    Storage::disk('public')->delete($oldImage->image_path);
+                }
                 $artikel->images()->delete();
             }
-
-            $imagePath = $request->file('image')->store('images', 'public');
-            Image::create([
-                'artikel_id' => $artikel->id,
-                'image_path' => $imagePath,
-            ]);
+    
+            foreach ($request->file('image') as $image) {
+                $imagePath = $image->store('images', 'public');
+                Image::create([
+                    'artikel_id' => $artikel->id,
+                    'image_path' => $imagePath,
+                ]);
+            }
         }
-
+    
         return redirect()->route('adminbesar.artikel.index')->with('success', 'Artikel berhasil diperbarui.');
     }
 

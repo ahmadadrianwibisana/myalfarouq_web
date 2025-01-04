@@ -23,6 +23,9 @@ return new class extends Migration
             $table->string('deskripsi_trip');
             $table->string('image')->nullable();
             $table->string('star_point');
+            $table->string('file')->nullable(); // Menambahkan kolom file
+            $table->string('include')->nullable(); // Menambahkan kolom include
+            $table->string('exclude')->nullable(); // Menambahkan kolom exclude
             $table->timestamps();
         });
     }

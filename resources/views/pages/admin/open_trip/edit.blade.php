@@ -75,7 +75,7 @@
                             </div>
                             <div class="form-group">
                                 <label for="star_point">Star Point</label>
-                                <input id="star_point" type="text" class="form-control @error('star_point') is-invalid @enderror" name="star_point" value="{{ old('star_point', $openTrip->star_point) }}" required>
+                                <input id="star_point" type="text" class="form-control" name="star_point" value="{{ old('star_point', $openTrip->star_point) }}" required>
                                 <div class="invalid-feedback">
                                     Kolom ini harus diisi!
                                 </div>
@@ -83,7 +83,7 @@
 
                             <div class="form-group">
                                 <label for="image">Gambar</label>
-                                <input id="image" type="file" class="form-control @error('image') is-invalid @enderror" name="image" accept="image/*">
+                                <input id="image" type="file" class="form-control" name="image" accept="image/*">
                                 
                                 @if($openTrip->image)
                                     @php
@@ -102,6 +102,30 @@
                                 @endif
                                 
                                 <small class="form-text text-muted">Format gambar yang diizinkan: JPG, PNG.</small>
+                            </div>
+                            <div class="form-group">
+                                <label for="include">Include</label>
+                                <textarea id="include" class="form-control" name="include" rows="4" required>{{ $openTrip->include }}</textarea>
+                                <div class="invalid-feedback">
+                                    Kolom ini harus diisi!
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="exclude">Exclude</label>
+                                <textarea id="exclude" class="form-control" name="exclude" rows="4" required>{{ $openTrip->exclude }}</textarea>
+                                <div class="invalid-feedback">
+                                    Kolom ini harus diisi!
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="file">File (Dokumen)</label>
+                                <input id="file" type="file" class="form-control" name="file" accept=".pdf,.doc,.docx">
+                                <small class="form-text text-muted">Format file yang diizinkan: PDF, DOC, DOCX.</small>
+                                @if($openTrip->file)
+                                    <div class="mt-2">
+                                        <a href="{{ asset('open_trip_files/' . $openTrip->file) }}" target="_blank">Lihat Dokumen</a>
+                                    </div>
+                                @endif
                             </div>
                         </div>
                         <div class="col-md-12">

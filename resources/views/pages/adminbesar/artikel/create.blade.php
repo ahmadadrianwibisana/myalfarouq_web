@@ -52,7 +52,7 @@
 
                             <div class="form-group">
                                 <label for="image">Gambar Artikel</label>
-                                <input id="image" type="file" class="form-control" name="image" accept="image/*">
+                                <input id="image" type="file" class="form-control" name="image[]" accept="image/*" multiple>
                                 <small class="form-text text-muted">Format gambar yang diizinkan: JPG, PNG.</small>
                             </div>
                         </div>

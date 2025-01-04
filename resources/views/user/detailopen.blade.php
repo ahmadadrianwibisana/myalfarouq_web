@@ -143,17 +143,9 @@
                 <div class="mt-4">
                     <h2 class="text-lg font-semibold text-green-700">Include</h2>
                     <ul class="list-disc list-inside text-sm text-gray-700 mt-2">
-                        <li>TIKET PESAWAT/KAPAL FERRY PULANG PERGI</li>
-                        <li>HOTEL BINTANG 3/4</li>
-                        <li>BUS PARIWISATA PREMIUM</li>
-                        <li>MAKAN 3X SEHARI & SARAPAN DIHOTEL</li>
-                        <li>DRIVER, MINYAK, TOL, dan PARKIR</li>
-                        <li>TOUR LEADER dan TOUR GUIDE PROFESIONAL</li>
-                        <li>PENGISIAN EAD MADC (Malaysia Digital Arrival Card)</li>
-                        <li>DIPANDU PENGISIAN MOBILE SINGAPURA</li>
-                        <li>FREE TIKET CABLE CAR GENTING HIGHLAND</li>
-                        <li>FREE MINERAL WATER SETIAP HARI</li>
-                        <li>FREE DOKUMENTASI FOTO dan VIDIO KONTEN</li>
+                        @foreach(explode(',', $open_trips->include) as $item)
+                            <li>{{ trim($item) }}</li>
+                        @endforeach
                     </ul>
                 </div>
             </div>
@@ -180,7 +172,9 @@
                 <div class="mt-4">
                     <h2 class="text-lg font-semibold text-green-700">Satuan</h2>
                     <p class="text-xl font-bold text-gray-800">Rp {{ number_format($open_trips->harga, 0, ',', '.') }}</p>
-                    <p class="text-sm text-gray-700">Ada ada penyesuaian harga selain dari wilayah Riau, Medan, Kepri, dan Jambi.</p>
+                    <p class="text-sm text-gray-700">BERLAKU UNTUK KERERANGKATAN :</p>
+                    <p class="text-sm text-gray-700">DUMAI, BENGKALIS, PEKANBARU, SUMATERA BARAT</p>
+                    <p class="text-sm text-gray-700">SELAIN KOTA TERTERA HARGA AKAN DISESUAIKAN</p>
                 </div>
 
                 <!-- Form Pemesanan -->
@@ -203,15 +197,15 @@
                 </form>
 
                 <div class="mt-4 flex items-center text-sm text-gray-600">
-                    <i class="fas fa-download mr-2"></i>
-                    <a class="text-green-700" href="#">Unduh ITENERY</a>
+                    <i class="fas fa-file-download mr-2"></i>
+                    <a class="text-green-700" href="{{ asset('open_trip_files/' . $open_trips->file) }}" target="_blank">Unduh ITENERY</a>
                 </div>
                 <div class="mt-4">
                     <h2 class="text-lg font-semibold text-green-700">Exclude</h2>
                     <ul class="list-disc list-inside text-sm text-gray-700 mt-2">
-                        <li>CHOP PASSPORT IMIGRASI</li>
-                        <li>JAJAN PRIBADI</li>
-                        <li>EXTRA BAGASI</li>
+                        @foreach(explode(',', $open_trips->exclude) as $item)
+                            <li>{{ trim($item) }}</li>
+                        @endforeach
                     </ul>
                     <div class="mt-4">
                         <h2 class="text-lg font-semibold text-green-700">Deskripsi</h2>

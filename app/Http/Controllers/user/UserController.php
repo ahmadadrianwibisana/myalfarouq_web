@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Validator;
 use App\Models\Pemesanan;
 use App\Models\Pembayaran;
 use App\Models\DataAdministrasi;
+use Illuminate\Support\Facades\Auth;
 
 
 class UserController extends Controller
@@ -23,6 +24,7 @@ class UserController extends Controller
 public function home(Request $request)
 {
     $query = OpenTrip::query();
+    $user = Auth::user();
 
     // Search by package name (optional)
     if ($request->filled('search')) {
@@ -64,7 +66,7 @@ public function home(Request $request)
         ->get();
 
 
-    return view('user.home', compact('artikels', 'open_trips', 'destinations', 'durations','pemesanans'));
+    return view('user.home', compact('artikels', 'open_trips', 'destinations', 'durations','pemesanans','user'));
 }
 
 
@@ -245,6 +247,7 @@ public function opentrip(Request $request)
     // Halaman Profil Kami
     public function profilKami()
     {
+        $user = Auth::user();
         // Fetch the authenticated user's bookings with related open trips and private trips, limited to 4
         $pemesanans = Pemesanan::with(['openTrip', 'privateTrip'])
             ->where('user_id', auth()->id())
@@ -252,7 +255,7 @@ public function opentrip(Request $request)
             ->get();
 
     
-        return view('user.profil-kami', compact('pemesanans')); // Pass pemesanans to the view
+        return view('user.profil-kami', compact('pemesanans','user')); // Pass pemesanans to the view
     }
 
 
@@ -627,5 +630,87 @@ public function opentrip(Request $request)
         return view('some.view', compact('pemesanans'));
     }
 
+
+    // Halama Profil User
+    public function showProfile()
+    {
+        // Ambil data pengguna yang sedang login
+        $user = Auth::user();
+
+        // Fetch the authenticated user's bookings with related open trips and private trips, limited to 4
+        $pemesanans = Pemesanan::with(['openTrip', 'privateTrip'])
+        ->where('user_id', auth()->id())
+        ->take(5) // Limit to 5 records
+        ->get();
+
+        // Kembalikan tampilan profil dengan data pengguna
+        return view('user.profile', compact('user','pemesanans'));
+    }
+    public function editProfile()
+    {
+        // Ambil data pengguna yang sedang login
+        $user = Auth::user();
+
+        // Fetch the authenticated user's bookings with related open trips and private trips, limited to 4
+        $pemesanans = Pemesanan::with(['openTrip', 'privateTrip'])
+        ->where('user_id', auth()->id())
+        ->take(5) // Limit to 5 records
+        ->get();
+
+        // Kembalikan tampilan edit profil dengan data pengguna
+        return view('user.edit_profile', compact('user','pemesanans'));
+    }
+
+    public function updateProfile(Request $request)
+    {
+        // Validasi input
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|max:255',
+            'no_telepon' => 'required|string|max:15',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg|max:5120', // Validasi untuk foto
+            'password' => 'nullable|string|min:8|confirmed', // Validasi untuk password
+        ]);
+    
+        if ($validator->fails()) {
+            Alert::error('Gagal!', 'Pastikan semua terisi dengan benar!');
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
+    
+        // Ambil data pengguna yang sedang login
+        $user = Auth::user();
+    
+        // Proses upload foto jika ada
+        if ($request->hasFile('image')) {
+            // Hapus foto lama jika ada
+            if ($user->image) {
+                $imagePath = public_path('images/' . $user->image);
+                if (file_exists($imagePath)) {
+                    unlink($imagePath); 
+                }
+            }
+    
+            $image = $request->file('image');
+            $imageName = time() . '.' . $image->getClientOriginalExtension(); 
+            $image->move(public_path('images'), $imageName); 
+            $user->image = $imageName; 
+        }
+    
+        // Perbarui field lainnya
+        $user->name = $request->name;
+        $user->email = $request->email;
+        $user->no_telepon = $request->no_telepon;
+    
+        // Perbarui password jika diisi
+        if ($request->filled('password')) {
+            $user->password = bcrypt($request->password);
+        }
+    
+        // Simpan data pengguna
+        $user->save();
+    
+        Alert::success('Berhasil!', 'Profil Anda berhasil diperbarui!');
+        return redirect()->route('user.profile');
+    }
 
 }

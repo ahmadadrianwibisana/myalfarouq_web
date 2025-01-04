@@ -86,6 +86,25 @@
                                 <input id="image" type="file" class="form-control @error('image') is-invalid @enderror" name="image" accept="image/*">
                                 <small class="form-text text-muted">Format gambar yang diizinkan: JPG, PNG.</small>
                             </div>
+                            <div class="form-group">
+                                <label for="include">Include</label>
+                                <textarea id="include" class="form-control" name="include" rows="4" required></textarea>
+                                <div class="invalid-feedback">
+                                    Kolom ini harus diisi!
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="exclude">Exclude</label>
+                                <textarea id="exclude" class="form-control" name="exclude" rows="4" required></textarea>
+                                <div class="invalid-feedback">
+                                    Kolom ini harus diisi!
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="file">File (Dokumen)</label>
+                                <input id="file" type="file" class="form-control" name="file" accept=".pdf,.doc,.docx">
+                                <small class="form-text text-muted">Format file yang diizinkan: PDF, DOC, DOCX.</small>
+                            </div>
                         </div>
                         <div class="col-md-12">
                             <div class="form-group">

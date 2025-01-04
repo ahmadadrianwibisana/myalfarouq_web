@@ -16,6 +16,7 @@ class Admin extends Authenticatable
         'email',
         'password',
         'no_wa',
+        'foto',
     ];
 
     // Menyembunyikan password saat serialisasi
