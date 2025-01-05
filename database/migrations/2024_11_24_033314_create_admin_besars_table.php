@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('username');
             $table->string('email');
             $table->string('password');
+            $table->string('foto')->nullable(); // Add the foto column
             $table->timestamps();
         });
     }
