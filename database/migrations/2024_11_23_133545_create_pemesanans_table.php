@@ -27,7 +27,8 @@ return new class extends Migration
             $table->enum('status', ['pending', 'terkonfirmasi', 'dibatalkan'])->default('pending');
             $table->string('alasan_batal')->nullable();
             $table->string('tour_gate')->nullable(); // Add the tour_gate column
-            $table->integer('jumlah_peserta')->nullable()->after('open_trip_id');
+            $table->integer('jumlah_peserta')->nullable();
+            $table->string('star_point')->nullable(); // Menambahkan kolom star_point
             $table->timestamps();
         });
     }

@@ -6,6 +6,7 @@
     <title>MyAlfarouq - Edit Profil Pengguna</title>
     <meta name="description" content="" />
     <meta name="keywords" content="" />
+    <meta http-equiv="X-Frame-Options" content="DENY">
 
     <!-- Favicons -->
     <link href="{{ asset('assets/user/img/logo.png') }}" rel="icon" />

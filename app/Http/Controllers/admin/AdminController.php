@@ -22,10 +22,20 @@ class AdminController extends Controller
         $private_trips = PrivateTrip::count();
         $pemesanans = Pemesanan::count();
         $pembayarans = Pembayaran::count();
+    
+        // Ambil data pemesanan per bulan
+        $monthlyData = Pemesanan::selectRaw('DATE_FORMAT(tanggal_pemesanan, "%Y-%m") as month, COUNT(*) as count')
+            ->groupBy('month')
+            ->orderBy('month')
+            ->pluck('count', 'month');
 
-        return view('pages.admin.index', compact('admins','users', 'data_administrasis','open_trips','private_trips','pemesanans','pembayarans'));
+            // Pastikan data bulanan tidak kosong
+        if ($monthlyData->isEmpty()) {
+            $monthlyData = collect(['No Data' => 0]); // Menangani kasus tidak ada data
+        }
+    
+        return view('pages.admin.index', compact('admins', 'users', 'data_administrasis', 'open_trips', 'private_trips', 'pemesanans', 'pembayarans', 'monthlyData'));
     }
-
     public function index()
     {
         $admins = Admin::all();

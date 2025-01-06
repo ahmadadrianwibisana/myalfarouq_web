@@ -120,7 +120,9 @@
     <div class="container">
         <form class="form" action="/post-login" method="POST" id="contactForm" novalidate="novalidate">
         @csrf
-            <img class="logo" src="assets/img/logoalfarouq.png" alt="Logo Alfarouq Travel">
+            <a href="{{ url('/') }}">
+                <img class="logo" src="assets/img/logoalfarouq.png" alt="Logo Alfarouq Travel">
+            </a>
             <div class="form-group">
             <input type="email" class="form-control" id="email" name="email"
             placeholder="Email" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Email'">
@@ -133,16 +135,16 @@
                 <label>
                     <input type="checkbox" name="remember"> Ingat Saya
                 </label>
-                <a href="#">Lupa Password?</a>
+                <a href="{{ route('password.request') }}">Lupa Password?</a>
             </div>
             <button type="submit" class="btn btn-primary">Login</button>
             <p class="mt-3">Belum punya akun? 
             <a href="/register">Daftar</a></p>
             <div class="divider">Atau masuk dengan</div>
-            <button type="button" class="google-btn">
+            <a href="{{ route('google.login') }}" class="google-btn">
                 <img src="assets/img/logogoogle.png" alt="Google">
                 Masuk dengan Google
-            </button>
+            </a>
         </form>
     </div>
 </body>

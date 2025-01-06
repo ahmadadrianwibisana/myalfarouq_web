@@ -117,7 +117,7 @@
                             @if ($artikel->images->isNotEmpty())
                                 @foreach ($artikel->images as $image)
                                     <div class="col-4">
-                                        <img src="{{ asset('storage/' . $image->image_path) }}" alt="Gallery Image" class="img-fluid rounded mb-3" />
+                                        <img src="{{ asset('storage/' . $image->image_path) }}" alt="Gallery Image" class="img-fluid rounded mb-3" data-bs-toggle="modal" data-bs-target="#imageModal" data-image="{{ asset('storage/' . $image->image_path) }}" />
                                     </div>
                                 @endforeach
                             @else
@@ -125,6 +125,31 @@
                             @endif
                         </div>
                     </div>
+
+                    <!-- Modal untuk menampilkan gambar yang diperbesar -->
+                    <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-lg">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="imageModalLabel">Gambar</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <img id="modalImage" src="" alt="Gambar Besar" class="img-fluid" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <script>
+                        // Menangani klik pada gambar
+                        document.querySelectorAll('.additional-gallery img').forEach(img => {
+                            img.addEventListener('click', function() {
+                                const imageSrc = this.getAttribute('data-image');
+                                document.getElementById('modalImage').src = imageSrc;
+                            });
+                        });
+                    </script>
                     <!-- End Galeri Tambahan -->
                 </div>
             </div>
@@ -136,11 +161,34 @@
                     <!-- Gambar Utama -->
                     <div class="main-image mb-4">
                         @if ($artikel->images->isNotEmpty())
-                            <img src="{{ asset('storage/' . $artikel->images->first()->image_path) }}" alt="Dokumentasi Artikel" class="img-fluid rounded" />
+                            <img src="{{ asset('storage/' . $artikel->images->first()->image_path) }}" alt="Dokumentasi Artikel" class="img-fluid rounded" data-bs-toggle="modal" data-bs-target="#mainImageModal" data-image="{{ asset('storage/' . $artikel->images->first()->image_path) }}" />
                         @else
                             <img src="{{ asset('assets/img/default.jpg') }}" alt="Default Image" class="img-fluid rounded" />
                         @endif
                     </div>
+
+                    <!-- Modal untuk menampilkan gambar utama yang diperbesar -->
+                    <div class="modal fade" id="mainImageModal" tabindex="-1" aria-labelledby="mainImageModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-lg">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="mainImageModalLabel">Gambar Utama</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <img id="mainModalImage" src="" alt="Gambar Utama" class="img-fluid" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <script>
+                        // Menangani klik pada gambar utama
+                        document.querySelector('.main-image img').addEventListener('click', function() {
+                            const imageSrc = this.getAttribute('data-image');
+                            document.getElementById('mainModalImage').src = imageSrc;
+                        });
+                    </script>
                 </div>
             </div>
             <!-- End Sidebar -->
@@ -270,5 +318,11 @@
 
     <!-- Isotope JS CDN -->
     <script src="https://unpkg.com/isotope-layout@3.0.6/dist/isotope.pkgd.min.js"></script>
+    <!-- Link CSS Bootstrap -->
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/css/bootstrap.min.css" rel="stylesheet">
+
+<!-- Link JS Bootstrap -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
   </body>
 </html>

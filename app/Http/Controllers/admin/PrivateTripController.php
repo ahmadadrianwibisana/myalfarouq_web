@@ -9,6 +9,7 @@ use App\Models\User; // Pastikan Anda mengimpor model User
 use Illuminate\Support\Facades\Validator;
 use RealRashid\SweetAlert\Facades\Alert;
 use Illuminate\Support\Facades\DB;
+use App\Models\Pemesanan;
 
 class PrivateTripController extends Controller
 {
@@ -52,7 +53,7 @@ public function store(Request $request)
         'deskripsi_trip' => 'required|string',
         'harga' => 'required|numeric|min:0',
         'status' => 'required|in:pending',
-        'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+        'image' => 'nullable|image|mimes:jpeg,png,jpg|max:10240',
     ]);
 
     if ($validator->fails()) {
@@ -135,7 +136,7 @@ public function update(Request $request, $id)
         'deskripsi_trip' => 'required|string',
         'harga' => 'required|numeric|min:0',
         'status' => 'required|in:pending,disetujui,ditolak',
-        'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+        'image' => 'nullable|image|mimes:jpeg,png,jpg|max:10240',
         'keterangan_ditolak' => $request->status === 'ditolak' ? 'required|string|max:255' : 'nullable',
     ]);
 
@@ -160,6 +161,21 @@ public function update(Request $request, $id)
 
     // Simpan perubahan
     $privateTrip->save();
+
+    // Cek jika status diubah menjadi 'disetujui'
+    if ($validatedData['status'] === 'disetujui') {
+        // Buat pemesanan baru
+        Pemesanan::create([
+            'user_id' => $privateTrip->user_id,
+            'trip_type' => 'private_trip',
+            'private_trip_id' => $privateTrip->id,
+            'tanggal_pemesanan' => now(), // Atur tanggal pemesanan saat ini
+            'status' => 'terkonfirmasi', // Status pemesanan
+            'total_pembayaran' => $privateTrip->harga, // Total pembayaran
+            'jumlah_peserta' => $privateTrip->jumlah_peserta, // Jumlah peserta
+            'star_point' => $privateTrip->star_point, // Ambil star_point dari private trip
+        ]);
+    }
 
     Alert::success('Sukses!', 'Private Trip telah berhasil diperbarui!');
     return redirect()->route('admin.private_trip.index');

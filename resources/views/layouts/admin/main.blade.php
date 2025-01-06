@@ -24,7 +24,6 @@
         gtag('js', new Date());
         gtag('config', 'UA-94034622-3');
     </script>
-
     <title>@yield('title')</title>
 </head>
 <body>
@@ -37,6 +36,8 @@
             @include('layouts.admin.footer')
         </div>
     </div>
+    
     @include('layouts.admin.script')
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </body>
 </html>

@@ -15,21 +15,6 @@
         </div>
 
         <div class="card">
-            <div class="card-body">
-                <h5 class="card-title">{{ $artikel->judul_artikel }}</h5>
-                <p class="card-text">{{ $artikel->deskripsi }}</p>
-                <p class="card-text"><strong>Tanggal Publish:</strong> {{ date('d M Y', strtotime($artikel->tanggal_publish)) }}</p>
-
-                @if ($artikel->images->isNotEmpty())
-                    <div class="mt-3">
-                        @foreach ($artikel->images as $image)
-                            <img src="{{ asset('storage/' . $image->image_path) }}" alt="Gambar Artikel" class="img-fluid mb-2">
-                        @endforeach
-                    </div>
-                @else
-                    <p>Tidak ada gambar untuk artikel ini.</p>
-                @endif
-
                 <div class="mt-4">
                     <a href="{{ route('adminbesar.artikel.index') }}" class="btn btn-warning">
                         <i class="fas fa-arrow-left"></i> Kembali
@@ -45,6 +30,20 @@
                         </button>
                     </form>
                 </div>
+            <div class="card-body">
+                <h5 class="card-title">{{ $artikel->judul_artikel }}</h5>
+                <p class="card-text">{{ $artikel->deskripsi }}</p>
+                <p class="card-text"><strong>Tanggal Publish:</strong> {{ date('d M Y', strtotime($artikel->tanggal_publish)) }}</p>
+
+                @if ($artikel->images->isNotEmpty())
+                    <div class="mt-3">
+                        @foreach ($artikel->images as $image)
+                            <img src="{{ asset('storage/' . $image->image_path) }}" alt="Gambar Artikel" class="img-fluid mb-2">
+                        @endforeach
+                    </div>
+                @else
+                    <p>Tidak ada gambar untuk artikel ini.</p>
+                @endif
             </div>
         </div>
     </section>

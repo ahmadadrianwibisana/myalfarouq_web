@@ -119,8 +119,8 @@
                 <h2 class="text-lg font-semibold text-green-700">Harga</h2>
                 <p class="text-xl font-bold text-gray-800">Rp {{ number_format($open_trip->harga, 0, ',', '.') }}/Orang</p>
                 <p class="text-sm text-gray-700">BERLAKU UNTUK KERERANGKATAN :</p>
-                <p class="text-sm text-gray-700">DUMAI, BENGKALIS, PEKANBARU, SUMATERA BARAT</p>
-                <p class="text-sm text-gray-700">SELAIN KOTA TERTERA HARGA AKAN DISESUAIKAN</p>
+                <p class="text-sm text-gray-700">RIAU, KEPRI, JAMBI, SUMATERA BARAT</p>
+                <p class="text-sm text-gray-700">SELAIN PROVINSI TERTERA HARGA AKAN DISESUAIKAN</p>
             </div>
             <!-- Form Pemesanan -->
             <div class="mt-4">

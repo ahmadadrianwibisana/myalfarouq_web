@@ -41,19 +41,31 @@
                         <input type="date" class="form-control @error('tanggal_publish') is-invalid @enderror" id="tanggal_publish" name="tanggal_publish" value="{{ old('tanggal_publish', $artikel->tanggal_publish) }}" required>
                         @error('tanggal_publish')
                             <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                    </div>
+                        @enderror </div>
 
                     <div class="form-group">
                         <label for="image">Gambar (Opsional)</label>
-                        <input type="file" class="form-control @error('image') is-invalid @enderror" id="image" name="image" accept="image/*">
+                        <div id="image-container">
+                            <input id="image" type="file" class="form-control @error('image') is-invalid @enderror" name="image[]" accept="image/*" multiple>
+                            <small class="form-text text-muted">Format gambar yang diizinkan: JPG, PNG.</small>
+                        </div>
+                        <button type="button" class="btn btn-secondary mt-2" id="add-image">Tambah Gambar</button>
                         @error('image')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                         @if ($artikel->images()->exists())
                             <div class="mt-2">
-                                <img src="{{ asset('storage/' . $artikel->images->first()->image_path) }}" alt="Gambar Artikel" class="img-thumbnail" width="150">
-                                <p>Gambar saat ini</p>
+                                <h5>Gambar Saat Ini:</h5>
+                                <div class="row">
+                                    @foreach($artikel->images as $image)
+                                        <div class="col-md-4">
+                                            <img src="{{ asset('storage/' . $image->image_path) }}" alt="Gambar Artikel" class="img-thumbnail" width="150">
+                                            <div>
+                                                <input type="checkbox" name="delete_images[]" value="{{ $image->id }}"> Hapus
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                </div>
                             </div>
                         @endif
                     </div>
@@ -67,4 +79,16 @@
         </div>
     </section>
 </div>
+
+<script>
+    document.getElementById('add-image').addEventListener('click', function() {
+        var newInput = document.createElement('input');
+        newInput.type = 'file';
+        newInput.className = 'form-control mt-2';
+        newInput.name = 'image[]';
+        newInput.accept = 'image/*';
+
+        document.getElementById('image-container').appendChild(newInput);
+    });
+</script>
 @endsection

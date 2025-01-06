@@ -64,40 +64,6 @@
                     </div> 
                 </div> 
 
-                <!-- Total Riwayat -->
-                <div class="col-lg-3 col-md-6 col-sm-6 col-12"> 
-                    <div class="card card-statistic-1"> 
-                        <div class="card-icon" style="background-color: #FFC107;"> 
-                            <i class="fas fa-history"></i> 
-                        </div> 
-                        <div class="card-wrap"> 
-                            <div class="card-header"> 
-                                <h4>Total Riwayat</h4> 
-                            </div> 
-                            <div class="card-body"> 
-                                {{ $riwayats }} 
-                            </div> 
-                        </div> 
-                    </div> 
-                </div> 
-
-                <!-- Total Laporan -->
-                <div class="col-lg-3 col-md-6 col-sm-6 col-12"> 
-                    <div class="card card-statistic-1"> 
-                        <div class="card-icon" style="background-color: #FF5722;">
-                            <i class="fas fa-file-alt"></i> 
-                        </div> 
-                        <div class="card-wrap"> 
-                            <div class="card-header"> 
-                                <h4>Total Laporan</h4> 
-                            </div> 
-                            <div class="card-body"> 
-                                {{ $laporans }} 
-                            </div> 
-                        </div> 
-                    </div> 
-                </div> 
-
                 <!-- Total Artikel -->
                 <div class="col-lg-3 col-md-6 col-sm-6 col-12"> 
                     <div class="card card-statistic-1"> 
@@ -105,8 +71,7 @@
                             <i class="fas fa-newspaper"></i> 
                         </div> 
                         <div class="card-wrap"> 
-                            <div class="card-header"> 
-                                <h4>Total Artikel</h4> 
+                            <div class="card-header"> <h4>Total Artikel</h4> 
                             </div> 
                             <div class="card-body"> 
                                 {{ $artikels }} 

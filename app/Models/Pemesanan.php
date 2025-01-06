@@ -20,6 +20,7 @@ class Pemesanan extends Model
         'total_pembayaran',
         'tour_gate', // Add this line
         'jumlah_peserta', // Add jumlah_peserta here
+        'star_point',
     ];
 
     // Relationship with User

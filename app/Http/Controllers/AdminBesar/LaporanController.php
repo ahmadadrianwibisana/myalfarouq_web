@@ -5,14 +5,18 @@ namespace App\Http\Controllers\AdminBesar;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Pemesanan;
+use App\Models\User;
 use Carbon\Carbon;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\PemesananExport;
+use Barryvdh\DomPDF\Facade as PDF;
 
 class LaporanController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        // Mengambil semua pemesanan dengan relasi yang diperlukan dan mengurutkannya berdasarkan tanggal_pemesanan terbaru
-        $pemesanan = Pemesanan::with(['user', 'openTrip', 'privateTrip', 'dataAdministrasi', 'pembayaran'])
+        // Ambil semua pemesanan dengan relasi yang diperlukan
+        $query = Pemesanan::with(['user', 'openTrip', 'privateTrip', 'dataAdministrasi', 'pembayaran'])
             ->where('status', 'terkonfirmasi')
             ->whereHas('dataAdministrasi', function($query) {
                 $query->where('status', 'approved');
@@ -20,13 +24,40 @@ class LaporanController extends Controller
             ->whereHas('pembayaran', function($query) {
                 $query->where('status_pembayaran', 'success');
             })
-            ->orderBy('tanggal_pemesanan', 'desc') // Mengurutkan berdasarkan tanggal pemesanan terbaru
-            ->paginate(10); // Tambahkan pagination
+            ->orderBy('tanggal_pemesanan', 'desc'); // Mengurutkan berdasarkan tanggal pemesanan terbaru
+    
+        // Filter berdasarkan bulan
+        if ($request->filled('month')) {
+            $query->whereMonth('tanggal_pemesanan', $request->month);
+        }
+    
+        // Filter berdasarkan tahun
+        if ($request->filled('year')) {
+            $query->whereYear('tanggal_pemesanan', $request->year);
+        }
+    
+        // Filter berdasarkan jenis trip
+        if ($request->filled('trip_type')) {
+            $query->where('trip_type', $request->trip_type);
+        }
+    
+        // Filter berdasarkan nama pengguna
+        if ($request->filled('user_name')) {
+            $query->whereHas('user', function($q) use ($request) {
+                $q->where('name', 'like', '%' . $request->user_name . '%');
+            });
+        }
+    
+        // Mengambil semua pemesanan yang sudah difilter
+        $pemesanan = $query->paginate(10)->appends($request->except('page')); // Tambahkan appends
     
         // Menghitung total pendapatan
         $totalPendapatan = $this->hitungTotalPendapatan($pemesanan);
     
-        return view('pages.adminbesar.laporan.index', compact('pemesanan', 'totalPendapatan'));
+        // Ambil semua pengguna untuk filter
+        $users = User::all();
+    
+        return view('pages.adminbesar.laporan.index', compact('pemesanan', 'totalPendapatan', 'users'));
     }
     
     private function hitungTotalPendapatan($pemesanan)
@@ -130,5 +161,10 @@ class LaporanController extends Controller
         $totalPendapatan = $this->hitungTotalPendapatan($pemesanan);
     
         return view('pages.adminbesar.laporan.index', compact('pemesanan', 'totalPendapatan'));
+    }
+
+    public function exportExcel()
+    {
+        return Excel::download(new PemesananExport, 'laporan_pemesanan.xlsx');
     }
 }

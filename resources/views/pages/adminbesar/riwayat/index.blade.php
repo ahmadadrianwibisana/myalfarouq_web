@@ -19,34 +19,65 @@
             <div class="card-body">
                 <!-- Filter Pemesanan -->
                 <h4 class="font-weight-bold" style="color: #276f5f;">Filter Pemesanan</h4>
-                <div class="row mb-4">
-                    <div class="col-md-6">
-                        <label for="month" class="font-weight-bold" style="color: #276f5f;">Bulan:</label>
-                        <div class="input-group">
-                            <div class="input-group-prepend">
-                                <span class="input-group-text" style="background-color: #276f5f; color: #fff;"><i class="fas fa-calendar-alt"></i></span>
-                            </div>
-                            <select id="month" class="form-control form-control-sm" onchange="filterByMonthYear()">
+                <form method="GET" action="{{ route('adminbesar.riwayat.index') }}">
+                    <div class="row mb-4">
+                        <div class="col-md-3">
+                            <label for="month" class="font-weight-bold" style="color: #276f5f;">Bulan:</label>
+                            <select name="month" id="month" class="form-control form-control-sm">
+                                <option value="">Semua</option>
                                 @foreach(range(1, 12) as $month)
-                                    <option value="{{ $month }}">{{ date('F', mktime(0, 0, 0, $month, 1)) }}</option>
+                                    <option value="{{ $month }}" {{ request('month') == $month ? 'selected' : '' }}>
+                                        {{ date('F', mktime(0, 0, 0, $month, 1)) }}
+                                    </option>
                                 @endforeach
                             </select>
                         </div>
-                    </div>
-                    <div class="col-md-6">
-                        <label for="year" class="font-weight-bold" style="color: #276f5f;">Tahun:</label>
-                        <div class="input-group">
-                            <div class="input-group-prepend">
-                                <span class="input-group-text" style="background-color: #276f5f; color: #fff;"><i class="fas fa-calendar"></i></span>
-                            </div>
-                            <select id="year" class="form-control form-control-sm" onchange="filterByMonthYear()">
+                        <div class="col-md-3">
+                            <label for="year" class="font-weight-bold" style="color: #276f5f;">Tahun:</label>
+                            <select name="year" id="year" class="form-control form-control-sm">
+                                <option value="">Semua</option>
                                 @foreach(range(date('Y'), date('Y') - 5) as $year)
-                                    <option value="{{ $year }}">{{ $year }}</option>
+                                    <option value="{{ $year }}" {{ request('year') == $year ? 'selected' : '' }}>
+                                        {{ $year }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="trip_type" class="font-weight-bold" style="color: #276f5f;">Jenis Trip:</label>
+                            <select name="trip_type" id="trip_type" class="form-control form-control-sm">
+                                <option value="">Semua</option>
+                                <option value="open_trip" {{ request('trip_type') == 'open_trip' ? 'selected' : '' }}>Open Trip</option>
+                                <option value="private_trip" {{ request('trip_type') == 'private_trip' ? 'selected' : '' }}>Private Trip</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="status" class="font-weight-bold" style="color: #276f5f;">Status:</label>
+                            <select name="status" id="status" class="form-control form-control-sm">
+                                <option value="">Semua</option>
+                                <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>Pending</option>
+                                <option value="terkonfirmasi" {{ request('status') == 'terkonfirmasi' ? 'selected' : '' }}>Terkonfirmasi</option>
+                                <option value="dibatalkan" {{ request('status') == 'dibatalkan' ? 'selected' : '' }}>Dibatalkan</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="user_name" class="font-weight-bold" style="color: #276f5f;">Nama Pengguna:</label>
+                            <select name="user_name" id="user_name" class="form-control form-control-sm">
+                                <option value="">Semua</option>
+                                @foreach($users as $user)
+                                    <option value="{{ $user->name }}" {{ request('user_name') == $user->name ? 'selected' : '' }}>
+                                        {{ $user->name }}
+                                    </option>
                                 @endforeach
                             </select>
                         </div>
                     </div>
-                </div>
+                    <div class="row mb-4">
+                        <div class="col-md-6 d-flex align-items-end">
+                            <button type="submit" class="btn btn-primary">Filter</button>
+                        </div>
+                    </div>
+                </form>
 
                 <!-- Tabel Pemesanan -->
                 <div class="table-responsive">
@@ -92,21 +123,19 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="7" class="text-center text-secondary">Data Pemesanan Kosong</td>
+                                    <td colspan="6" class="text-center text-secondary">Data Pemesanan Kosong</td>
                                 </tr>
                             @endforelse
                         </tbody>
                     </table>
-                      <!-- Pagination -->
-                      <div class="mt-3 d-flex justify-content-center">
-                        <!-- Previous Page Link -->
+                    <!-- Pagination -->
+                    <div class="mt-3 d-flex justify-content-center">
                         @if ($pemesanan->onFirstPage())
                             <span class="page-link disabled box">Sebelumnya</span>
                         @else
                             <a href="{{ $pemesanan->previousPageUrl() }}" class="page-link prev-next box">Sebelumnya</a>
                         @endif
 
-                        <!-- Pagination Links -->
                         <ul class="pagination">
                             @foreach ($pemesanan->getUrlRange(1, $pemesanan->lastPage()) as $page => $url)
                                 <li class="page-item {{ $page == $pemesanan->currentPage() ? 'active' : '' }}">
@@ -115,14 +144,13 @@
                             @endforeach
                         </ul>
 
-                        <!-- Next Page Link -->
                         @if ($pemesanan->hasMorePages())
                             <a href="{{ $pemesanan->nextPageUrl() }}" class="page-link prev-next box">Selanjutnya</a>
                         @else
                             <span class="page-link disabled box">Selanjutnya</span>
                         @endif
                     </div>
-                </div>
+                    </div>
             </div>
         </div>
     </section>
@@ -159,7 +187,6 @@
                                 </span>
                             </td>
                             <td>${new Date(item.tanggal_pemesanan).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })}</td>
-                            <td>Rp ${new Intl.NumberFormat('id-ID', { minimumFractionDigits: 2 }).format(item.total_pembayaran)}</td>
                             <td>
                                 <a href="/adminbesar/riwayat/${item.id}" class="btn btn-sm" style="background-color: #276f5f; color: #fff;">
                                     <i class="fas fa-eye"></i> Detail

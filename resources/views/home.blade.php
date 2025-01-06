@@ -228,10 +228,6 @@
     <div class="isotope-layout" data-default-filter="*" data-layout="masonry" data-sort="original-order">
         <!-- Section Filter -->
         <ul class="portfolio-filters isotope-filters" data-aos="fade-up" data-aos-delay="100">
-            <li data-filter="*" class="filter-active">Semua Paket</li>
-            @foreach($destinations as $destination)
-                <li data-filter=".filter-{{ strtolower(str_replace(' ', '-', $destination)) }}">{{ $destination }}</li>
-            @endforeach
         </ul>
 
 
@@ -253,9 +249,11 @@
                     <h3>{{ $open_trip->nama_paket }}</h3>
                     <p>
                         <i class="bi bi-clock icon-clock"></i> 
-                        {{ \Carbon\Carbon::parse($open_trip->tanggal_berangkat)->format('d/F/Y') }} --
-                        {{ \Carbon\Carbon::parse($open_trip->tanggal_pulang)->format('d/F/Y') }}<br />
-                        <i class="bi bi-geo-alt icon-location"></i> {{ $open_trip->destinasi }}
+                        {{ \Carbon\Carbon::parse($open_trip->tanggal_berangkat)->format('d F Y') }} -
+                        {{ \Carbon\Carbon::parse($open_trip->tanggal_pulang)->format('d F Y') }}<br />
+                        <i class="bi bi-geo-alt icon-location"></i> {{ $open_trip->destinasi }}<br />
+                        <i class="bi bi-currency-dollar icon-price"></i> 
+                        <strong>Rp {{ number_format($open_trip->harga, 2, ',', '.') }}</strong> <!-- Price displayed below -->
                     </p>
                     <a href="{{ route('detailopen', $open_trip->id) }}" class="btn-detail">
                         <span>Detail</span>

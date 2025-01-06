@@ -30,7 +30,7 @@ class ArtikelController extends Controller
             'judul_artikel' => 'required|string|max:255',
             'deskripsi' => 'required|string',
             'tanggal_publish' => 'required|date',
-            'image.*' => 'nullable|image|mimes:jpg,png,jpeg|max:2048', // Ubah validasi untuk array
+            'image.*' => 'nullable|image|mimes:jpg,png,jpeg|max:10240', // 10 MB = 10 * 1024 KB
         ]);
     
         // Buat artikel baru
@@ -73,7 +73,7 @@ class ArtikelController extends Controller
             'judul_artikel' => 'required|string|max:255',
             'deskripsi' => 'required|string',
             'tanggal_publish' => 'required|date',
-            'image.*' => 'nullable|image|mimes:jpg,png,jpeg|max:2048', // Ubah validasi untuk array
+            'image.*' => 'nullable|image|mimes:jpg,png,jpeg|max:10240', // 10 MB = 10 * 1024 KB
         ]);
     
         // Temukan artikel
@@ -84,16 +84,21 @@ class ArtikelController extends Controller
             'tanggal_publish' => $request->tanggal_publish,
         ]);
     
-        // Tangani upload gambar jika ada
-        if ($request->hasFile('image')) {
-            // Hapus gambar lama jika ada
-            if ($artikel->images()->exists()) {
-                foreach ($artikel->images as $oldImage) {
-                    Storage::disk('public')->delete($oldImage->image_path);
+        // Hapus gambar yang dipilih
+        if ($request->has('delete_images')) {
+            foreach ($request->delete_images as $imageId) {
+                $image = Image::find($imageId);
+                if ($image) {
+                    // Hapus file gambar dari storage
+                    Storage::disk('public')->delete($image->image_path);
+                    // Hapus record gambar dari database
+                    $image->delete();
                 }
-                $artikel->images()->delete();
             }
+        }
     
+        // Tangani upload gambar baru jika ada
+        if ($request->hasFile('image')) {
             foreach ($request->file('image') as $image) {
                 $imagePath = $image->store('images', 'public');
                 Image::create([
@@ -105,7 +110,6 @@ class ArtikelController extends Controller
     
         return redirect()->route('adminbesar.artikel.index')->with('success', 'Artikel berhasil diperbarui.');
     }
-
     public function destroy($id)
     {
         $artikel = Artikel::findOrFail($id);

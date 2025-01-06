@@ -27,6 +27,13 @@ class PrivateTrip extends Model
         'keterangan_ditolak'
     ];
 
+    protected $casts = [
+        'tanggal_pengajuan' => 'date',
+        'tanggal_disetujui' => 'date', // Cast to date
+        'tanggal_pergi' => 'date',
+        'tanggal_kembali' => 'date',
+    ];
+
     public function user()
     {
         return $this->belongsTo(User::class); // Relasi ke User

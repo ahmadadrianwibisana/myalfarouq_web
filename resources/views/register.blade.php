@@ -103,7 +103,9 @@
     <div class="container">
         <form class="form" action="{{ route('post.register') }}" method="POST" id="contactForm" novalidate="novalidate">
             @csrf
-            <img class="logo" src="assets/img/logoalfarouq.png" alt="Logo Alfarouq Travel">
+            <a href="{{ url('/') }}">
+                <img class="logo" src="assets/img/logoalfarouq.png" alt="Logo Alfarouq Travel">
+            </a>
             <div class="form-group">
                 <input type="text" class="form__input" id="name" name="name" placeholder="Name" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Name'">
             </div>
@@ -119,10 +121,10 @@
             <button type="submit" class="btn btn-primary">Create Account</button>
             <p class="mt-3">Sudah punya akun? <a href="/login">Login</a></p>
             <div class="divider">Atau daftar dengan</div>
-            <button type="button" class="google-btn">
+            <a href="{{ route('google.login') }}" class="google-btn">
                 <img src="assets/img/logogoogle.png" alt="Google">
                 Daftar dengan Google
-            </button>
+            </a>
         </form>
     </div>
 </body>

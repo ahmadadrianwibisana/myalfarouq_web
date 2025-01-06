@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Auth;
 use RealRashid\SweetAlert\Facades\Alert;
 use Illuminate\Support\Facades\Validator;
 use App\Models\User;
+use Laravel\Socialite\Facades\Socialite;
+use Illuminate\Support\Str; //
 
 class AuthController extends Controller
 {
@@ -119,6 +121,35 @@ class AuthController extends Controller
             Alert::error('Gagal!', 'Akun gagal dibuat, silahkan coba lagi!');
             return redirect()->back();
         }
+    }
+
+    public function redirectToGoogle()
+    {
+        return Socialite::driver('google')->redirect();
+    }
+
+    public function handleGoogleCallback()
+    {
+        $googleUser  = Socialite::driver('google')->user();
+
+        // Cek apakah pengguna sudah terdaftar
+        $user = User::where('email', $googleUser ->getEmail())->first();
+
+        if (!$user) {
+            // Jika pengguna belum terdaftar, buat akun baru
+            $user = User::create([
+                'name' => $googleUser ->getName(),
+                'email' => $googleUser ->getEmail(),
+                'password' => bcrypt(Str::random(16)), // Buat password acak
+                'no_telepon' => '', // Anda bisa menambahkan logika untuk mengisi no telepon
+                'image' => $googleUser ->getAvatar(), // Simpan avatar Google
+            ]);
+        }
+
+        // Login pengguna
+        Auth::login($user, true);
+
+        return redirect()->route('user.home'); // Ganti dengan route yang sesuai
     }
     
     

@@ -15,102 +15,102 @@ use App\Models\Pemesanan;
 use App\Models\Pembayaran;
 use App\Models\DataAdministrasi;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 
 class UserController extends Controller
 {
+    // Halaman Home
+    public function home(Request $request)
+    {
+        $query = OpenTrip::query();
+        $user = Auth::user();
 
-// Halaman Home
-public function home(Request $request)
-{
-    $query = OpenTrip::query();
-    $user = Auth::user();
+        // Search by package name (optional)
+        if ($request->filled('search')) {
+            $query->where('nama_paket', 'like', '%' . $request->search . '%');
+        }
 
-    // Search by package name (optional)
-    if ($request->filled('search')) {
-        $query->where('nama_paket', 'like', '%' . $request->search . '%');
-    }
+        // Filter by destination (optional)
+        if ($request->filled('destination') && $request->destination != '*') {
+            $query->where('destinasi', $request->destination);
+        }
 
-    // Filter by destination (optional)
-    if ($request->filled('destination') && $request->destination != '*') {
-        $query->where('destinasi', $request->destination);
-    }
+        // Filter by duration (optional)
+        if ($request->filled('duration') && $request->duration != '*') {
+            $query->where('lama_keberangkatan', $request->duration);
+        }
 
-    // Filter by duration (optional)
-    if ($request->filled('duration') && $request->duration != '*') {
-        $query->where('lama_keberangkatan', $request->duration);
-    }
-
-    // Get the filtered open trips that are not expired
-    $open_trips = $query->where('tanggal_berangkat', '>=', now()) // Only trips that have not started
-                         ->orWhere('tanggal_pulang', '>=', now()) // Only trips that have not ended
-                         ->orderBy('tanggal_berangkat', 'desc') // Order by departure date
-                         ->orderBy('tanggal_pulang', 'desc') // Order by return date
-                         ->take(3) // Limit to 3 results for the home page
-                        ->get();
-
-    // Get unique destinations and durations for the search form
-    $destinations = OpenTrip::distinct()->pluck('destinasi');
-    $durations = OpenTrip::distinct()->pluck('lama_keberangkatan');
-
-    // Get the latest articles and order by publish date
-    $artikels = Artikel::with('images')
-        ->orderBy('tanggal_publish', 'desc') // Order by publish date
+        // Get the filtered open trips that are not expired
+        $open_trips = $query->where(function($q) {
+            $q->where('tanggal_berangkat', '>=', now()) // Only trips that have not started
+                ->orWhere('tanggal_pulang', '>=', now()); // Only trips that have not ended
+        })
+        ->orderBy('tanggal_berangkat', 'desc') // Order by departure date
+        ->orderBy('tanggal_pulang', 'desc') // Order by return date
         ->take(3) // Limit to 3 results for the home page
         ->get();
 
-    // Fetch the authenticated user's bookings with related open trips and private trips, limited to 4
-    $pemesanans = Pemesanan::with(['openTrip', 'privateTrip'])
-        ->where('user_id', auth()->id())
-        ->take(5) // Limit to 5 records
-        ->get();
+        // Get unique destinations and durations for the search form
+        $destinations = OpenTrip::distinct()->pluck('destinasi');
+        $durations = OpenTrip::distinct()->pluck('lama_keberangkatan');
 
+        // Get the latest articles and order by publish date
+        $artikels = Artikel::with('images')
+            ->orderBy('tanggal_publish', 'desc') // Order by publish date
+            ->take(3) // Limit to 3 results for the home page
+            ->get();
 
-    return view('user.home', compact('artikels', 'open_trips', 'destinations', 'durations','pemesanans','user'));
-}
+        // Fetch the authenticated user's bookings with related open trips and private trips, limited to 4
+        $pemesanans = Pemesanan::with(['openTrip', 'privateTrip'])
+            ->where('user_id', auth()->id())
+            ->take(5) // Limit to 5 records
+            ->get();
 
-
-
-// Halaman Open Trip
-public function opentrip(Request $request)
-{
-    $query = OpenTrip::query();
-
-    // Search by package name (optional)
-    if ($request->filled('search')) {
-        $query->where('nama_paket', 'like', '%' . $request->search . '%');
+        return view('user.home', compact('artikels', 'open_trips', 'destinations', 'durations', 'pemesanans', 'user'));
     }
 
-    // Filter by destination (optional)
-    if ($request->filled('destination') && $request->destination != '*') {
-        $query->where('destinasi', $request->destination);
+    // Halaman Open Trip
+    public function opentrip(Request $request)
+    {
+        $query = OpenTrip::query();
+
+        // Search by package name (optional)
+        if ($request->filled('search')) {
+            $query->where('nama_paket', 'like', '%' . $request->search . '%');
+        }
+
+        // Filter by destination (optional)
+        if ($request->filled('destination') && $request->destination != '*') {
+            $query->where('destinasi', $request->destination);
+        }
+
+        // Filter by duration (optional)
+        if ($request->filled('duration') && $request->duration != '*') {
+            $query->where('lama_keberangkatan', $request->duration);
+        }
+
+        // Get the filtered open trips that are not expired
+        $open_trips = $query->where(function($q) {
+            $q->where('tanggal_berangkat', '>=', now()) // Only trips that have not started
+            ->orWhere('tanggal_pulang', '>=', now()); // Only trips that have not ended
+        })
+        ->orderBy('tanggal_berangkat', 'desc') // Order by departure date
+        ->orderBy('tanggal_pulang', 'desc') // Order by return date
+        ->paginate(6); // Limit results per page for pagination
+
+        // Get unique destinations and durations
+        $destinations = OpenTrip::distinct()->pluck('destinasi');
+        $durations = OpenTrip::distinct()->pluck('lama_keberangkatan');
+
+        // Fetch the authenticated user's bookings with related open trips and private trips, limited to 5
+        $pemesanans = Pemesanan::with(['openTrip', 'privateTrip'])
+            ->where('user_id', auth()->id())
+            ->take(5) // Limit to 5 records
+            ->get();
+
+        return view('user.opentrip', compact('open_trips', 'destinations', 'durations', 'pemesanans'));
     }
-
-    // Filter by duration (optional)
-    if ($request->filled('duration') && $request->duration != '*') {
-        $query->where('lama_keberangkatan', $request->duration);
-    }
-
-                // Get the filtered open trips that are not expired
-                $open_trips = $query->where('tanggal_berangkat', '>=', now()) // Only trips that have not started
-                ->orWhere('tanggal_pulang', '>=', now()) // Only trips that have not ended
-                ->orderBy('tanggal_berangkat', 'desc') // Order by departure date
-                ->orderBy('tanggal_pulang', 'desc') // Order by return date
-                ->get();
-
-    // Get unique destinations and durations
-    $destinations = OpenTrip::distinct()->pluck('destinasi');
-    $durations = OpenTrip::distinct()->pluck('lama_keberangkatan');
-
-    // Fetch the authenticated user's bookings with related open trips and private trips, limited to 4
-    $pemesanans = Pemesanan::with(['openTrip', 'privateTrip'])
-        ->where('user_id', auth()->id())
-        ->take(5) // Limit to 5 records
-        ->get();
-
-    // Corrected variable name here
-    return view('user.opentrip', compact('open_trips', 'destinations', 'durations', 'pemesanans'));
-}
         
     public function bookOpenTrip(Request $request, $id)
     {
@@ -126,6 +126,7 @@ public function opentrip(Request $request)
         $validator = Validator::make($request->all(), [
             'jumlah_peserta' => 'required|integer|min:1',
             'trip_type' => 'required|string|in:open_trip', // Pastikan trip_type adalah 'open_trip'
+            'star_point' => 'required|string|max:255', // Validasi untuk star point
         ]);
     
         if ($validator->fails()) {
@@ -155,6 +156,7 @@ public function opentrip(Request $request)
                 'jumlah_peserta' => $request->jumlah_peserta,
                 'total_pembayaran' => $totalPembayaran,
                 'status' => 'pending',
+                'star_point' => $request->star_point, // Simpan star point
             ]);
 
 
@@ -183,8 +185,6 @@ public function opentrip(Request $request)
 
         return view('user.detailopen', compact('open_trips','pemesanans'));
     }
-
-
 
     // Halaman Artikel
     public function dokumen()
@@ -218,13 +218,13 @@ public function opentrip(Request $request)
          return view('user.detail');  // The view you want to show for the detail page
     }
 
-    
-
     // Halaman Privat Trip
     public function privatetrip()
     {
         // Fetch the authenticated user's data
         $user = auth()->user(); // Get the authenticated user
+
+        $privateTrips = PrivateTrip::where('user_id', $user->id)->get(); // Ambil private trip berdasarkan user_id
     
         // Fetch the user's bookings with related open trips and private trips
         $pemesanans = Pemesanan::with(['openTrip', 'privateTrip'])
@@ -233,7 +233,60 @@ public function opentrip(Request $request)
             ->get();
     
         // Pass the user data to the view
-        return view('user.privatetrip', compact('pemesanans', 'user')); // Pass user data to the view
+        return view('user.privatetrip', compact('pemesanans', 'user','privateTrips')); // Pass user data to the view
+    }
+
+    public function detailPrivateTrip($id)
+    {
+        $privateTrip = PrivateTrip::findOrFail($id); // Find the private trip by ID
+    
+        // Fetch the authenticated user's bookings with related open trips and private trips
+        $pemesanans = Pemesanan::with(['openTrip', 'privateTrip'])
+            ->where('user_id', auth()->id())
+            ->take(5) // Limit to 5 records
+            ->get();
+    
+        return view('user.detail-private-trip', compact('privateTrip', 'pemesanans')); // Pass both variables to the view
+    }
+    public function editPrivateTrip($id)
+    {
+        $privateTrip = PrivateTrip::findOrFail($id); // Find the private trip by ID
+        return view('user.edit-private-trip', compact('privateTrip')); // Return the edit view
+    }
+
+    public function updatePrivateTrip(Request $request, $id)
+    {
+        $privateTrip = PrivateTrip::findOrFail($id); // Find the private trip by ID
+    
+        // Validate the request
+        $request->validate([
+            'destinasi' => 'required|string|max:255',
+            'tanggal_pergi' => 'required|date',
+            'tanggal_kembali' => 'required|date',
+            'star_point' => 'required|string|max:255',
+            'jumlah_peserta' => 'required|integer|min:1',
+        ]);
+    
+        // Update the private trip
+        $privateTrip->update($request->all());
+    
+        return redirect()->route('user.detailPrivateTrip', $privateTrip->id)->with('success', 'Data pengajuan berhasil diperbarui!');
+    }
+
+    public function batalPrivateTrip($id)
+    {
+        $privateTrip = PrivateTrip::findOrFail($id); // Find the private trip by ID
+
+        // Check if the trip belongs to the authenticated user
+        if ($privateTrip->user_id !== auth()->id()) {
+            return response()->json(['error' => 'Unauthorized action.'], 403);
+        }
+
+        // Delete the private trip
+        $privateTrip->delete();
+
+        // Set success message
+        return redirect()->route('user.privatetrip')->with('success', 'Pengajuan private trip berhasil dibatalkan!');
     }
 
     public function createPrivateTrip()
@@ -258,8 +311,6 @@ public function opentrip(Request $request)
         return view('user.profil-kami', compact('pemesanans','user')); // Pass pemesanans to the view
     }
 
-
-
     // Halaman Tentang Kami
     public function tentangKami()
     {
@@ -272,7 +323,6 @@ public function opentrip(Request $request)
     
         return view('user.tentang-kami', compact('pemesanans')); // Pass pemesanans to the view
     }
-
 
 
     // Halaman Trip Saya
@@ -291,14 +341,37 @@ public function opentrip(Request $request)
             ->get(); // Fetch all records
 
 
+        // Fetch past bookings for the authenticated user
+        $riwayat = Pemesanan::with(['openTrip', 'privateTrip'])
+        ->where('user_id', auth()->id())
+        ->where(function($query) {
+            // Include bookings that are confirmed and have passed the trip dates
+            $query->where('status', 'terkonfirmasi')
+                ->where(function($subQuery) {
+                    $subQuery->where('tanggal_pemesanan', '<', now())
+                                ->orWhereHas('openTrip', function($q) {
+                                    $q->where('tanggal_pulang', '<', now());
+                                })
+                                ->orWhereHas('privateTrip', function($q) {
+                                    $q->where('tanggal_kembali', '<', now());
+                                });
+                });
+        })
+        ->orWhere(function($query) {
+            // Include canceled bookings
+            $query->where('status', 'dibatalkan');
+        })
+        ->orderBy('tanggal_pemesanan', 'desc') // Order by booking date
+        ->get();
+
         // Fetch limited bookings for the footer (limit to 5 records)
         $footerPemesanans = Pemesanan::with(['openTrip', 'privateTrip'])
-            ->where('user_id', auth()->id())
-            ->take(5) // Limit to 5 records for the footer
-            ->get();
+        ->where('user_id', auth()->id())
+        ->take(5) // Limit to 5 records for the footer
+        ->get();
 
         
-        return view('user.tripsaya', compact('pemesanans','footerPemesanans'));
+        return view('user.tripsaya', compact('pemesanans','footerPemesanans','riwayat'));
     }
 
     // Ubah nama fungsi dari cancelBooking menjadi batalPemesanan
@@ -663,13 +736,17 @@ public function opentrip(Request $request)
 
     public function updateProfile(Request $request)
     {
+        // Ambil data pengguna yang sedang login
+        $user = Auth::user();
+    
         // Validasi input
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'email' => 'required|email|max:255',
             'no_telepon' => 'required|string|max:15',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg|max:5120', // Validasi untuk foto
-            'password' => 'nullable|string|min:8|confirmed', // Validasi untuk password
+            'image' => 'nullable|image|mimes:jpeg,png,jpg|max:10240', // Validasi untuk foto
+            'password' => 'nullable|string|min:8|confirmed', // Validasi untuk password baru
+            'old_password' => 'required_with:password|string|min:8', // Validasi untuk password lama jika password baru diisi
         ]);
     
         if ($validator->fails()) {
@@ -677,8 +754,10 @@ public function opentrip(Request $request)
             return redirect()->back()->withErrors($validator)->withInput();
         }
     
-        // Ambil data pengguna yang sedang login
-        $user = Auth::user();
+        // Cek apakah password lama yang dimasukkan benar
+        if ($request->filled('password') && !Hash::check($request->old_password, $user->password)) {
+            return redirect()->back()->withErrors(['old_password' => 'Password lama tidak benar.'])->withInput();
+        }
     
         // Proses upload foto jika ada
         if ($request->hasFile('image')) {

@@ -137,7 +137,9 @@
     <div class="login-container">
         <!-- Image Header with Text -->
         <div class="image-header">
-            <h2 id="welcome-text">Welcome To <br> Alfarouq Travel</h2>
+            <a href="{{ url('/') }}" id="welcome-text">
+                <h2>Welcome To <br> Alfarouq Travel</h2>
+            </a>
         </div>
         <!-- Form Content -->
         <div class="form-content">

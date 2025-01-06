@@ -2,6 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\Auth\ForgotPasswordController;
+use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\DataAdministrasiController;
 use App\Http\Controllers\Admin\OpenTripController;
@@ -13,6 +15,8 @@ use App\Http\Controllers\AdminBesar\AdminBesarController;
 use App\Http\Controllers\AdminBesar\ArtikelController;
 use App\Http\Controllers\AdminBesar\LaporanController;
 use App\Http\Controllers\AdminBesar\RiwayatController;
+use App\Http\Controllers\AdminBesar\ProfilControllerBesar;
+
 
 use App\Http\Controllers\User\UserController;
 use App\Models\Riwayat;
@@ -67,6 +71,16 @@ Route::get('/login', function () {
 // register user
 Route::get('/register', [AuthController::class, 'register'])->name('register');
 Route::post('/post-register', [AuthController::class, 'post_register'])->name('post.register');
+
+Route::get('auth/google', [AuthController::class, 'redirectToGoogle'])->name('google.login');
+Route::get('auth/google/callback', [AuthController::class, 'handleGoogleCallback']);
+
+
+Route::get('password/reset', [ForgotPasswordController::class, 'showLinkRequestForm'])->name('password.request');
+Route::post('password/email', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email');
+
+Route::get('password/reset/{token}', [ResetPasswordController::class, 'showResetForm'])->name('password.reset');
+Route::post('password/reset', [ResetPasswordController::class, 'reset'])->name('password.update');
 
 Route::post('/post-login', [AuthController::class, 'login'])->name('post.login');
 });
@@ -195,16 +209,24 @@ Route::group(['middleware' => 'adminbesar'], function () {
     Route::get('/adminbesar/laporan/total-pendapatan-per-bulan', [LaporanController::class, 'totalPendapatanPerBulan']);
     Route::get('/adminbesar/laporan/total-pendapatan-per-tahun', [LaporanController::class, 'totalPendapatanPerTahun']);
     Route::post('adminbesar/laporan/filter', [LaporanController::class, 'filterByDate'])->name('adminbesar.laporan.filter');
+    Route::get('adminbesar/laporan/export/excel', [LaporanController::class, 'exportExcel'])->name('adminbesar.laporan.export.excel');
 
 
     // Riwayat
     Route::get('/riwayat', [RiwayatController::class,'index'])->name('adminbesar.riwayat');
     Route::get('adminbesar/riwayat/{id}', [RiwayatController::class, 'show'])->name('adminbesar.riwayat.show');
 
+    Route::get('/adminbesar/profile', [ProfilControllerBesar::class, 'show'])->name('adminbesar.profile');
+    Route::get('/adminbesar/profile/edit', [ProfilControllerBesar::class, 'edit'])->name('adminbesar.profile.edit');
+    Route::put('/adminbesar/profile/update', [ProfilControllerBesar::class, 'update'])->name('adminbesar.profile.update');
 
-    Route::get('/adminbesar/profile', [ProfilController::class, 'show'])->name('adminbesar.profile');
-    Route::get('/adminbesar/profile/edit', [ProfilController::class, 'edit'])->name('adminbesar.profile.edit');
-    Route::put('/adminbesar/profile/update', [ProfilController::class, 'update'])->name('adminbesar.profile.update');
+    Route::get('/adminbesar/users-and-admins', [AdminBesarController::class, 'showUsersAndAdmins'])->name('adminbesar.users_and_admins');
+    Route::get('/admin/create', [AdminBesarController::class, 'create'])->name('adminbesar.create');
+    Route::post('/admin', [AdminBesarController::class, 'store'])->name('adminbesar.store');
+    Route::get('/admin/{id}/edit', [AdminBesarController::class, 'edit'])->name('adminbesar.edit');
+    Route::put('/admin/{id}', [AdminBesarController::class, 'update'])->name('adminbesar.update');
+    Route::delete('/admin/{id}', [AdminBesarController::class, 'destroy'])->name('adminbesar.destroy');
+
 
     Route::post('/adminbesar/logout', [AuthController::class, 'admin_logout'])->name('adminbesar.logout'); // Logout admin
 });
@@ -231,10 +253,17 @@ Route::group(['middleware' => 'web'], function () {
     Route::get('/user/privatetrip', [UserController::class, 'privatetrip'])->name('user.privatetrip');
     Route::post('/private-trip/store', [UserController::class, 'storePrivateTrip'])->name('user.private_trip.store');
     // Route to show the create private trip form
-Route::get('/user/private-trip/create', [UserController::class, 'createPrivateTrip'])->name('user.private_trip.create');
+    Route::get('/user/private-trip/create', [UserController::class, 'createPrivateTrip'])->name('user.private_trip.create');
+    Route::get('/private-trip/{id}', [UserController::class, 'detailPrivateTrip'])->name('user.detailPrivateTrip');
 
-// Route to store the private trip
-Route::post('/user/private-trip/store', [UserController::class, 'storePrivateTrip'])->name('user.private_trip.store');
+    // Route to store the private trip
+    Route::post('/user/private-trip/store', [UserController::class, 'storePrivateTrip'])->name('user.private_trip.store');
+    // Route for editing a private trip
+    Route::get('/user/private-trip/edit/{id}', [UserController::class, 'editPrivateTrip'])->name('user.editPrivateTrip');
+    Route::put('/user/private-trip /update/{id}', [UserController::class, 'updatePrivateTrip'])->name('user.updatePrivateTrip');
+
+    // Route for canceling a private trip
+    Route::delete('/user/private-trip/batal/{id}', [UserController::class, 'batalPrivateTrip'])->name('user.batalPrivateTrip');
 
 
 

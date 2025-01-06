@@ -199,6 +199,7 @@
                 <div class="mt-4">
                     <h2 class="text-lg font-semibold text-green-700">Total Pembayaran</h2>
                     <p class="text-xl font-bold text-gray-800">Rp {{ number_format($pemesanan->total_pembayaran, 0, ',', '.') }}</p>
+                    <p class="text-sm text-gray-700">Total Pembayaran Akan Disesuaikan Dengan Lokasi Keberangkatan Anda.</p> 
                 </div>
 
                 <div class="mt-4">

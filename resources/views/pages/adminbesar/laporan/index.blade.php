@@ -18,26 +18,54 @@
             <div class="card-body"> 
                 <!-- Filter Pemesanan -->
                 <h4 class="text-primary font-weight-bold" style="color: #276f5f;">Filter Pemesanan</h4>
-                <div class="row">
-                    <div class="col-md-6">
-                        <label for="month" class="font-weight-bold" style="color: #276f5f;">Bulan:</label>
-                        <select id="month" class="form-control form-control-sm" onchange="filterByMonthYear()">
-                            <option value="">Semua</option>
-                            @foreach(range(1, 12) as $month)
-                                <option value="{{ $month }}">{{ date('F', mktime(0, 0, 0, $month, 1)) }}</option>
-                            @endforeach
-                        </select>
+                <form method="GET" action="{{ route('adminbesar.laporan.index') }}">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <label for="month" class="font-weight-bold" style="color: #276f5f;">Bulan:</label>
+                            <select id="month" name="month" class="form-control form-control-sm">
+                                <option value="">Semua</option>
+                                @foreach(range(1, 12) as $month)
+                                    <option value="{{ $month }}" {{ request('month') == $month ? 'selected' : '' }}>{{ date('F', mktime(0, 0, 0, $month, 1)) }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="year" class="font-weight-bold" style="color: #276f5f;">Tahun:</label>
+                            <select id="year" name="year" class="form-control form-control-sm">
+                                <option value="">Semua</option>
+                                @foreach(range(2020, 2030) as $year)
+                                    <option value="{{ $year }}" {{ request('year') == $year ? 'selected' : '' }}>{{ $year }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="trip_type" class="font-weight-bold" style="color: #276f5f;">Jenis Trip:</label>
+                            <select id="trip_type" name="trip_type" class="form-control form-control-sm">
+                                <option value="">Semua</option>
+                                <option value="openTrip" {{ request('trip_type') == 'openTrip' ? 'selected' : '' }}>Open Trip</option>
+                                <option value="privateTrip" {{ request('trip_type') == 'privateTrip' ? 'selected' : '' }}>Private Trip</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="status" class="font-weight-bold" style="color: #276f5f;">Status:</label>
+                            <select id="status" name="status" class="form-control form-control-sm">
+                                <option value="">Semua</option>
+                                <option value="terkonfirmasi" {{ request('status') == 'terkonfirmasi' ? 'selected' : '' }}>Terkonfirmasi</option>
+                                <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>Pending</option>
+                                <option value="rejected" {{ request('status') == 'rejected' ? 'selected' : '' }}>Rejected</option>
+                            </select>
+                        </div>
                     </div>
-                    <div class="col-md-6">
-                        <label for="year" class="font-weight-bold" style="color: #276f5f;">Tahun:</label>
-                        <select id="year" class="form-control form-control-sm" onchange="filterByMonthYear()">
-                            <option value="">Semua</option>
-                            @foreach(range(2020, 2030) as $year)
-                                <option value="{{ $year }}">{{ $year }}</option>
-                            @endforeach
-                        </select>
+                    <div class="row mt-2">
+                        <div class="col-md-6">
+                            <label for="user_name" class="font-weight-bold" style="color: #276f5f;">Nama User:</label>
+                            <input type="text" id="user_name" name="user_name" class="form-control form-control-sm" value="{{ request('user_name') }}" placeholder="Cari Nama User">
+                        </div>
                     </div>
-                </div>
+                    <div class="mt-3">
+                        <button type="submit" class="btn btn-primary btn-sm">Filter</button>
+                    </div>
+                </form>
 
                 <!-- Tabel Pemesanan -->
                 <div class="table-responsive mt-4"> 
@@ -92,6 +120,10 @@
                     </table> 
                 </div> 
 
+                <div>
+                    <a href="{{ route('adminbesar.laporan.export.excel') }}" class="btn btn-success btn-sm">Unduh Excel</a>
+                </div>
+
                 <!-- Total Pendapatan -->
                 <hr>
                 <div class="d-flex justify-content-between align-items-center">
@@ -132,7 +164,7 @@
             if (year) {
                 total = totalPendapatan['tahunan'][year] || 0;
             } else {
-                total = Object.values(totalPendapatan['tahunan']).reduce((a, b) => a + b, 0);
+                total = Object.values(total Pendapatan['tahunan']).reduce((a, b) => a + b, 0);
             }
         }
 
@@ -142,18 +174,24 @@
     function filterByMonthYear() {
         const month = document.getElementById('month').value;
         const year = document.getElementById('year').value;
+        const tripType = document.getElementById('trip_type').value;
+        const status = document.getElementById('status').value;
+        const userName = document.getElementById('user_name').value;
 
         const filteredData = pemesananData.filter(item => {
             const date = new Date(item.tanggal_pemesanan);
-            const monthMatch = month ? (date.getMonth() + 1 == month) : true; // Jika bulan tidak dipilih, cocokkan semua
-            const yearMatch = year ? (date.getFullYear() == year) : true; // Jika tahun tidak dipilih, cocokkan semua
-            return monthMatch && yearMatch;
+            const monthMatch = month ? (date.getMonth() + 1 == month) : true; // If month is not selected, match all
+            const yearMatch = year ? (date.getFullYear() == year) : true; // If year is not selected, match all
+            const tripTypeMatch = tripType ? (item.trip_type == tripType) : true; // If trip type is not selected, match all
+            const statusMatch = status ? (item.status == status) : true; // If status is not selected, match all
+            const userNameMatch = userName ? (item.user?.name.toLowerCase().includes(userName.toLowerCase())) : true; // If user name is not selected, match all
+            return monthMatch && yearMatch && tripTypeMatch && statusMatch && userNameMatch;
         });
 
         const tableBody = document.getElementById('pemesananTable');
         tableBody.innerHTML = '';
 
-        let totalPendapatanFiltered = 0; // Inisialisasi total pendapatan yang difilter
+        let totalPendapatanFiltered = 0; // Initialize filtered total revenue
 
         if (filteredData.length === 0) {
             tableBody.innerHTML = '<tr><td colspan="7" class="text-center">Data Pemesanan Kosong</td></tr>';
@@ -170,7 +208,7 @@
                             </span>
                         </td>
                         <td>${new Date(item.tanggal_pemesanan).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })}</td>
-                                                <td>Rp ${new Intl.NumberFormat('id-ID', { minimumFractionDigits: 2 }).format(item.total_pembayaran)}</td>
+                        <td>Rp ${new Intl.NumberFormat('id-ID', { minimumFractionDigits: 2 }).format(item.total_pembayaran)}</td>
                         <td>
                             <a href="/adminbesar/laporan/${item.id}" class="btn btn-info btn-sm" style="background-color: #276f5f; border-color: #276f5f;">
                                 <i class="fas fa-eye"></i> Detail
@@ -179,11 +217,11 @@
                     </tr>
                 `;
                 tableBody.innerHTML += row;
-                totalPendapatanFiltered += item.total_pembayaran; // Tambahkan total pendapatan
+                totalPendapatanFiltered += item.total_pembayaran; // Add to total revenue
             });
         }
 
-        // Update total pendapatan
+        // Update total revenue
         document.getElementById('totalPendapatan').textContent = `Total Pendapatan: Rp ${new Intl.NumberFormat('id-ID', { minimumFractionDigits: 2 }).format(totalPendapatanFiltered)}`;
     }
 

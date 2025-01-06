@@ -40,9 +40,9 @@ class OpenTripController extends Controller
             'harga' => 'required|numeric|min:0',
             'kuota' => 'required|integer|min:1',
             'deskripsi_trip' => 'required|string',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048', // Max 2MB
+            'image' => 'nullable|image|mimes:jpeg,png,jpg|max:10240', // Max 2MB
             'star_point' => 'required|string|max:255',
-            'file' => 'nullable|file|mimes:pdf,doc,docx|max:2048', // Max 2MB
+            'file' => 'nullable|file|mimes:pdf,doc,docx|max:10240', // Max 2MB
             'include' => 'nullable|string',
             'exclude' => 'nullable|string',
         ]);
@@ -123,9 +123,9 @@ public function update(Request $request, $id)
         'harga' => 'required|numeric|min:0',
         'kuota' => 'required|integer|min:1',
         'deskripsi_trip' => 'required|string',
-        'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048', // Max 2MB
+        'image' => 'nullable|image|mimes:jpeg,png,jpg|max:10240', // Max 2MB
         'star_point' => 'required|string|max:255',
-        'file' => 'nullable|file|mimes:pdf,doc,docx|max:2048', // Max 2MB
+        'file' => 'nullable|file|mimes:pdf,doc,docx|max:10240', // Max 2MB
         ' include' => 'nullable|string',
         'exclude' => 'nullable|string',
     ]);

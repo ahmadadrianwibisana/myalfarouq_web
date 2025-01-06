@@ -63,7 +63,6 @@
                             </div>
                         </div>
 
-                       
                         <!-- Private Trip -->
                         <div id="private_trip_field" class="col-md-6" style="display: none;">
                             <div class="form-group">
@@ -92,19 +91,27 @@
                             </div>
                         </div>
 
-                      <!-- Jumlah Peserta -->
-                            <div id="jumlah_peserta_field" class="col-md-6" style="display: none;">
-                                <div class="form-group">
-                                    <label for="jumlah_peserta">Jumlah Peserta</label>
-                                    <!-- <input type="number" name="jumlah_peserta" id="jumlah_peserta" class="form-control" min="1" value="{{ old('jumlah_peserta') }}"> -->
-                                    <input type="number" name="jumlah_peserta" id="jumlah_peserta" class="form-control" value="1" min="1" required>
-                                    @error('jumlah_peserta')
-                                        <div class="text-danger">{{ $message }}</div>
-                                    @enderror
-                                </div>
+                        <!-- Jumlah Peserta -->
+                        <div id="jumlah_peserta_field" class="col-md-6" style="display: none;">
+                            <div class="form-group">
+                                <label for="jumlah_peserta">Jumlah Peserta</label>
+                                <input type="number" name="jumlah_peserta" id="jumlah_peserta" class="form-control" value="1" min="1" required>
+                                @error('jumlah_peserta')
+                                    <div class="text-danger">{{ $message }}</div>
+                                @enderror
                             </div>
+                        </div>
 
-                            
+                        <!-- Star Point -->
+                        <div id="star_point_field" class="col-md-6" style="display: none;">
+                            <div class="form-group">
+                                <label for="star_point">Star Point</label>
+                                <input type="text" name="star_point" id="star_point" class="form-control" value="{{ old('star_point') }}" required>
+                                @error('star_point')
+                                    <div class="text-danger">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -115,7 +122,7 @@
             </form>
         </div>
     </section>
-</div> 
+</div>
 
 <script>
 function toggleTripType() {
@@ -123,12 +130,14 @@ function toggleTripType() {
     const openTripField = document.getElementById('open_trip_field');
     const privateTripField = document.getElementById('private_trip_field');
     const jumlahPesertaField = document.getElementById('jumlah_peserta_field');
+    const starPointField = document.getElementById('star_point_field');
     const userSelect = document.getElementById('user_id');
 
     if (tripType === 'open_trip') {
         openTripField.style.display = 'block';
         privateTripField.style.display = 'none';
         jumlahPesertaField.style.display = 'block'; // Tampilkan input jumlah peserta
+        starPointField.style.display = 'block'; // Tampilkan input star point
         document.getElementById('private_trip_id').disabled = true;
         document.getElementById('open_trip_id').disabled = false;
         userSelect.disabled = false; // Aktifkan input manual untuk Open Trip
@@ -137,6 +146,7 @@ function toggleTripType() {
         privateTripField.style.display = 'block';
         openTripField.style.display = 'none';
         jumlahPesertaField.style.display = 'none'; // Sembunyikan input jumlah peserta
+        starPointField.style.display = 'none'; // Sembunyikan input star point
         document.getElementById('open_trip_id').disabled = true;
         document.getElementById('private_trip_id').disabled = false;
         userSelect.disabled = true; // Nonaktifkan input manual untuk Private Trip
@@ -144,6 +154,7 @@ function toggleTripType() {
         openTripField.style.display = 'none';
         privateTripField.style.display = 'none';
         jumlahPesertaField.style.display = 'none'; // Sembunyikan input jumlah peserta
+        starPointField.style.display = 'none'; // Sembunyikan input star point
         userSelect.disabled = false; // Aktifkan input manual jika tidak ada trip yang dipilih
         userSelect.value = ''; // Reset pilihan user jika ada
     }
@@ -164,7 +175,5 @@ function setPrivateTripUser (selectElement) {
         userSelect.disabled = false; // Aktifkan kembali input manual
     }
 }
-
-
 </script>
 @endsection

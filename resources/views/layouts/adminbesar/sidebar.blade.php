@@ -45,6 +45,22 @@
                 </a>
             </li>
 
+            <!-- Daftar Pengguna dan Admin Menu -->
+            <li class="{{ Route::is('adminbesar.users_and_admins') ? 'active' : '' }}">
+                <a class="nav-link" href="{{ route('adminbesar.users_and_admins') }}">
+                    <i class="fas fa-users" style="color: #4CAF50;"></i>
+                    <span>Daftar Pengguna dan Admin</span>
+                </a>
+            </li>
+
+            <!-- Riwayat Menu -->
+            <li class="{{ Route::is('adminbesar.profile') ? 'active' : '' }}">
+                <a class="nav-link" href="{{ route('adminbesar.profile') }}">
+                    <i class="fas fa-history" style="color: #FFC107;"></i>
+                    <span>Total Riwayat</span>
+                </a>
+            </li>
+
         </ul>
     </aside>
 </div>

@@ -17,11 +17,10 @@
             <div class="card-body">
                 <div class="row">
                     <div class="col-12 text-center">
-                        @if($adminBesar && $adminBesar->foto)
-                            <img src="{{ asset('images/' . $adminBesar->foto) }}" alt="Foto Admin Besar" class="img-fluid rounded-circle" style="width: 150px; height: 150px;">
-                        @else
-                            <img src="{{ asset('assets/templates/adminbesar/img/default-avatar.png') }}" alt="Foto Admin Besar" class="img-fluid rounded-circle" style="width: 150px; height: 150px;">
-                        @endif
+                        <img src="{{ $adminBesar && $adminBesar->foto ? asset('images/' . $adminBesar->foto) : asset('assets/templates/adminbesar/img/default-avatar.png') }}" 
+                            alt="Foto Admin Besar" 
+                            class="img-fluid rounded-circle" 
+                            style="width: 150px; height: 150px;">
                     </div>
                     <div class="col-12 mt-3">
                         <h4>{{ $adminBesar ? $adminBesar->name : 'N/A' }}</h4>

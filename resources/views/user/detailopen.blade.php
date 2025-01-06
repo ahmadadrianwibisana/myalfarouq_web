@@ -173,8 +173,8 @@
                     <h2 class="text-lg font-semibold text-green-700">Satuan</h2>
                     <p class="text-xl font-bold text-gray-800">Rp {{ number_format($open_trips->harga, 0, ',', '.') }}</p>
                     <p class="text-sm text-gray-700">BERLAKU UNTUK KERERANGKATAN :</p>
-                    <p class="text-sm text-gray-700">DUMAI, BENGKALIS, PEKANBARU, SUMATERA BARAT</p>
-                    <p class="text-sm text-gray-700">SELAIN KOTA TERTERA HARGA AKAN DISESUAIKAN</p>
+                    <p class="text-sm text-gray-700">RIAU, KEPRI, JAMBI, SUMATERA BARAT</p>
+                    <p class="text-sm text-gray-700">SELAIN PROVINSI TERTERA HARGA AKAN DISESUAIKAN</p>
                 </div>
 
                 <!-- Form Pemesanan -->
@@ -187,6 +187,11 @@
                         <button id="increase" type="button" class="bg-gray-200 text-gray-600 px-2 py-1 rounded-r">+</button>
                     </div>
                     <input type="hidden" name="jumlah_peserta" id="jumlah_peserta" value="1">
+                    <!-- Input untuk star point -->
+                    <div class="mt-4">
+                        <label for="star_point" class="text-lg font-semibold text-green-700">Lokasi Keberangkatan</label>
+                        <input type="text" name="star_point" id="star_point" class="border rounded px-2 py-1 w-full" required>
+                    </div>
                     <div class="mt-4">
                         <h2 class="text-lg font-semibold text-green-700">Harga Total</h2>
                         <p id="totalPrice" class="text-xl font-bold text-gray-800">Rp {{ number_format($open_trips->harga, 0, ',', '.') }}</p>

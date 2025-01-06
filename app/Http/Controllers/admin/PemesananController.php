@@ -80,6 +80,7 @@ class PemesananController extends Controller
             ],
             'tanggal_pemesanan' => 'required|date',
             'jumlah_peserta' => 'required_if:trip_type,open_trip|integer|min:1', // Validasi hanya untuk open_trip
+            'star_point' => 'required_if:trip_type,open_trip|string|max:255', // Validasi star_point untuk open_trip
         ]);
     
         if ($validator->fails()) {
@@ -121,6 +122,16 @@ class PemesananController extends Controller
             $privateTrip = PrivateTrip::findOrFail($request->trip_id);
             $totalPembayaran = $privateTrip->harga;
         }
+        $starPoint = null; // Inisialisasi star_point
+        if ($request->trip_type === 'open_trip') {
+            $openTrip = OpenTrip::findOrFail($request->trip_id);
+            $totalPembayaran = $openTrip->harga * $request->jumlah_peserta;
+            $starPoint = $request->star_point; // Ambil star_point dari input
+        } elseif ($request->trip_type === 'private_trip') {
+            $privateTrip = PrivateTrip::findOrFail($request->trip_id);
+            $totalPembayaran = $privateTrip->harga;
+            $starPoint = $privateTrip->star_point; // Ambil star_point dari private trip
+        }
     
         // Simpan data pemesanan baru ke dalam database
         $pemesanans = Pemesanan::create([
@@ -133,6 +144,7 @@ class PemesananController extends Controller
             'total_pembayaran' => $totalPembayaran,
             'tour_gate' => null, // Set tour_gate to null by default
             'jumlah_peserta' => $request->trip_type === 'open_trip' ? $request->jumlah_peserta : null, // Simpan jumlah peserta jika trip_type adalah open_trip
+            'star_point' => $starPoint, // Simpan star_point
     ]);
 
     // Jika trip_type adalah private_trip, ambil jumlah peserta dari private trip
@@ -215,6 +227,7 @@ public function show($id)
             'alasan_batal' => 'nullable|string|max:255',
             'tour_gate' => 'nullable|string|max:255',
             'jumlah_peserta' => 'required_if:trip_type,open_trip|integer|min:1', // Validasi jumlah peserta
+            'star_point' => 'required_if:trip_type,open_trip|string|max:255', // Validasi star_point untuk open_trip
         ]);
     
         if ($validator->fails()) {
@@ -234,7 +247,7 @@ public function show($id)
             $totalPembayaran = $privateTrip->harga;
         }
 
-            // Kembalikan kuota open trip yang lama jika trip_type adalah open_trip
+        // Kembalikan kuota open trip yang lama jika trip_type adalah open_trip
     if ($pemesanan->trip_type === 'open_trip') {
         $oldOpenTrip = OpenTrip::findOrFail($pemesanan->open_trip_id);
         $oldOpenTrip->kuota += $pemesanan->jumlah_peserta; // Kembalikan kuota
@@ -259,6 +272,7 @@ public function show($id)
             'alasan_batal' => $alasan_batal,
             'tour_gate' => $request->tour_gate, // Update tour_gate
             'jumlah_peserta' => $request->trip_type === 'open_trip' ? $request->jumlah_peserta : null, // Update jumlah peserta
+            'star_point' => $request->trip_type === 'open_trip' ? $request->star_point: null, // Update jumlah peserta
         ]);
 
 

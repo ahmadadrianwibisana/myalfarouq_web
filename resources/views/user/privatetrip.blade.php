@@ -6,6 +6,7 @@
     <title>MyAlfarouq - Web</title>
     <meta name="description" content="" />
     <meta name="keywords" content="" />
+    <meta http-equiv="X-Frame-Options" content="DENY">
 
     <!-- Favicons -->
     <link href="{{ asset('assets/user/img/logo.png') }}" rel="icon" />
@@ -70,22 +71,21 @@
     </div>
   </header>
   <main class="main">
-    <!-- Page Title -->
-    <div class="page-title dark-background" style="background-image: url('{{ asset('assets/user/img/background.png') }}')">
-        <div class="container position-relative">
-            <h1>Private Trip</h1>
-            <h2>Alfarouq Travel</h2>
-            <nav class="breadcrumbs">
-                <ol>
-                    <li><a href="{{ route('user.home') }}">Home</a></li>
-                    <li class="current">Private Trip</li>
-                </ol>
-            </nav>
-        </div>
+   <!-- Page Title -->
+<div class="page-title dark-background" style="background-image: url('{{ asset('assets/user/img/background.png') }}')">
+    <div class="container position-relative">
+        <h1>Private Trip</h1>
+        <h2>Alfarouq Travel</h2>
+        <nav class="breadcrumbs">
+            <ol>
+                <li><a href="{{ route('user.home') }}">Home</a></li>
+                <li class="current">Private Trip</li>
+            </ol>
+        </nav>
     </div>
-    <!-- End Page Title -->
+</div>
+<!-- End Page Title -->
 
-   <!-- Get A Quote Section -->
 <!-- Get A Quote Section -->
 <section id="get-a-quote" class="get-a-quote section">
     <div class="container">
@@ -93,36 +93,40 @@
             <div class="col-lg-5 quote-bg" style="background-image:url('{{ asset('assets/user/img/private.jpg') }}')"></div>
 
             <div class="col-lg-7">
-                <form id="privateTripForm" class="php-email-form">
-                    <h2>PENDAFTARAN PRIVATE TRIP</h2>
-                    <input type="hidden" id="no_telepon" value="{{ $user->no_telepon }}" />
-                    <input type="hidden" id="nama_user" value="{{ $user->name }}" />
-                    <div class="row gy-4">
-                        <div class="col-12">
-                            <input type="text" id="nama_trip" class="form-control" value="Private Trip" readonly required />
+                <h2>PENDAFTARAN PRIVATE TRIP</h2>
+                @if($privateTrips->where('status', 'pending')->isNotEmpty())
+                    <p class="alert alert-warning">Anda masih memiliki pengajuan private trip yang belum disetujui. Silakan tunggu hingga pengajuan Anda diproses.</p>
+                @else
+                    <form id="privateTripForm" class="php-email-form">
+                        <input type="hidden" id="no_telepon" value="{{ $user->no_telepon }}" />
+                        <input type="hidden" id="nama_user" value="{{ $user->name }}" />
+                        <div class="row gy-4">
+                            <div class="col-12">
+                                <input type="text" id="nama_trip" class="form-control" value="Private Trip" readonly required />
+                            </div>
+                            <div class="col-12">
+                                <input type="text" id="destinasi" class="form-control" placeholder="Masukkan Destinasi" required />
+                            </div>
+                            <div class="col-12">
+                                <input type="date" id="tanggal_pergi" class="form-control" required />
+                            </div>
+                            <div class="col-12">
+                                <input type="date" id="tanggal_kembali" class="form-control" required />
+                            </div>
+                            <div class="col-12">
+                                <input type="text" id="star_point" class="form-control" placeholder="Masukkan Starting Point" required />
+                            </div>
+                            <div class="col-12">
+                                <input type="number" id="jumlah_peserta" class="form-control" placeholder="Masukkan Jumlah Peserta" required />
+                            </div>
+                            <div class="col-12 text-center">
+                                <button type="button" class="btn btn-primary" onclick="sendWhatsAppMessage()">
+                                    <i class="fas fa-paper-plane"></i> Kirim Pengajuan
+                                </button>
+                            </div>
                         </div>
-                        <div class="col-12">
-                            <input type="text" id="destinasi" class="form-control" placeholder="Masukkan Destinasi" required />
-                        </div>
-                        <div class="col-12">
-                            <input type="date" id="tanggal_pergi" class="form-control" required />
-                        </div>
-                        <div class="col-12">
-                            <input type="date" id="tanggal_kembali" class="form-control" required />
-                        </div>
-                        <div class="col-12">
-                            <input type="text" id="star_point" class="form-control" placeholder="Masukkan Starting Point" required />
-                        </div>
-                        <div class="col-12">
-                            <input type="number" id="jumlah_peserta" class="form-control" placeholder="Masukkan Jumlah Peserta" required />
-                        </div>
-                        <div class="col-12 text-center">
-                            <button type="button" class="btn btn-primary" onclick="sendWhatsAppMessage()">
-                                <i class="fas fa-paper-plane"></i> Kirim Pengajuan
-                            </button>
-                        </div>
-                    </div>
-                </form>
+                    </form>
+                @endif
                 <!-- Success Message -->
                 <div id="successMessage" class="alert alert-success mt-3" style="display: none;">
                     Data telah berhasil dikirim!
@@ -132,10 +136,48 @@
     </div>
 </section>
 
+<!-- Daftar Private Trip -->
+<section id="private-trips" class="private-trips section">
+    <div class="container">
+        <h2>Daftar Private Trip Anda</h2>
+        <div class="row">
+            @if($privateTrips->isEmpty())
+                <p>Tidak ada private trip yang terdaftar.</p>
+            @else
+                @foreach($privateTrips as $trip) <!-- Corrected line -->
+                    <div class="col-md-4">
+                        <div class="trip-card">
+                            <h3>{{ $trip->nama_trip }}</h3>
+                            <p>Destinasi: {{ $trip->destinasi }}</p>
+                            <p>Tanggal Pergi: {{ $trip->tanggal_pergi }}</p>
+                            <p>Tanggal Kembali: {{ $trip->tanggal_kembali }}</p>
+                            <p>Jumlah Peserta: {{ $trip->jumlah_peserta }}</p>
+                            <p>Status: {{ ucfirst($trip->status) }}</p>
+                            <a href="{{ route('user.detailPrivateTrip', $trip->id) }}" class="btn btn-primary">Detail</a>
+                             <!-- Tombol "Trip Saya" hanya muncul jika status disetujui -->
+                             @if($trip->status === 'disetujui')
+                                <a href="{{ route('user.tripsaya') }}" class="btn btn-secondary">Trip Saya</a>
+                            @endif
+                        </div>
+                    </div>
+                @endforeach
+            @endif
+        </div>
+    </div>
+</section>
+
 <script>
     function sendWhatsAppMessage() {
+        // Check if the user has a pending private trip
+        const hasPendingTrip = @json($privateTrips->where('status', 'pending')->isNotEmpty());
+
+        if (hasPendingTrip) {
+            alert('Anda masih memiliki pengajuan private trip yang belum disetujui. Silakan tunggu hingga pengajuan Anda diproses.');
+            return; // Prevent sending the message
+        }
+
         // Get the values from the form
-        const namaUser    = document.getElementById('nama_user').value;
+        const namaUser  = document.getElementById('nama_user').value;
         const noTelepon = document.getElementById('no_telepon').value;
         const namaTrip = document.getElementById('nama_trip').value; // This will always be "Private Trip"
         const destinasi = document.getElementById('destinasi').value;
@@ -146,7 +188,7 @@
 
         // Construct the WhatsApp message
         const message = `*Pendaftaran Private Trip*\n\n` +
-                        `Nama User: ${namaUser   }\n` +
+                        `Nama User: ${namaUser }\n` +
                         `No Telepon: ${noTelepon}\n` +
                         `Nama Trip: ${namaTrip}\n` +
                         `Destinasi: ${destinasi}\n` +
@@ -174,10 +216,7 @@
             successMessage.style.display = 'none';
         }, 5000); // Hide after 5 seconds
     }
-</script>
-
-
-    <!-- /Get A Quote Section -->
+</script> 
 </main>
 
     <footer id="footer" class="footer dark-background">

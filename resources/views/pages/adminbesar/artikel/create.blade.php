@@ -52,9 +52,26 @@
 
                             <div class="form-group">
                                 <label for="image">Gambar Artikel</label>
-                                <input id="image" type="file" class="form-control" name="image[]" accept="image/*" multiple>
-                                <small class="form-text text-muted">Format gambar yang diizinkan: JPG, PNG.</small>
+                                <div id="image-container">
+                                    <input id="image" type="file" class="form-control" name="image[]" accept="image/*" multiple>
+                                    <small class="form-text text-muted">Format gambar yang diizinkan: JPG, PNG.</small>
+                                </div>
+                                <button type="button" class="btn btn-secondary mt-2" id="add-image">Tambah Gambar</button>
                             </div>
+
+                            <script>
+                                document.getElementById('add-image').addEventListener('click', function() {
+                                    // Buat elemen input file baru
+                                    var newInput = document.createElement('input');
+                                    newInput.type = 'file';
+                                    newInput.className = 'form-control mt-2';
+                                    newInput.name = 'image[]'; // Pastikan nama tetap sama untuk array
+                                    newInput.accept = 'image/*'; // Hanya menerima gambar
+
+                                    // Tambahkan input baru ke dalam container
+                                    document.getElementById('image-container').appendChild(newInput);
+                                });
+                            </script>
                         </div>
                     </div>
 

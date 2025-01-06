@@ -39,11 +39,11 @@
                         <input type="hidden" name="user_id" value="{{ $pemesanan->user_id }}">
                     </div>
                     <div class="form-group">
-    <label for="trip_type">Tipe Trip</label>
-    <input type="text" id="trip_type" class="form-control" value="{{ $pemesanan->trip_type == 'open_trip' ? 'Open Trip' : 'Private Trip' }}" disabled>
-    <input type="hidden" name="trip_type" value="{{ $pemesanan->trip_type }}">
-    <div class="invalid-feedback">Kolom ini harus diisi!</div>
-</div>
+                        <label for="trip_type">Tipe Trip</label>
+                        <input type="text" id="trip_type" class="form-control" value="{{ $pemesanan->trip_type == 'open_trip' ? 'Open Trip' : 'Private Trip' }}" disabled>
+                        <input type="hidden" name="trip_type" value="{{ $pemesanan->trip_type }}">
+                        <div class="invalid-feedback">Kolom ini harus diisi!</div>
+                    </div>
 
                     <div class="form-group">
                         <label for="trip_id">Trip</label>
@@ -79,7 +79,13 @@
                             <div class="text-danger">{{ $message }}</div>
                         @enderror
                     </div>
-
+                    <div class="form-group" id="star_point_field" style="display: {{ $pemesanan->trip_type === 'open_trip' ? 'block' : 'none' }};">
+                        <label for="star_point">Star Point</label>
+                        <input type="text" name="star_point" id="star_point" class="form-control" value="{{ old('star_point', $pemesanan->star_point) }}" required>
+                        @error('star_point')
+                            <div class="text-danger">{{ $message }}</div>
+                        @enderror
+                    </div>
                     <div class="form-group">
                         <label for="tour_gate">Tour Gate</label>
                         <input type="text" id="tour_gate" name="tour_gate" class="form-control" value="{{ old('tour_gate', $pemesanan->tour_gate) }}" placeholder="Masukkan Tour Gate">
@@ -115,9 +121,11 @@
     </section>
 </div>
 
-<script>document.addEventListener("DOMContentLoaded", function() {
+<script>
+document.addEventListener("DOMContentLoaded", function() {
     const tripTypeInput = document.querySelector('input[name="trip_type"]');
     const jumlahPesertaField = document.getElementById('jumlah_peserta_field');
+    const starPointField = document.getElementById('star_point_field');
     const statusSelect = document.getElementById('status');
     const alasanBatalContainer = document.getElementById('alasan_batal_container');
 
@@ -130,8 +138,10 @@
 
         if (tripType === 'open_trip') {
             jumlahPesertaField.style.display = 'block'; // Tampilkan input jumlah peserta
+            starPointField.style.display = 'block'; // Tampilkan input star point
         } else {
             jumlahPesertaField.style.display = 'none'; // Sembunyikan input jumlah peserta
+            starPointField.style.display = 'none'; // Sembunyikan input star point
         }
     }
 

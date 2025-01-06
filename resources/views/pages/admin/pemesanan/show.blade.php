@@ -88,6 +88,7 @@
                                 <p><strong>Harga per Peserta:</strong> Rp. {{ number_format($tripDetails->harga, 2, ',', '.') }}</p>
                                 <p><strong>Lama Keberangkatan:</strong> {{ $tripDetails->lama_keberangkatan ?? 'N/A' }}</p>
                                 <p><strong>Kuota:</strong> {{ $tripDetails->kuota ?? 'N/A' }}</p>
+                                <p><strong>Star Point:</strong> {{ $pemesanan->star_point ?? 'N/A' }}</p> <!-- Menampilkan star point -->
                                 <p><strong>Jumlah Peserta:</strong> {{ $pemesanan->jumlah_peserta ?? 'N/A' }}</p> <!-- Menampilkan jumlah peserta -->
                             @elseif ($pemesanan->trip_type == 'private_trip')
                                 <p><strong>Destinasi:</strong> {{ $tripDetails->destinasi ?? 'N/A' }}</p>

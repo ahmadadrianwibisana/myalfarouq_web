@@ -70,49 +70,46 @@
   </header>
 
   <main class="main">
-      <!-- Page Title -->
-      <div
-        class="page-title dark-background"
-        data-aos="fade"
-        style="background-image: url('{{ asset('assets/img/background.png') }}')">
+    <!-- Page Title -->
+    <div class="page-title dark-background" data-aos="fade" style="background-image: url('{{ asset('assets/img/background.png') }}')">
         <div class="container position-relative">
-          <h1>PAKET OPEN TRIP</h1>
-          <h2>Alfarouq Travel</h2>
-          <nav class="breadcrumbs">
-            <ol>
-              <li><a href="index.html">Home</a></li>
-              <li class="current">Open Trip</li>
-            </ol>
-          </nav>
+            <h1>PAKET OPEN TRIP</h1>
+            <h2>Alfarouq Travel</h2>
+            <nav class="breadcrumbs">
+                <ol>
+                    <li><a href="index.html">Home</a></li>
+                    <li class="current">Open Trip</li>
+                </ol>
+            </nav>
         </div>
-      </div>
-      <!-- End Page Title -->
+    </div>
+    <!-- End Page Title -->
 
- 
-      <section id="featured-services" class="featured-services section" style="background-color: #f8f9fa; padding: 50px 0">
-    <div class="container">
-        <form action="{{ route('opentrip') }}" method="GET" class="form-search d-flex align-items-center justify-content-center mb-3 p-4" style="background-color: white; border-radius: 10px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
-            <ul class="search-options d-flex gap-3 list-unstyled">
-                <li>
-                    <input type="text" name="search" class="form-control search-input" placeholder="Cari Open Trip...." />
-                </li>
-                <li class="form-group">
-                    <select id="destination" name="destination" class="form-select">
-                        <option value="*">Semua Destinasi</option>
-                        @foreach($destinations as $destination)
-                            <option value="{{ $destination }}">{{ $destination }}</option>
-                        @endforeach
-                    </select>
-                </li>
-                <li class="form-group">
-                    <select id="duration" name="duration" class="form-select">
-                        <option value="*">Semua Durasi</option>
-                        @foreach($durations as $duration)
-                            <option value="{{ $duration }}">{{ $duration }}</option>
-                        @endforeach
-                    </select>
-                </li>
+    <section id="featured-services" class="featured-services section" style="background-color: #f8f9fa; padding: 50px 0">
+        <div class="container">
+            <form action="{{ route('opentrip') }}" method="GET" class="form-search d-flex align-items-center justify-content-center mb-3 p-4" style="background-color: white; border-radius: 10px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+                <ul class="search-options d-flex gap-3 list-unstyled">
+                    <li>
+                        <input type="text" name="search" class="form-control search-input" placeholder="Cari Open Trip...." />
+                    </li>
+                    <li class="form-group">
+                        <select id="destination" name="destination" class="form-select">
+                            <option value="*">Semua Destinasi</option>
+                            @foreach($destinations as $destination)
+                                <option value="{{ $destination }}">{{ $destination }}</option>
+                            @endforeach
+                        </select>
+                    </li>
+                    <li class="form-group">
+                        <select id="duration" name="duration" class="form-select">
+                            <option value="*">Semua Durasi</option>
+                            @foreach($durations as $duration)
+                                <option value="{{ $duration }}">{{ $duration }}</option>
+                            @endforeach
+                        </select>
+                    </li>
                     <button type="submit" class="btn btn-success btn-search">
+                        <i class="fas ```html
                         <i class="fas fa-search"></i> Search
                     </button>
                 </li>
@@ -126,43 +123,43 @@
     <div class="isotope-layout" data-default-filter="*" data-layout="masonry" data-sort="original-order">
         <!-- Section Filter -->
         <ul class="portfolio-filters isotope-filters" data-aos="fade-up" data-aos-delay="100">
-            <li data-filter="*" class="filter-active">Semua Paket</li>
-            @foreach($destinations as $destination)
-                <li data-filter=".filter-{{ strtolower(str_replace(' ', '-', $destination)) }}">{{ $destination }}</li>
-            @endforeach
         </ul>
 
-      <div class="container">
-        <div class="row gy-4 isotope-container">
-          @foreach($open_trips as $open_trip)
-            <div
-              class="col-lg-4 col-md-6 filter-{{ $open_trip->destinasi }} {{ $open_trip->lama_keberangkatan }}"
-              data-aos="fade-up"
-              data-aos-delay="100">
-              <div class="card">
-                <div class="card-img">
-                  <img
-                    src="{{ asset('open_trip_images/' . $open_trip->image) }}"
-                    alt="Tour Image"
-                    class="img-fluid" />
-                </div>
-                <h3>{{ $open_trip->nama_paket }}</h3>
-                <p>
-                  <i class="bi bi-clock icon-clock"></i> {{ $open_trip->tanggal_berangkat }} - {{ $open_trip->tanggal_pulang }}<br />
-                  <i class="bi bi-geo-alt icon-location"></i> {{ $open_trip->destinasi }}
-                </p>
-                <a href="{{ route('detailopen', $open_trip->id) }}" class="btn-detail">
-                  <span>Detail</span>
-                </a>
-              </div>
+        <div class="container">
+            <div class="row gy-4 isotope-container">
+                @foreach($open_trips as $open_trip)
+                    <div class="col-lg-4 col-md-6 filter-{{ strtolower(str_replace(' ', '-', $open_trip->destinasi)) }} {{ strtolower(str_replace(' ', '-', $open_trip->lama_keberangkatan)) }}"
+                         data-aos="fade-up" data-aos-delay="100">
+                        <div class="card">
+                            <div class="card-img">
+                                <img src="{{ asset('open_trip_images/' . $open_trip->image) }}" alt="Tour Image" class="img-fluid" />
+                            </div>
+                            <h3>{{ $open_trip->nama_paket }}</h3>
+                            <p>                
+                                <i class="bi bi-clock icon-clock"></i> 
+                                {{ \Carbon\Carbon::parse($open_trip->tanggal_berangkat)->format('d F Y') }} -
+                                {{ \Carbon\Carbon::parse($open_trip->tanggal_pulang)->format('d F Y') }}<br />
+                                <i class="bi bi-geo-alt icon-location"></i> {{ $open_trip->destinasi }}<br />
+                                <i class="bi bi-currency-dollar icon-price"></i> 
+                                <strong>Rp {{ number_format($open_trip->harga, 2, ',', '.') }}</strong> <!-- Price displayed below -->
+                            </p>
+                            <a href="{{ route('detailopen', $open_trip->id) }}" class="btn-detail">
+                                <span>Detail</span>
+                            </a>
+                        </div>
+                    </div>
+                @endforeach
             </div>
-          @endforeach
         </div>
-      </div>
     </div>
-  </section>
+</section>
 
-    </main>
+<!-- Pagination -->
+<div class="pagination-container">
+    {{ $open_trips->links() }} <!-- Laravel pagination links -->
+</div>
+
+</main>
     <footer id="footer" class="footer dark-background">
       <div class="container footer-top">
         <div class="row gy-4">

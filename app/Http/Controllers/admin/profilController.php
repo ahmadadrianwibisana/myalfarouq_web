@@ -32,12 +32,12 @@ class profilController extends Controller
     public function update(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'foto' => 'nullable|image|mimes:jpeg,png,jpg|max:5120', // Validation for photo
+            'foto' => 'nullable|image|mimes:jpeg,png,jpg|max:10240', // Validasi untuk foto
             'name' => 'required|string|max:255',
             'username' => 'required|string|max:255',
             'email' => 'required|email|max:255',
             'no_wa' => 'required|string|max:15',
-           'password' => 'required|min:8|max:20',
+            'password' => 'nullable|min:8|max:20', // Ubah menjadi nullable
         ]);
     
         if ($validator->fails()) {
