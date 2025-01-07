@@ -296,6 +296,8 @@ Route::group(['middleware' => 'web'], function () {
     Route::get('/profile/edit', [UserController::class, 'editProfile'])->name('user.editProfile');
     Route::post('/profile/update', [UserController::class, 'updateProfile'])->name('user.updateProfile');
 
+    Route::get('/user/completed-trips', [UserController::class, 'completedTrips'])->name('user.completed-trips');
+
     Route::post('/user/logout', [AuthController::class, 'user_logout'])->name('user.logout');
 
 })->middleware('web');

@@ -132,9 +132,6 @@
             placeholder="Password" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Password'">
             </div>
             <div class="remember-forgot">
-                <label>
-                    <input type="checkbox" name="remember"> Ingat Saya
-                </label>
                 <a href="{{ route('password.request') }}">Lupa Password?</a>
             </div>
             <button type="submit" class="btn btn-primary">Login</button>

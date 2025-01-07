@@ -96,6 +96,7 @@
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Ubah Password</label>
+                        <p><strong>Biarkan kosong jika Anda tidak ingin mengubah password.</strong></p>
                         <input type="password" class="form-control" name="password" placeholder="Masukkan password baru">
                         @error('password')
                             <div class="text-danger">{{ $message }}</div>

@@ -216,12 +216,12 @@ body {
                                 <span class="ms-2">{{ $pemesanan->jumlah_peserta }} Orang</span>
                             </div>
                             <div class="row">
-                                <div class="col-6">
-                                    <p>
-                                        <strong>Star Point</strong><br/>
-                                        {{ $pemesanan->openTrip->star_point ?? $pemesanan->privateTrip->star_point ?? 'N/A' }}
-                                    </p>
-                                </div>
+                            <div class="col-6">
+                                <p>
+                                    <strong>Star Point</strong><br/>
+                                    {{ $pemesanan->star_point ?? 'N/A' }} <!-- Display the star point from the booking -->
+                                </p>
+                            </div>
                                 <div class="col-6">
                                     <p>
                                         <strong>Destinasi</strong><br/>
@@ -305,6 +305,10 @@ body {
                 </div>
             @endforeach
         @endif
+         <!-- Button to navigate to completed trips -->
+         <div class="text-center mt-4">
+            <a href="{{ route('user.completed-trips') }}" class="btn btn-primary">Lihat Riwayat Trip</a>
+        </div>
     </div>
 </section>
 

@@ -142,6 +142,7 @@
             </a>
             <div class="dropdown-content">
                 <a href="{{ route('user.profile') }}">Profil User</a>
+                <a href="{{ route('user.completed-trips') }}">Riwayat Trip Selesai</a>
                 <a href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Logout</a>
             </div>
         </div>

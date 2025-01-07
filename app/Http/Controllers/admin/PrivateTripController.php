@@ -120,7 +120,6 @@ public function store(Request $request)
     $users = User::all(['id', 'name', 'no_telepon']);
     return view('pages.admin.private_trip.edit', compact('privateTrip', 'users'));
 }
-
 public function update(Request $request, $id)
 {
     $privateTrip = PrivateTrip::findOrFail($id);

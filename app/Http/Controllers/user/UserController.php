@@ -328,50 +328,37 @@ class UserController extends Controller
     // Halaman Trip Saya
     public function tripsaya()
     {
-        // Ensure the user is authenticated
+        // Pastikan pengguna sudah login
         if (!auth()->check()) {
             Alert::error('Gagal!', 'Anda harus login terlebih dahulu');
             return redirect()->route('login');
         }
     
-       // Fetch all bookings for the authenticated user with related open trips and private trips, ordered by booking date
+        // Ambil semua pemesanan untuk pengguna yang terautentikasi, hanya yang belum selesai
         $pemesanans = Pemesanan::with(['openTrip', 'privateTrip'])
             ->where('user_id', auth()->id())
-            ->orderBy('tanggal_pemesanan', 'desc') // Order by booking date
-            ->get(); // Fetch all records
-
-
-        // Fetch past bookings for the authenticated user
-        $riwayat = Pemesanan::with(['openTrip', 'privateTrip'])
-        ->where('user_id', auth()->id())
-        ->where(function($query) {
-            // Include bookings that are confirmed and have passed the trip dates
-            $query->where('status', 'terkonfirmasi')
-                ->where(function($subQuery) {
-                    $subQuery->where('tanggal_pemesanan', '<', now())
-                                ->orWhereHas('openTrip', function($q) {
-                                    $q->where('tanggal_pulang', '<', now());
-                                })
-                                ->orWhereHas('privateTrip', function($q) {
-                                    $q->where('tanggal_kembali', '<', now());
-                                });
-                });
-        })
-        ->orWhere(function($query) {
-            // Include canceled bookings
-            $query->where('status', 'dibatalkan');
-        })
-        ->orderBy('tanggal_pemesanan', 'desc') // Order by booking date
-        ->get();
-
-        // Fetch limited bookings for the footer (limit to 5 records)
+            ->where(function($query) {
+                $query->where('status', 'pending') // Hanya pemesanan yang masih pending
+                    ->orWhere(function($subQuery) {
+                        $subQuery->where('status', 'terkonfirmasi') // Termasuk pemesanan yang terkonfirmasi
+                            ->whereHas('openTrip', function($q) {
+                                $q->where('tanggal_pulang', '>=', now()); // Trip yang belum selesai
+                            })
+                            ->orWhereHas('privateTrip', function($q) {
+                                $q->where('tanggal_kembali', '>=', now()); // Trip yang belum selesai
+                            });
+                    });
+            })
+            ->orderBy('tanggal_pemesanan', 'desc') // Urutkan berdasarkan tanggal pemesanan
+            ->get(); // Ambil semua record
+    
+        // Ambil pemesanan terbatas untuk footer (maksimal 5 record)
         $footerPemesanans = Pemesanan::with(['openTrip', 'privateTrip'])
-        ->where('user_id', auth()->id())
-        ->take(5) // Limit to 5 records for the footer
-        ->get();
-
-        
-        return view('user.tripsaya', compact('pemesanans','footerPemesanans','riwayat'));
+            ->where('user_id', auth()->id())
+            ->take(5) // Batasi menjadi 5 record untuk footer
+            ->get();
+    
+        return view('user.tripsaya', compact('pemesanans', 'footerPemesanans'));
     }
 
     // Ubah nama fungsi dari cancelBooking menjadi batalPemesanan
@@ -386,16 +373,17 @@ class UserController extends Controller
                 return response()->json(['error' => 'Unauthorized action.'], 403);
             }
     
-            // Jika pemesanan adalah open trip, kembalikan kuota
+            // Update the status to 'dibatalkan'
+            $pemesanan->status = 'dibatalkan';
+            $pemesanan->save();
+    
+            // If the booking is an open trip, return the quota
             if ($pemesanan->trip_type === 'open_trip') {
                 $openTrip = OpenTrip::findOrFail($pemesanan->open_trip_id);
-                $openTrip->kuota += $pemesanan->jumlah_peserta; // Kembalikan kuota
-                $openTrip->save(); // Simpan perubahan
+                $openTrip->kuota += $pemesanan->jumlah_peserta; // Return the quota
+                $openTrip->save(); // Save changes
             }
     
-            // Delete the booking
-            $pemesanan->delete();
-        
             // Return a JSON response
             return response()->json(['success' => true, 'message' => 'Pemesanan berhasil dibatalkan!']);
         } catch (\Exception $e) {
@@ -403,7 +391,6 @@ class UserController extends Controller
             return response()->json(['error' => 'Terjadi kesalahan saat membatalkan pemesanan.'], 500);
         }
     }
-
      // Method for detail pemesanan
     public function detailPemesanan($id)
     {
@@ -790,6 +777,51 @@ class UserController extends Controller
     
         Alert::success('Berhasil!', 'Profil Anda berhasil diperbarui!');
         return redirect()->route('user.profile');
+    }
+
+    public function completedTrips()
+    {
+        // Ensure the user is authenticated
+        if (!auth()->check()) {
+            Alert::error('Gagal!', 'Anda harus login terlebih dahulu');
+            return redirect()->route('login');
+        }
+    
+        // Fetch completed trips for the authenticated user
+        $completedTrips = Pemesanan::with(['openTrip', 'privateTrip', 'pembayaran', 'dataAdministrasi'])
+            ->where('user_id', auth()->id())
+            ->where('status', 'terkonfirmasi') // Only confirmed trips
+            ->whereHas('pembayaran', function($query) {
+                $query->where('status_pembayaran', 'success'); // Successful payment
+            })
+            ->whereHas('dataAdministrasi', function($query) {
+                $query->where('status', 'approved'); // Approved administration data
+            })
+            ->where(function($query) {
+                $query->whereHas('openTrip', function($q) {
+                    $q->where('tanggal_pulang', '<', now()); // Open trips that have ended
+                })
+                ->orWhereHas('privateTrip', function($q) {
+                    $q->where('tanggal_kembali', '<', now()); // Private trips that have ended
+                });
+            })
+            ->orderBy('tanggal_pemesanan', 'desc') // Order by booking date
+            ->get();
+    
+        // Fetch canceled trips for the authenticated user
+        $canceledTrips = Pemesanan::with(['openTrip', 'privateTrip'])
+            ->where('user_id', auth()->id())
+            ->where('status', 'dibatalkan') // Canceled trips
+            ->orderBy('tanggal_pemesanan', 'desc') // Order by booking date
+            ->get();
+
+        // Fetch the authenticated user's bookings with related open trips and private trips, limited to 4
+        $pemesanans = Pemesanan::with(['openTrip', 'privateTrip'])
+        ->where('user_id', auth()->id())
+        ->take(5) // Limit to 5 records
+        ->get();
+    
+        return view('user.completed-trips', compact('completedTrips', 'canceledTrips','pemesanans'));
     }
 
 }
