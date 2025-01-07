@@ -298,6 +298,8 @@ Route::group(['middleware' => 'web'], function () {
 
     Route::get('/user/completed-trips', [UserController::class, 'completedTrips'])->name('user.completed-trips');
 
+    Route::get('/download-bukti-pemesanan/{id}', [UserController::class, 'downloadBuktiPemesanan'])->name('user.downloadBuktiPemesanan');
+
     Route::post('/user/logout', [AuthController::class, 'user_logout'])->name('user.logout');
 
 })->middleware('web');

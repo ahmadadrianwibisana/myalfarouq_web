@@ -210,11 +210,14 @@
                 <div class="mt-4">
                     <h2 class="text-lg font-semibold text-green-700">Informasi Tambahan</h2>
                     @if ($pemesanan->trip_type == 'open_trip')
+                        <p><strong>Tanggal Pemesanan</strong> {{ \Carbon\Carbon::parse($pemesanan->tanggal_pemesanan)->format('d F Y') }}</p>
+                        <p><strong>Star Point:</strong> {{ $pemesanan->openTrip->star_point ?? 'N/A' }}</p>
                         <p><strong>Harga per Peserta:</strong> Rp. {{ number_format($pemesanan->openTrip->harga, 0, ',', '.') }}</p>
                         <p><strong>Lama Keberangkatan:</strong> {{ $pemesanan->openTrip->lama_keberangkatan ?? 'N/A' }}</p>
                         <p><strong>Kuota:</strong> {{ $pemesanan->openTrip->kuota ?? 'N/A' }}</p>
                     @elseif ($pemesanan->trip_type == 'private_trip')
-                    <p><strong>Star Point:</strong> {{ $pemesanan->privateTrip->star_point ?? 'N/A' }}</p>
+                        <p><strong>Tanggal Pemesanan:</strong>{{ \Carbon\Carbon::parse($pemesanan->tanggal_pemesanan)->format('d F Y') }}</p>
+                        <p><strong>Star Point:</strong> {{ $pemesanan->privateTrip->star_point ?? 'N/A' }}</p>
                         <p><strong>Harga:</strong> Rp. {{ number_format($pemesanan->privateTrip->harga, 0, ',', '.') }}</p>
                     @endif
                 </div>
@@ -257,6 +260,11 @@
                         <p class="text-danger">Tipe trip tidak dikenali.</p>
                     @endif
                 </div>
+            </div>
+            <div class="mt-4">
+                @if($pemesanan->status === 'terkonfirmasi' && $pembayaran && $pembayaran->status_pembayaran === 'success')
+                    <a href="{{ route('user.downloadBuktiPemesanan', $pemesanan->id) }}" class="btn btn-success">Download Bukti Pemesanan</a>
+                @endif
             </div>
         </div>
     </div>
@@ -313,7 +321,9 @@
             </div>
             <div class="mt-4">
                 @if($pemesanan->status === 'terkonfirmasi')
-                    <a href="{{ route('user.showUploadBuktiPembayaran', $pemesanan->id) }}" class="btn btn-success">Upload Bukti Pembayaran</a>
+                    @if(!$pembayaran || $pembayaran->status_pembayaran !== 'success')
+                        <a href="{{ route('user.showUploadBuktiPembayaran', $pemesanan->id) }}" class="btn btn-success">Upload Bukti Pembayaran</a>
+                    @endif
                 @endif
             </div>
             @if(session('error'))

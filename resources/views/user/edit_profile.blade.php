@@ -18,25 +18,33 @@
     
     <style>
         body {
-            background-color: #6BA292;
-            font-family: Arial, sans-serif;
+            background-color: #E8F5E9; /* Light green background */
+            font-family: 'Arial', sans-serif;
         }
         .profile-header {
-            background-color: #A3C4B8;
-            padding: 10px;
-            font-size: 24px;
+            background-color: #4CAF50; /* Darker green */
+            padding: 15px;
+            font-size: 28px;
             font-weight: bold;
-            color: #000;
+            color: #fff;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
         .form-label {
             font-weight: bold;
-            color: #fff;
+            color: #333;
         }
         .form-control {
             background-color: #fff;
-            border: none;
+            border: 1px solid #ccc;
             border-radius: 5px;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
+            transition: border-color 0.3s;
+        }
+        .form-control:focus {
+            border-color: #4CAF50; /* Focus border color */
+            box-shadow: 0 0 5px rgba(76, 175, 80, 0.5);
         }
         .upload-box {
             background-color: #fff;
@@ -44,25 +52,34 @@
             padding: 20px;
             text-align: center;
             margin-bottom: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
         .upload-box i {
-            font-size: 24px;
-            color: #6BA292;
+            font-size: 40px;
+            color: #4CAF50;
         }
         .upload-box span {
-            color: #6BA292;
+            color: #4CAF50;
             font-weight: bold;
+            display: block;
+            margin-top: 10px;
         }
         .btn-custom {
-            background-color: #2D2D2D;
+            background-color: #4CAF50; /* Button color */
             color: #fff;
             border-radius: 20px;
             padding: 10px 20px;
             border: none;
             font-weight: bold;
+            transition: background-color 0.3s;
         }
         .btn-custom:hover {
-            background-color: #1A1A1A;
+            background-color: #388E3C; /* Darker green on hover */
+        }
+        .text-danger {
+            font-size: 0.9em;
+            margin-top: -10px;
+            margin-bottom: 10px;
         }
     </style>
 </head>
@@ -83,7 +100,7 @@
                     <div class="mb-3">
                         <label class="form-label">Email</label>
                         <input type="email" class="form-control" name="email" value="{{ old('email', $user->email) }}" required>
-                        @error('email')
+                        @error ('email')
                             <div class="text-danger">{{ $message }}</div>
                         @enderror
                     </div>
@@ -96,7 +113,7 @@
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Ubah Password</label>
-                        <p><strong>Biarkan kosong jika Anda tidak ingin mengubah password.</strong></p>
+                        <p><strong>Kosong jika Anda tidak ingin mengubah password.</strong></p>
                         <input type="password" class="form-control" name="password" placeholder="Masukkan password baru">
                         @error('password')
                             <div class="text-danger">{{ $message }}</div>

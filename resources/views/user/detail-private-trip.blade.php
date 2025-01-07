@@ -107,16 +107,6 @@
                     <p class="card-text"><strong>Tanggal Pengajuan:</strong> {{ $privateTrip->tanggal_pengajuan->format('d-m-Y') }}</p>
                     <p class="card-text"><strong>Tanggal Disetujui:</strong> {{ $privateTrip->tanggal_disetujui ? $privateTrip->tanggal_disetujui->format('d-m-Y') : 'Belum disetujui' }}</p>
                     <p class="card-text"><strong>Keterangan Ditolak:</strong> {{ $privateTrip->keterangan_ditolak ?? 'Tidak ada' }}</p>
-
-                    <!-- Display Image -->
-                    @if($privateTrip->image)
-                        <div class="trip-image mb-3">
-                            <img src="{{ asset('private_trip_images/' . $privateTrip->image) }}" alt="{{ $privateTrip->nama_trip }}" class="img-fluid" />
-                        </div>
-                    @else
-                        <p>Tidak ada gambar untuk trip ini.</p>
-                    @endif
-
                     @if($privateTrip->status === 'pending')
                         <div class="action-buttons">
                             <button class="btn btn-warning" onclick="toggleEditForm()">Edit</button>

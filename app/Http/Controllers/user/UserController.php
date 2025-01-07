@@ -16,6 +16,7 @@ use App\Models\Pembayaran;
 use App\Models\DataAdministrasi;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 
 class UserController extends Controller
@@ -678,7 +679,6 @@ class UserController extends Controller
     
         return redirect()->route('user.tripsaya')->with('success', 'Data Administrasi berhasil diperbarui');
     }
-
     public function someOtherMethod()
     {
         // Fetch the authenticated user's bookings with related open trips and private trips, limited to 4
@@ -822,6 +822,25 @@ class UserController extends Controller
         ->get();
     
         return view('user.completed-trips', compact('completedTrips', 'canceledTrips','pemesanans'));
+    }
+
+    public function downloadBuktiPemesanan($id)
+    {
+        $pemesanan = Pemesanan::with(['openTrip', 'privateTrip', 'pembayaran'])->findOrFail($id);
+        
+        // Pastikan pemesanan sudah terkonfirmasi atau selesai
+        if ($pemesanan->status !== 'terkonfirmasi' && $pemesanan->status !== 'selesai') {
+            return redirect()->back()->with('error', 'Hanya pemesanan terkonfirmasi atau selesai yang dapat diunduh.');
+        }
+        
+        // Buat PDF atau format file yang diinginkan
+        $pdf = PDF::loadView('user.bukti-pemesanan', [
+            'pemesanan' => $pemesanan,
+            'pembayaran' => $pemesanan->pembayaran // Pastikan untuk meneruskan pembayaran
+        ]);
+        
+        // Kembalikan file PDF untuk diunduh
+        return $pdf->download('bukti_pemesanan_' . $pemesanan->id . '.pdf');
     }
 
 }
