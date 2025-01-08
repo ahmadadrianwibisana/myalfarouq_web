@@ -147,7 +147,7 @@
               <div class="position-relative">
                 <img src="{{ asset('assets/img/zz.png') }}" class="img-fluid" alt="Profil Image" />
               </div>
-            </div>
+            </div>
 
             <!-- Kolom Teks -->
             <div class="col-lg-6 content" data-aos="fade-up" data-aos-delay="100">
@@ -178,7 +178,7 @@
             <!-- Kolom Gambar untuk Mobile -->
             <div class="col-12 d-flex justify-content-center" data-aos="fade-up" data-aos-delay="200">
                 <div class="position-relative">
-                    <img src="assets/img/profil1.png" class="img-fluid" alt="Profil Image" />
+                    <img src="{{ asset('assets/img/profil1.png') }}"  class="img-fluid" alt="Profil Image" />
                 </div>
             </div>
 
@@ -207,7 +207,7 @@
             <!-- Kolom Gambar untuk Mobile -->
             <div class="col-12 d-flex justify-content-center" data-aos="fade-up" data-aos-delay="200">
                 <div class="position-relative">
-                    <img src="assets/img/zz.png" class="img-fluid" alt="Profil Image" />
+                    <img src="{{ asset('assets/img/zz.png') }}" class="img-fluid" alt="Profil Image" />
                 </div>
             </div>
 

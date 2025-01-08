@@ -56,7 +56,24 @@
         .about {
             margin: 20px 0;
         }
-    </style>
+        .view-count {
+        margin-top: 10px; /* Jarak atas untuk badge */
+        text-align: center; /* Pusatkan teks */
+    }
+    .badge {
+        padding: 8px 12px; /* Padding untuk badge */
+        font-size: 14px; /* Ukuran font */
+        border-radius: 20px; /* Membuat badge bulat */
+        background-color: #276f5f; /* Warna latar belakang badge */
+        color: white; /* Warna teks badge */
+    }
+    .card {
+        transition: transform 0.2s; /* Efek transisi saat hover */
+    }
+    .card:hover {
+        transform: scale(1.05); /* Membesarkan kartu saat hover */
+    }
+</style>
   </head>
 
   <body class="index-page">
@@ -258,6 +275,9 @@
                     <a href="{{ route('detailopen', $open_trip->id) }}" class="btn-detail">
                         <span>Detail</span>
                     </a>
+                    <div class="view-count">
+                      <span class="badge">Telah dilihat: {{ $open_trip->view_count }} kali</span>
+                  </div>
                 </div>
             </div>
         @endforeach

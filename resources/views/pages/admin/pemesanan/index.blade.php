@@ -30,6 +30,8 @@
                                 <th>Tipe Trip</th> 
                                 <th>Nama Trip</th> 
                                 <th>Tanggal Pemesanan</th> 
+                                <th>Tanggal Keberangkatan</th> <!-- Kolom baru -->
+                                <th>Tanggal Kepulangan</th> <!-- Kolom baru -->
                                 <th>Status</th> 
                                 <th>Action</th> 
                             </tr> 
@@ -52,6 +54,20 @@
                                     </td>
                                     <td>{{ date('d M Y, H:i', strtotime($item->tanggal_pemesanan)) }}</td>
                                     <td>
+                                        @if ($item->trip_type == 'open_trip')
+                                            {{ date('d M Y', strtotime($item->openTrip->tanggal_berangkat)) ?? 'N/A' }} <!-- Tanggal keberangkatan -->
+                                        @elseif ($item->trip_type == 'private_trip')
+                                            {{ date('d M Y', strtotime($item->privateTrip->tanggal_pergi)) ?? 'N/A' }} <!-- Tanggal keberangkatan -->
+                                        @endif
+                                    </td>
+                                    <td>
+                                        @if ($item->trip_type == 'open_trip')
+                                            {{ date('d M Y', strtotime($item->openTrip->tanggal_pulang)) ?? 'N/A' }} <!-- Tanggal kepulangan -->
+                                        @elseif ($item->trip_type == 'private_trip')
+                                            {{ date('d M Y', strtotime($item->privateTrip->tanggal_kembali)) ?? 'N/A' }} <!-- Tanggal kepulangan -->
+                                        @endif
+                                    </td>
+                                    <td>
                                         <span class="badge 
                                             @if($item->status == 'pending') badge-warning 
                                             @elseif($item->status == 'terkonfirmasi') badge-success 
@@ -63,19 +79,18 @@
                                     <td> 
                                         <a href="{{ route('admin.pemesanan.show', $item->id) }}" class="badge badge-info">Detail</a> 
                                         <a href="{{ route('admin.pemesanan.edit', $item->id) }}" class="badge badge-warning">Edit</a> 
-                                        <a href="{{ route('admin.pemesanan.delete', $item->id) }}" class="badge badge-danger" data-confirm-delete="true">Hapus</a> 
                                     </td> 
                                 </tr> 
                             @empty 
                                 <tr>
-                                    <td colspan="7" class="text-center">Data Pemesanan Kosong</td> 
+                                    <td colspan="9" class="text-center">Data Pemesanan Kosong</td> 
                                 </tr>
-                            @endforelse 
+                        @endforelse 
                         </tbody>
                     </table> 
 
-                     <!-- Pagination -->
-                     <div class="mt-3 d-flex justify-content-center">
+                    <!-- Pagination -->
+                    <div class="mt-3 d-flex justify-content-center">
                         <!-- Previous Page Link -->
                         @if ($pemesanans->onFirstPage())
                             <span class="page-link disabled box">Sebelumnya</span>

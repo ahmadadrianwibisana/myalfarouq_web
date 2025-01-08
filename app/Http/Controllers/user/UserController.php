@@ -62,9 +62,10 @@ class UserController extends Controller
             ->take(3) // Limit to 3 results for the home page
             ->get();
 
-        // Fetch the authenticated user's bookings with related open trips and private trips, limited to 4
+        // Fetch the authenticated user's bookings with related open trips and private trips, limited to 5
         $pemesanans = Pemesanan::with(['openTrip', 'privateTrip'])
             ->where('user_id', auth()->id())
+            ->orderBy('created_at', 'desc') // Urutkan berdasarkan tanggal pemesanan terbaru
             ->take(5) // Limit to 5 records
             ->get();
 
@@ -106,9 +107,10 @@ class UserController extends Controller
 
         // Fetch the authenticated user's bookings with related open trips and private trips, limited to 5
         $pemesanans = Pemesanan::with(['openTrip', 'privateTrip'])
-            ->where('user_id', auth()->id())
-            ->take(5) // Limit to 5 records
-            ->get();
+        ->where('user_id', auth()->id())
+        ->orderBy('created_at', 'desc') // Urutkan berdasarkan tanggal pemesanan terbaru
+        ->take(5) // Limit to 5 records
+        ->get();
 
         return view('user.opentrip', compact('open_trips', 'destinations', 'durations', 'pemesanans'));
     }
@@ -177,14 +179,26 @@ class UserController extends Controller
     // Method for detail open trip
     public function detailopen($id)
     {
+        // Temukan open trip berdasarkan ID
         $open_trips = OpenTrip::find($id);
-        // Fetch the authenticated user's bookings with related open trips and private trips, limited to 4
-        $pemesanans = Pemesanan::with(['openTrip', 'privateTrip'])
-            ->where('user_id', auth()->id())
-            ->take(5) // Limit to 5 records
-            ->get();
-
-        return view('user.detailopen', compact('open_trips','pemesanans'));
+        
+        if ($open_trips) {
+            // Tambah jumlah view_count
+            $open_trips->incrementViewCount(); 
+            
+            // Fetch the authenticated user's bookings with related open trips and private trips, limited to 5
+            $pemesanans = Pemesanan::with(['openTrip', 'privateTrip'])
+                ->where('user_id', auth()->id())
+                ->orderBy('created_at', 'desc') // Urutkan berdasarkan tanggal pemesanan terbaru
+                ->take(5) // Limit to 5 records
+                ->get();
+            
+            // Kembalikan tampilan detail open trip dengan data yang diperlukan
+            return view('user.detailopen', compact('open_trips', 'pemesanans'));
+        } else {
+            // Handle jika open_trip tidak ditemukan
+            return redirect()->route('opentrip')->with('error', 'Open Trip tidak ditemukan.');
+        }
     }
 
     // Halaman Artikel
@@ -194,18 +208,22 @@ class UserController extends Controller
         $artikels = Artikel::with('images')
             ->orderBy('tanggal_publish', 'desc') // Order by publish date
             ->get(); 
-             // Fetch the authenticated user's bookings with related open trips and private trips
-        $pemesanans = Pemesanan::with(['openTrip', 'privateTrip'])
+    // Fetch the authenticated user's bookings with related open trips and private trips, limited to 5
+    $pemesanans = Pemesanan::with(['openTrip', 'privateTrip'])
         ->where('user_id', auth()->id())
+        ->orderBy('created_at', 'desc') // Urutkan berdasarkan tanggal pemesanan terbaru
+        ->take(5) // Limit to 5 records
         ->get();
+
         return view('user.dokumen',compact('artikels','pemesanans'));
     }
     public function detailArtikel($id)
     {
         $artikel = Artikel::with('images')->find($id);
-        // Fetch the authenticated user's bookings with related open trips and private trips, limited to 4
+        // Fetch the authenticated user's bookings with related open trips and private trips, limited to 5
         $pemesanans = Pemesanan::with(['openTrip', 'privateTrip'])
             ->where('user_id', auth()->id())
+            ->orderBy('created_at', 'desc') // Urutkan berdasarkan tanggal pemesanan terbaru
             ->take(5) // Limit to 5 records
             ->get();
 
@@ -227,9 +245,10 @@ class UserController extends Controller
 
         $privateTrips = PrivateTrip::where('user_id', $user->id)->get(); // Ambil private trip berdasarkan user_id
     
-        // Fetch the user's bookings with related open trips and private trips
+        // Fetch the authenticated user's bookings with related open trips and private trips, limited to 5
         $pemesanans = Pemesanan::with(['openTrip', 'privateTrip'])
             ->where('user_id', auth()->id())
+            ->orderBy('created_at', 'desc') // Urutkan berdasarkan tanggal pemesanan terbaru
             ->take(5) // Limit to 5 records
             ->get();
     
@@ -241,9 +260,10 @@ class UserController extends Controller
     {
         $privateTrip = PrivateTrip::findOrFail($id); // Find the private trip by ID
     
-        // Fetch the authenticated user's bookings with related open trips and private trips
+        // Fetch the authenticated user's bookings with related open trips and private trips, limited to 5
         $pemesanans = Pemesanan::with(['openTrip', 'privateTrip'])
             ->where('user_id', auth()->id())
+            ->orderBy('created_at', 'desc') // Urutkan berdasarkan tanggal pemesanan terbaru
             ->take(5) // Limit to 5 records
             ->get();
     
@@ -302,12 +322,12 @@ class UserController extends Controller
     public function profilKami()
     {
         $user = Auth::user();
-        // Fetch the authenticated user's bookings with related open trips and private trips, limited to 4
+        // Fetch the authenticated user's bookings with related open trips and private trips, limited to 5
         $pemesanans = Pemesanan::with(['openTrip', 'privateTrip'])
             ->where('user_id', auth()->id())
+            ->orderBy('created_at', 'desc') // Urutkan berdasarkan tanggal pemesanan terbaru
             ->take(5) // Limit to 5 records
             ->get();
-
     
         return view('user.profil-kami', compact('pemesanans','user')); // Pass pemesanans to the view
     }
@@ -315,9 +335,10 @@ class UserController extends Controller
     // Halaman Tentang Kami
     public function tentangKami()
     {
-        // Fetch the authenticated user's bookings with related open trips and private trips, limited to 4
+        // Fetch the authenticated user's bookings with related open trips and private trips, limited to 5
         $pemesanans = Pemesanan::with(['openTrip', 'privateTrip'])
             ->where('user_id', auth()->id())
+            ->orderBy('created_at', 'desc') // Urutkan berdasarkan tanggal pemesanan terbaru
             ->take(5) // Limit to 5 records
             ->get();
 
@@ -352,11 +373,12 @@ class UserController extends Controller
             })
             ->orderBy('tanggal_pemesanan', 'desc') // Urutkan berdasarkan tanggal pemesanan
             ->get(); // Ambil semua record
-    
+
         // Ambil pemesanan terbatas untuk footer (maksimal 5 record)
         $footerPemesanans = Pemesanan::with(['openTrip', 'privateTrip'])
             ->where('user_id', auth()->id())
-            ->take(5) // Batasi menjadi 5 record untuk footer
+            ->orderBy('created_at', 'desc') // Urutkan berdasarkan tanggal pemesanan terbaru
+            ->take(5) // Limit to 5 records
             ->get();
     
         return view('user.tripsaya', compact('pemesanans', 'footerPemesanans'));
@@ -401,9 +423,10 @@ class UserController extends Controller
          // Get the payment information
          $pembayaran = $pemesanan->pembayaran; // This will retrieve the related payment record
 
-        // Fetch the authenticated user's bookings with related open trips and private trips, limited to 4
-        $pemesanans = Pemesanan::with(['openTrip', 'privateTrip'])
+            // Fetch the authenticated user's bookings with related open trips and private trips, limited to 5
+            $pemesanans = Pemesanan::with(['openTrip', 'privateTrip'])
             ->where('user_id', auth()->id())
+            ->orderBy('created_at', 'desc') // Urutkan berdasarkan tanggal pemesanan terbaru
             ->take(5) // Limit to 5 records
             ->get();
 
@@ -419,23 +442,28 @@ class UserController extends Controller
         if ($pemesanan->trip_type !== 'open_trip') {
             return redirect()->route('user.tripsaya')->with('error', 'Hanya pemesanan open trip yang dapat diedit.');
         }
-
+    
         // Cek status pemesanan
         if ($pemesanan->status !== 'pending') {
             return redirect()->route('user.tripsaya')->with('error', 'Pemesanan tidak dapat diedit karena statusnya sudah ' . ucfirst($pemesanan->status) . '.');
         }
     
-        // Ambil semua open trips untuk dropdown
-        $openTrips = OpenTrip::all();
-
-        // Fetch the authenticated user's bookings with related open trips and private trips, limited to 4
+        // Ambil semua open trips yang belum berangkat atau belum selesai dan kuota lebih dari 0
+        $openTrips = OpenTrip::where(function($query) {
+            $query->where('tanggal_berangkat', '>=', now()) // Trip yang belum berangkat
+                  ->orWhere('tanggal_pulang', '>=', now()); // Trip yang belum selesai
+        })
+        ->where('kuota', '>', 0) // Kuota lebih dari 0
+        ->get();
+    
+        // Fetch the authenticated user's bookings with related open trips and private trips, limited to 5
         $pemesanans = Pemesanan::with(['openTrip', 'privateTrip'])
             ->where('user_id', auth()->id())
+            ->orderBy('created_at', 'desc') // Urutkan berdasarkan tanggal pemesanan terbaru
             ->take(5) // Limit to 5 records
             ->get();
-
     
-        return view('user.edit-pemesanan', compact('pemesanan', 'openTrips','pemesanans'));
+        return view('user.edit-pemesanan', compact('pemesanan', 'openTrips', 'pemesanans'));
     }
 
     public function updatePemesanan(Request $request, $id)
@@ -460,13 +488,11 @@ class UserController extends Controller
         // Get the old and new open trips
         $oldOpenTrip = OpenTrip::findOrFail($pemesanan->open_trip_id);
         $newOpenTrip = OpenTrip::findOrFail($request->open_trip_id);
-    
-        // Kembalikan kuota open trip yang lama
-        if ($pemesanan->trip_type === 'open_trip') {
-            $oldOpenTrip->kuota += $pemesanan->jumlah_peserta; // Kembalikan kuota
-            $oldOpenTrip->save(); // Simpan perubahan
-        }
-    
+
+        // Return the quota of the old open trip
+        $oldOpenTrip->kuota += $pemesanan->jumlah_peserta; // Return the quota
+        $oldOpenTrip->save(); // Save changes
+        
         // Check if the number of participants exceeds the new open trip's quota
         if ($request->jumlah_peserta > $newOpenTrip->kuota) {
             return redirect()->back()->withErrors(['jumlah_peserta' => 'Jumlah peserta tidak boleh lebih dari kuota yang tersedia (' . $newOpenTrip->kuota . ').'])->withInput();
@@ -506,9 +532,10 @@ class UserController extends Controller
         // Check if a payment proof already exists
         $pembayaran = Pembayaran::where('pemesanan_id', $pemesanan->id)->first();
 
-        // Fetch the authenticated user's bookings with related open trips and private trips, limited to 4
+        // Fetch the authenticated user's bookings with related open trips and private trips, limited to 5
         $pemesanans = Pemesanan::with(['openTrip', 'privateTrip'])
             ->where('user_id', auth()->id())
+            ->orderBy('created_at', 'desc') // Urutkan berdasarkan tanggal pemesanan terbaru
             ->take(5) // Limit to 5 records
             ->get();
 
@@ -584,9 +611,10 @@ class UserController extends Controller
         // Ambil data administrasi yang sudah ada
         $dataAdministrasi = DataAdministrasi::where('pemesanan_id', $pemesanan->id)->get();
         
-        // Fetch the authenticated user's bookings with related open trips and private trips, limited to 4
+        // Fetch the authenticated user's bookings with related open trips and private trips, limited to 5
         $pemesanans = Pemesanan::with(['openTrip', 'privateTrip'])
             ->where('user_id', auth()->id())
+            ->orderBy('created_at', 'desc') // Urutkan berdasarkan tanggal pemesanan terbaru
             ->take(5) // Limit to 5 records
             ->get();
 
@@ -681,9 +709,10 @@ class UserController extends Controller
     }
     public function someOtherMethod()
     {
-        // Fetch the authenticated user's bookings with related open trips and private trips, limited to 4
+        // Fetch the authenticated user's bookings with related open trips and private trips, limited to 5
         $pemesanans = Pemesanan::with(['openTrip', 'privateTrip'])
             ->where('user_id', auth()->id())
+            ->orderBy('created_at', 'desc') // Urutkan berdasarkan tanggal pemesanan terbaru
             ->take(5) // Limit to 5 records
             ->get();
 
@@ -697,11 +726,12 @@ class UserController extends Controller
         // Ambil data pengguna yang sedang login
         $user = Auth::user();
 
-        // Fetch the authenticated user's bookings with related open trips and private trips, limited to 4
+        // Fetch the authenticated user's bookings with related open trips and private trips, limited to 5
         $pemesanans = Pemesanan::with(['openTrip', 'privateTrip'])
-        ->where('user_id', auth()->id())
-        ->take(5) // Limit to 5 records
-        ->get();
+            ->where('user_id', auth()->id())
+            ->orderBy('created_at', 'desc') // Urutkan berdasarkan tanggal pemesanan terbaru
+            ->take(5) // Limit to 5 records
+            ->get();
 
         // Kembalikan tampilan profil dengan data pengguna
         return view('user.profile', compact('user','pemesanans'));
@@ -711,12 +741,12 @@ class UserController extends Controller
         // Ambil data pengguna yang sedang login
         $user = Auth::user();
 
-        // Fetch the authenticated user's bookings with related open trips and private trips, limited to 4
+        // Fetch the authenticated user's bookings with related open trips and private trips, limited to 5
         $pemesanans = Pemesanan::with(['openTrip', 'privateTrip'])
-        ->where('user_id', auth()->id())
-        ->take(5) // Limit to 5 records
-        ->get();
-
+            ->where('user_id', auth()->id())
+            ->orderBy('created_at', 'desc') // Urutkan berdasarkan tanggal pemesanan terbaru
+            ->take(5) // Limit to 5 records
+            ->get();
         // Kembalikan tampilan edit profil dengan data pengguna
         return view('user.edit_profile', compact('user','pemesanans'));
     }
@@ -815,11 +845,12 @@ class UserController extends Controller
             ->orderBy('tanggal_pemesanan', 'desc') // Order by booking date
             ->get();
 
-        // Fetch the authenticated user's bookings with related open trips and private trips, limited to 4
+        // Fetch the authenticated user's bookings with related open trips and private trips, limited to 5
         $pemesanans = Pemesanan::with(['openTrip', 'privateTrip'])
-        ->where('user_id', auth()->id())
-        ->take(5) // Limit to 5 records
-        ->get();
+            ->where('user_id', auth()->id())
+            ->orderBy('created_at', 'desc') // Urutkan berdasarkan tanggal pemesanan terbaru
+            ->take(5) // Limit to 5 records
+            ->get();
     
         return view('user.completed-trips', compact('completedTrips', 'canceledTrips','pemesanans'));
     }

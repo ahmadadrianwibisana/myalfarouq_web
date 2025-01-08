@@ -21,8 +21,15 @@ class OpenTrip extends Model
         'star_point',
         'file',
         'include',
-        'exclude'
+        'exclude',
+        'view_count' // Tambahkan view_count ke fillable
     ];
+
+      // Method untuk menambah jumlah view_count
+      public function incrementViewCount()
+      {
+          $this->increment('view_count'); // Tambah 1 ke kolom view_count
+      }
 
     
 }

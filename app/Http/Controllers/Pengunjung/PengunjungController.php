@@ -102,7 +102,14 @@ class PengunjungController extends Controller
         public function detailopen($id)
         {
             $open_trip = OpenTrip::find($id);
-            return view('detailopen', compact('open_trip'));
+            
+            if ($open_trip) {
+                $open_trip->incrementViewCount(); // Tambah jumlah view_count
+                return view('detailopen', compact('open_trip'));
+            } else {
+                // Handle jika open_trip tidak ditemukan
+                return redirect()->route('opentrip')->with('error', 'Open Trip tidak ditemukan.');
+            }
         }
 
         // Halaman Artikel

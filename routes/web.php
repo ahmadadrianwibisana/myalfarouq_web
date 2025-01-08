@@ -138,11 +138,7 @@ Route::group(['middleware' => 'admin'], function () {
     Route::get('/admin/pemesanan/{id}', [PemesananController::class, 'show'])->name('admin.pemesanan.show');
     Route::get('admin/pemesanan/{id}/edit', [PemesananController::class, 'edit'])->name('admin.pemesanan.edit');
     Route::put('admin/pemesanan/{id}', [PemesananController::class, 'update'])->name('admin.pemesanan.update');
-    Route::delete('/admin/pemesanan/{id}', [PemesananController::class, 'delete'])->name('admin.pemesanan.delete');
-
-
-
-
+    // Route::delete('/admin/pemesanan/{id}', [PemesananController::class, 'delete'])->name('admin.pemesanan.delete');
 
     // Pembayaran
     Route::get('/pembayaran', [PembayaranController::class, 'index'])->name('admin.pembayaran');

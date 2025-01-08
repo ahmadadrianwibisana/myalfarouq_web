@@ -2,7 +2,7 @@
     <aside id="sidebar-wrapper">
         <div class="sidebar-brand">
             <a href="{{ route('adminbesar.dashboard') }}">
-                <img src="assets/templates/admin/img/logo.png" alt="" style="width: 200px; height: auto;">
+                <img src="{{ asset('assets/templates/admin/img/logo.png') }}" alt="Logo" style="width: 200px; height: auto;">
             </a>
         </div>
 

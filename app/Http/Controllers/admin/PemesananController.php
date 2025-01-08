@@ -22,8 +22,8 @@ class PemesananController extends Controller
     {   
         $pemesanans = Pemesanan::with([
                 'user:id,name',
-                'openTrip:id,nama_paket',
-                'privateTrip:id,nama_trip',
+                'openTrip:id,nama_paket,tanggal_berangkat,tanggal_pulang',
+                'privateTrip:id,nama_trip,tanggal_pergi,tanggal_kembali',
             ])
             ->orderBy('tanggal_pemesanan', 'desc') // Mengurutkan berdasarkan tanggal pemesanan terbaru
             ->paginate(10); // Tambahkan pagination
@@ -198,108 +198,129 @@ public function show($id)
 
     public function edit($id)
     {
-        // Fetch the booking along with related user and trip details
+        // Ambil pemesanan berdasarkan ID
         $pemesanan = Pemesanan::with(['user', 'openTrip', 'privateTrip'])->findOrFail($id);
-        $privateTrips = PrivateTrip::select('id', 'nama_trip')->get();
-        $openTrips = OpenTrip::select('id', 'nama_paket')->get();
-    
-        return view('pages.admin.pemesanan.edit', compact('pemesanan', 'privateTrips', 'openTrips'));
-    }
-    public function update(Request $request, $id)
-    {
-        // Fetch the booking
-        $pemesanan = Pemesanan::findOrFail($id);
-        
-        // Validate incoming data
-        $validator = Validator::make($request->all(), [
-            'trip_id' => [
-                'required_if:trip_type,open_trip',
-                function ($attribute, $value, $fail) use ($request) {
-                    if ($request->trip_type === 'open_trip') {
-                        if (!OpenTrip::find($value)) {
-                            $fail("The selected $attribute is invalid.");
-                        }
-                    }
-                },
-            ],
-            'tanggal_pemesanan' => 'required|date',
-            'status' => 'required|in:pending,terkonfirmasi,dibatalkan',
-            'alasan_batal' => 'nullable|string|max:255',
-            'tour_gate' => 'nullable|string|max:255',
-            'jumlah_peserta' => 'required_if:trip_type,open_trip|integer|min:1', // Validasi jumlah peserta
-            'star_point' => 'required_if:trip_type,open_trip|string|max:255', // Validasi star_point untuk open_trip
-        ]);
-    
-        if ($validator->fails()) {
-            return back()->withErrors($validator)->withInput();
-        }
-    
-        // Save cancellation reason if status is canceled
-        $alasan_batal = $request->status === 'dibatalkan' ? $request->alasan_batal : null;
-    
-        // Hitung total pembayaran berdasarkan trip type
-        $totalPembayaran = 0;
-        if ($request->trip_type === 'open_trip') {
-            $openTrip = OpenTrip::findOrFail($request->trip_id);
-            $totalPembayaran = $openTrip->harga * $request->jumlah_peserta; // Hitung total berdasarkan jumlah peserta
-        } elseif ($request->trip_type === 'private_trip') {
-            $privateTrip = PrivateTrip::findOrFail($request->trip_id);
-            $totalPembayaran = $privateTrip->harga;
+
+        // Cek apakah pemesanan adalah open_trip atau private_trip
+        if ($pemesanan->trip_type === 'open_trip') {
+            $trip = $pemesanan->openTrip;
+            $tanggalBerangkat = $trip->tanggal_berangkat;
+            $tanggalKembali = $trip->tanggal_pulang;
+        } else {
+            $trip = $pemesanan->privateTrip;
+            $tanggalBerangkat = $trip->tanggal_pergi;
+            $tanggalKembali = $trip->tanggal_kembali;
         }
 
-        // Kembalikan kuota open trip yang lama jika trip_type adalah open_trip
+        // Cek apakah tanggal keberangkatan atau kepulangan sudah berlalu
+        if ($tanggalBerangkat < now() && $tanggalKembali < now()) {
+            Alert::error('Trip Sudah Selesai!', 'Tanggal keberangkatan dan kepulangan trip sudah berlalu dan tidak bisa diedit.');
+            return redirect()->route('admin.pemesanan.index');
+        }
+
+        // Ambil semua private trips dan open trips
+        $privateTrips = PrivateTrip::select('id', 'nama_trip')->get();
+        $openTrips = OpenTrip::select('id', 'nama_paket')->get();
+
+        return view('pages.admin.pemesanan.edit', compact('pemesanan', 'privateTrips', 'openTrips'));
+    }
+public function update(Request $request, $id)
+{
+    // Fetch the booking
+    $pemesanan = Pemesanan::findOrFail($id);
+    
+    // Validate incoming data
+    $validator = Validator::make($request->all(), [
+        'trip_id' => [
+            'required_if:trip_type,open_trip',
+            function ($attribute, $value, $fail) use ($request) {
+                if ($request->trip_type === 'open_trip') {
+                    if (!OpenTrip::find($value)) {
+                        $fail("The selected $attribute is invalid.");
+                    }
+                }
+            },
+        ],
+        'tanggal_pemesanan' => 'required|date',
+        'status' => 'required|in:pending,terkonfirmasi,dibatalkan',
+        'alasan_batal' => 'nullable|string|max:255',
+        'tour_gate' => 'nullable|string|max:255',
+        'jumlah_peserta' => 'required_if:trip_type,open_trip|integer|min:1', // Validasi jumlah peserta
+        'star_point' => 'required_if:trip_type,open_trip|string|max:255', // Validasi star_point untuk open_trip
+    ]);
+
+    if ($validator->fails()) {
+        return back()->withErrors($validator)->withInput();
+    }
+
+    // Save cancellation reason if status is canceled
+    $alasan_batal = $request->status === 'dibatalkan' ? $request->alasan_batal : null;
+
+    // Hitung total pembayaran berdasarkan trip type
+    $totalPembayaran = 0;
+    if ($request->trip_type === 'open_trip') {
+        $openTrip = OpenTrip::findOrFail($request->trip_id);
+        $totalPembayaran = $openTrip->harga * $request->jumlah_peserta; // Hitung total berdasarkan jumlah peserta
+    } elseif ($request->trip_type === 'private_trip') {
+        $privateTrip = PrivateTrip::findOrFail($request->trip_id);
+        $totalPembayaran = $privateTrip->harga;
+    }
+
+    // Kembalikan kuota open trip yang lama jika trip_type adalah open_trip
     if ($pemesanan->trip_type === 'open_trip') {
         $oldOpenTrip = OpenTrip::findOrFail($pemesanan->open_trip_id);
         $oldOpenTrip->kuota += $pemesanan->jumlah_peserta; // Kembalikan kuota
         $oldOpenTrip->save(); // Simpan perubahan
     }
-    
-        // Jika status diubah menjadi dibatalkan
-        if ($request->status === 'dibatalkan') {
-            if ($pemesanan->trip_type === 'open_trip') {
-                $openTrip = OpenTrip::findOrFail($pemesanan->open_trip_id);
-                $openTrip->kuota += $pemesanan->jumlah_peserta; // Kembalikan kuota
-                $openTrip->save(); // Simpan perubahan
-            }
-        }
-            // Update booking with new data (update trip_id and other details)
-        $pemesanan->update([
-            'total_pembayaran' => $totalPembayaran, // Update total pembayaran
-            'open_trip_id' => $request->trip_type === 'open_trip' ? $request->trip_id : $pemesanan->open_trip_id,
-            'private_trip_id' => $request->trip_type === 'private_trip' ? $request->trip_id :  $pemesanan->private_trip_id,
-            'tanggal_pemesanan' => $request->tanggal_pemesanan,
-            'status' => $request->status,
-            'alasan_batal' => $alasan_batal,
-            'tour_gate' => $request->tour_gate, // Update tour_gate
-            'jumlah_peserta' => $request->trip_type === 'open_trip' ? $request->jumlah_peserta : null, // Update jumlah peserta
-            'star_point' => $request->trip_type === 'open_trip' ? $request->star_point: null, // Update jumlah peserta
-        ]);
 
-
-        // Kurangi kuota open trip yang baru jika trip_type adalah open_trip
-        if ($request->trip_type === 'open_trip') {
-            $newOpenTrip = OpenTrip::findOrFail($request->trip_id);
-            if ($request->jumlah_peserta > $newOpenTrip->kuota) {
-                return redirect()->back()->withErrors(['jumlah_peserta' => 'Jumlah peserta tidak boleh lebih dari kuota yang tersedia (' . $newOpenTrip->kuota . ').'])->withInput();
-            }
-            $newOpenTrip->kuota -= $request->jumlah_peserta; // Kurangi kuota
-            $newOpenTrip->save(); // Simpan perubahan
-        }
-    
-        // Cek apakah pemesanan berhasil diperbarui
-        if ($pemesanan) {
-            // Kirim pesan WhatsApp jika status dikonfirmasi
-            if ($request->status === 'terkonfirmasi') {
-                $this->sendWhatsAppMessage($pemesanan->user->no_telepon, $pemesanan->id);
-            }
-    
-            Alert::success('Berhasil!', 'Pemesanan berhasil diperbarui!');
-            return redirect()->route('admin.pemesanan.index');
-        } else {
-            Alert::error('Gagal!', 'Pemesanan gagal diperbarui!');
-            return redirect()->back();
+    // Jika status diubah menjadi dibatalkan
+    if ($request->status === 'dibatalkan') {
+        if ($pemesanan->trip_type === 'open_trip') {
+            $openTrip = OpenTrip::findOrFail($pemesanan->open_trip_id);
+            $openTrip->kuota += $pemesanan->jumlah_peserta; // Kembalikan kuota
+            $openTrip->save(); // Simpan perubahan
         }
     }
+
+    // Update booking with new data (update trip_id and other details)
+    $pemesanan->update([
+        'total_pembayaran' => $totalPembayaran, // Update total pembayaran
+        'open_trip_id' => $request->trip_type === 'open_trip' ? $request->trip_id : $pemesanan->open_trip_id,
+        'private_trip_id' => $request->trip_type === 'private_trip' ? $request->trip_id :  $pemesanan->private_trip_id,
+        'tanggal_pemesanan' => $request->tanggal_pemesanan,
+        'status' => $request->status,
+        'alasan_batal' => $alasan_batal,
+        'tour_gate' => $request->tour_gate, // Update tour_gate
+        'jumlah_peserta' => $request->trip_type === 'open_trip' ? $request->jumlah_peserta : null, // Update jumlah peserta
+        'star_point' => $request->trip_type === 'open_trip' ? $request-> star_point : null, // Update star_point
+    ]);
+
+    // Kurangi kuota open trip yang baru jika trip_type adalah open_trip dan status diubah menjadi terkonfirmasi
+    if ($request->trip_type === 'open_trip' && $request->status === 'terkonfirmasi') {
+        $newOpenTrip = OpenTrip::findOrFail($request->trip_id);
+        if ($request->jumlah_peserta > $newOpenTrip->kuota) {
+            return redirect()->back()->withErrors(['jumlah_peserta' => 'Jumlah peserta tidak boleh lebih dari kuota yang tersedia (' . $newOpenTrip->kuota . ').'])->withInput();
+        }
+        $newOpenTrip->kuota -= $request->jumlah_peserta; // Kurangi kuota
+        $newOpenTrip->save(); // Simpan perubahan
+    }
+
+    // Cek apakah pemesanan berhasil diperbarui
+    if ($pemesanan) {
+        // Kirim pesan WhatsApp jika status dikonfirmasi
+        if ($request->status === 'terkonfirmasi') {
+            $this->sendWhatsAppMessage($pemesanan->user->no_telepon, $pemesanan->id);
+            // Redirect to index with success message
+            return redirect()->route('admin.pemesanan.index')->with('success', 'Pemesanan berhasil diperbarui dan pesan WhatsApp telah dikirim.');
+        }
+
+        Alert::success('Berhasil!', 'Pemesanan berhasil diperbarui!');
+        return redirect()->route('admin.pemesanan.index');
+    } else {
+        Alert::error('Gagal!', 'Pemesanan gagal diperbarui!');
+        return redirect()->back();
+    }
+}
     
     
     // Fungsi untuk mengirim pesan WhatsAppprivate 
@@ -328,23 +349,26 @@ public function show($id)
             echo "Pengguna tidak ditemukan.";
         }
     }
-    public function destroy($id)
-    {
-        // Find the booking by ID
-        $pemesanan = Pemesanan::findOrFail($id);
-
-        // Jika pemesanan adalah open trip, kembalikan kuota
-        if ($pemesanan->trip_type === 'open_trip') {
-            $openTrip = OpenTrip::findOrFail($pemesanan->open_trip_id);
-            $openTrip->kuota += $pemesanan->jumlah_peserta; // Kembalikan kuota
-            $openTrip->save(); // Simpan perubahan
-        }
-
-        // Delete the booking
-        $pemesanan->delete();
-
-        Alert::success('Berhasil!', 'Pemesanan berhasil dihapus!');
-        return redirect()->route('admin.pemesanan.index');
-    }
+    // public function destroy($id)
+    // {
+    //     // Temukan pemesanan berdasarkan ID
+    //     $pemesanan = Pemesanan::findOrFail($id);
+    
+    //     // Cek apakah pemesanan belum dibatalkan
+    //     if ($pemesanan->status !== 'dibatalkan') {
+    //         // Jika pemesanan adalah open trip, kembalikan kuota
+    //         if ($pemesanan->trip_type === 'open_trip') {
+    //             $openTrip = OpenTrip::findOrFail($pemesanan->open_trip_id);
+    //             $openTrip->kuota += $pemesanan->jumlah_peserta; // Kembalikan kuota
+    //             $openTrip->save(); // Simpan perubahan
+    //         }
+    //     }
+    
+    //     // Hapus pemesanan
+    //     $pemesanan->delete();
+    
+    //     Alert::success('Berhasil!', 'Pemesanan berhasil dihapus!');
+    //     return redirect()->route('admin.pemesanan.index');
+    // }
 
 }

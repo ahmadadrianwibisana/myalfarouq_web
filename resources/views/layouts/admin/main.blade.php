@@ -38,6 +38,7 @@
     </div>
     
     @include('layouts.admin.script')
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+      <!-- Pindahkan skrip Chart.js ke sini -->
+      <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </body>
 </html>

@@ -26,6 +26,7 @@ return new class extends Migration
             $table->string('file')->nullable(); // Menambahkan kolom file
             $table->string('include')->nullable(); // Menambahkan kolom include
             $table->string('exclude')->nullable(); // Menambahkan kolom exclude
+            $table->unsignedBigInteger('view_count')->default(0); // Kolom untuk menghitung jumlah tampilan
             $table->timestamps();
         });
     }

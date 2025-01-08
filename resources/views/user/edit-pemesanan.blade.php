@@ -156,7 +156,7 @@
                     @endforeach
                 </select>
             </div>
-
+            
             <div class="mt-4">
                 <h2 class="text-lg font-semibold text-green-700">Kuota</h2>
                 <p class="text-sm text-gray-700" id="kuota">{{ $pemesanan->openTrip->kuota }} Peserta</p>

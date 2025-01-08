@@ -2,11 +2,11 @@
     <aside id="sidebar-wrapper">
         <div class="sidebar-brand">
             <a href="{{ route('admin.dashboard') }}">
-                <img src="assets/templates/admin/img/logo.png" alt="" style="width: 200px; height: auto;">
+                <img src="{{ asset('assets/templates/admin/img/logo.png') }}" alt="Logo" style="width: 200px; height: auto;">
             </a>
         </div>
         <div class="sidebar-brand sidebar-brand-sm">
-            <a href="{{ route('admin.dashboard') }}">  AF  </a>
+            <a href="{{ route('admin.dashboard') }}">AF</a>
         </div>
 
         <ul class="sidebar-menu">
