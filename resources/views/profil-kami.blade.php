@@ -118,7 +118,7 @@
                 <h3><span class="green-text">ALFAROUQ TRAVEL</span></h3>
                 <h6>Emang Beda Wak</h6>
                 <p>
-                    Alfaraouq Travel menawarkan paket perjalanan tur tiga negara,
+                    Alfaraouq Travel menawarkan paket perjalanan tour tiga negara,
                     yaitu Malaysia, Singapura, dan Thailand dengan harga spesial
                     yang cocok untuk per-orangan, keluarga, dan rombongan. Paket ini
                     juga sudah mencakup berbagai fasilitas, sehingga Anda hanya
@@ -162,7 +162,7 @@
                     <li><a href="#" onclick="orderService('Tiket Kapal Ferry')">Tiket Kapal Ferry</a></li>
                     <li><a href="#" onclick="orderService('Penyewaan Transportasi (Mobil Pribadi atau Bus Premium Pariwisata VAN/HIACE)')">Penyewaan Transportasi (Mobil Pribadi atau Bus Premium Pariwisata VAN/HIACE)</a></li>
                     <li><a href="#" onclick="orderService('Bookingan Hotel mulai dari *2-*5 ')">Bookingan Hotel mulai dari *2-*5</a></li>
-                    <li><a href="#" onclick="orderService('Jasa Tour Get & Tour Leader')">Jasa Tour Get & Tour Leader</a></li>
+                    <li><a href="#" onclick="orderService('Jasa Tour Get & Tour Leader')">Jasa Tour Guide & Tour Leader</a></li>
                     <li><a href="#" onclick="orderService('Pembelian Tiket Wisata semua negara')">Pembelian Tiket Wisata semua negara</a></li>
                 </ol>
             </div>
@@ -224,7 +224,7 @@
                     <li><a href="#" onclick="orderService('Tiket Kapal Ferry')">Tiket Kapal Ferry</a></li>
                     <li><a href="#" onclick="orderService('Penyewaan Transportasi (Mobil Pribadi atau Bus Premium Pariwisata VAN/HIACE)')">Penyewaan Transportasi (Mobil Pribadi atau Bus Premium Pariwisata VAN/HIACE)</a></li>
                     <li><a href="#" onclick="orderService('Bookingan Hotel mulai dari *2-*5')">Bookingan Hotel mulai dari *2-*5</a></li>
-                    <li><a href="#" onclick="orderService('Jasa Tour Get & Tour Leader')">Jasa Tour Get & Tour Leader</a></li>
+                    <li><a href="#" onclick="orderService('Jasa Tour Get & Tour Leader')">Jasa Tour Guide & Tour Leader</a></li>
                     <li><a href="#" onclick="orderService('Pembelian Tiket Wisata semua negara')">Pembelian Tiket Wisata semua negara</a></li>
                 </ol>
             </div>
@@ -260,12 +260,13 @@
       <div
         class="col-lg-3 col-md-12 footer-contact text-center text-md-start">
         <h4>Alamat Kami</h4>
-        <p>
-          <strong>Alamat:</strong>
-          <a href="https://maps.app.goo.gl/DFDBN3553ycHLxTm7"
-            >Jl. Dock Yard, Dumai, Riau, Indonesia</a
-          >
-        </p>
+            <p>
+              <strong>Alamat:</strong>
+              <a href="https://maps.app.goo.gl/KKLHJQEmDUC5Bre67"
+                >Jl. Hasanah
+                Simpang Tetap Darul Ihsan, Kec. Dumai Bar, Kota Dumai, Riau</a
+              >
+            </p>
         <p>
           <strong>Email:</strong>
           <a href="mailto:alfarouqtourtravel@gmail.com"

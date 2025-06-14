@@ -52,15 +52,6 @@
                     <span>Daftar Pengguna dan Admin</span>
                 </a>
             </li>
-
-            <!-- Riwayat Menu -->
-            <li class="{{ Route::is('adminbesar.profile') ? 'active' : '' }}">
-                <a class="nav-link" href="{{ route('adminbesar.profile') }}">
-                    <i class="fas fa-history" style="color: #FFC107;"></i>
-                    <span>Total Riwayat</span>
-                </a>
-            </li>
-
         </ul>
     </aside>
 </div>

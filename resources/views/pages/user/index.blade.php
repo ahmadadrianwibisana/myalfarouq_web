@@ -357,7 +357,7 @@
               <h3><span class="green-text">ALFAROUQ TRAVEL</span></h3>
               <h6>Emang Beda Wak</h6>
               <p>
-                Alfaraouq Travel menawarkan paket perjalanan tur tiga negara,
+                Alfaraouq Travel menawarkan paket perjalanan tour tiga negara,
                 yaitu Malaysia, Singapura, dan Thailand dengan harga spesial
                 yang cocok untuk per-orangan, keluarga, dan rombongan. Paket ini
                 juga sudah mencakup berbagai fasilitas, sehingga Anda hanya
@@ -400,29 +400,22 @@
             </div>
 
             <!-- Kolom Teks -->
-            <div
-              class="col-lg-6 content"
-              data-aos="fade-up"
-              data-aos-delay="100">
-              <h2>CV. Alfarouq Tour and Travel</h2>
-              <h3>
-                <span class="green-text"
-                  >Penawaran Jasa dan Tiket Perjalanan</span
-                >
-              </h3>
-              <h6>Adapun Penawaran Jasa yang Kami Tawarkan:</h6>
-              <ol>
-                <li>Paket Wisata Terima Bersih dalam dan luar negeri</li>
-                <li>Tiket Pesawat + Bagasi</li>
-                <li>Tiket Kapal Ferry</li>
-                <li>
-                  Penyewaan Transportasi (Mobil Pribadi atau Bus Premium
-                  Pariwisata VAN/HIACE)
-                </li>
-                <li>Bookingan Hotel mulai dari *2-*5</li>
-                <li>Jasa Tour Get & Tour Leader</li>
-                <li>Pembelian Tiket Wisata semua negara</li>
-              </ol>
+            <div class="col-lg-6 content" data-aos="fade-up" data-aos-delay="100">
+                <h2>CV. Alfarouq Tour and Travel</h2>
+                <h3>
+                    <span class="green-text">Penawaran Jasa dan Tiket Perjalanan</span>
+                </h3>
+                <h6>Adapun Penawaran Jasa yang Kami Tawarkan:</h6>
+                <p>Temukan pengalaman perjalanan yang tak terlupakan bersama kami! Pilih salah satu penawaran jasa di bawah ini dan nikmati kemudahan dalam merencanakan perjalanan Anda. Kami siap membantu Anda mewujudkan liburan impian!</p>
+                <ol id="service-list">
+                    <li><a href="#" onclick="orderService('Paket Wisata Terima Bersih dalam dan luar negeri')">Paket Wisata Terima Bersih dalam dan luar negeri</a></li>
+                    <li><a href="#" onclick="orderService('Tiket Pesawat + Bagasi')">Tiket Pesawat + Bagasi</a></li>
+                    <li><a href="#" onclick="orderService('Tiket Kapal Ferry')">Tiket Kapal Ferry</a></li>
+                    <li><a href="#" onclick="orderService('Penyewaan Transportasi (Mobil Pribadi atau Bus Premium Pariwisata VAN/HIACE)')">Penyewaan Transportasi (Mobil Pribadi atau Bus Premium Pariwisata VAN/HIACE)</a></li>
+                    <li><a href="#" onclick="orderService('Bookingan Hotel mulai dari *2-*5 ')">Bookingan Hotel mulai dari *2-*5</a></li>
+                    <li><a href="#" onclick="orderService('Jasa Tour Get & Tour Leader')">Jasa Tour Guide & Tour Leader</a></li>
+                    <li><a href="#" onclick="orderService('Pembelian Tiket Wisata semua negara')">Pembelian Tiket Wisata semua negara</a></li>
+                </ol>
             </div>
           </div>
         </div>

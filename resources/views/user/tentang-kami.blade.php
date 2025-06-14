@@ -164,10 +164,10 @@
                 <i class="bi bi-geo-alt flex-shrink-0"></i>
                 <div>
                   <h3>Location:</h3>
-                  <a href="https://maps.app.goo.gl/DFDBN3553ycHLxTm7"
-                    >Jl. Dock Yard, Dumai, Riau, Indonesia</a
-                  >
-                  <!-- <p>Jl. Dock Yard, Dumai, Riau, Indonesia</p> -->
+                  <a href="https://maps.app.goo.gl/KKLHJQEmDUC5Bre67"
+                  >Jl. Hasanah
+                  Simpang Tetap Darul Ihsan, Kec. Dumai Bar, Kota Dumai, Riau</a
+                >
                 </div>
               </div>
 
@@ -188,7 +188,7 @@
             <div class="col-lg-8">
               <iframe
                 style="width: 100%; height: 500px"
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3988.1327840182053!2d101.41797271003743!3d1.665502998312044!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31d3a8d750f9f1bb%3A0x7f6987fb4ec41ac!2sJl.%20Dock%20Yard%2C%20Kota%20Dumai%2C%20Riau%2028826!5e0!3m2!1sid!2sid!4v1730883090899!5m2!1sid!2sid"
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3988.119996244095!2d101.4181536!3d1.6718094000000177!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31d3a8db4a46d61d%3A0xbb3c786e1901b0ab!2sJl.%20Hasanah%2C%20Simpang%20Tetap%20Darul%20Ihsan%2C%20Kec.%20Dumai%20Bar.%2C%20Kota%20Dumai%2C%20Riau%2028826!5e0!3m2!1sid!2sid!4v1736405876949!5m2!1sid!2sid"
                 frameborder="0"
                 allowfullscreen=""></iframe>
             </div>
@@ -218,8 +218,9 @@
             <h4>Alamat Kami</h4>
             <p>
               <strong>Alamat:</strong>
-              <a href="https://maps.app.goo.gl/DFDBN3553ycHLxTm7"
-                >Jl. Dock Yard, Dumai, Riau, Indonesia</a
+              <a href="https://maps.app.goo.gl/KKLHJQEmDUC5Bre67"
+                >Jl. Hasanah
+                Simpang Tetap Darul Ihsan, Kec. Dumai Bar, Kota Dumai, Riau</a
               >
             </p>
             <p>

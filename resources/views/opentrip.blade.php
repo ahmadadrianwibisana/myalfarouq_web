@@ -201,8 +201,9 @@
             <h4>Alamat Kami</h4>
             <p>
               <strong>Alamat:</strong>
-              <a href="https://maps.app.goo.gl/DFDBN3553ycHLxTm7"
-                >Jl. Dock Yard, Dumai, Riau, Indonesia</a
+              <a href="https://maps.app.goo.gl/KKLHJQEmDUC5Bre67"
+                >Jl. Hasanah
+                Simpang Tetap Darul Ihsan, Kec. Dumai Bar, Kota Dumai, Riau</a
               >
             </p>
             <p>

@@ -16,8 +16,8 @@ class DatabaseSeeder extends Seeder
     {
         // Membuat data user
         User::create([
-            'name' => 'fazri',
-            'email' => 'fazri@gmail.com',
+            'name' => 'adrian',
+            'email' => 'adrian@gmail.com',
             'password' => bcrypt('123456789'),
             'no_telepon' => '08123456789',  // Sesuaikan nomor telepon
             'image' => 'default.jpg', // Nama file gambar default
